@@ -118,7 +118,7 @@ public abstract partial class Day<T>
         {
             Console.WriteLine($"{_year} {GetType().Name} Part {(_isPart2 ? 2 : 1)} ({(_useSampleInput ? "sample" : "input")}) not implemented yet");
         }
-        catch (FileNotFoundException)
+        catch (IOException)
         {
             Console.WriteLine($"{_year} {GetType().Name} Part {(_isPart2 ? 2 : 1)} ({(_useSampleInput ? "sample" : "input")}) input file not found");
         }
