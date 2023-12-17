@@ -11,17 +11,14 @@ public class Day16 : Day<Day16.Cave>
         // x, y, xDir, yDir
         public required HashSet<(int, int, int, int)> Energized { get; set; }
 
-        public void Reset()
+        public long NewBeam(int x, int y, int xDir, int yDir)
         {
             Energized.Clear();
-        }
-
-        public long CountEnergized()
-        {
+            Beam(x, y, xDir, yDir);
             return Energized.Select(p => (p.Item1, p.Item2)).Distinct().Count();
         }
 
-        public void Beam(int x, int y, int xDir, int yDir)
+        private void Beam(int x, int y, int xDir, int yDir)
         {
             if (Energized.Contains((x, y, xDir, yDir))) return;     // already been here
 
@@ -69,9 +66,7 @@ public class Day16 : Day<Day16.Cave>
     protected override long Part1()
     {
         // beam of light starts at 0,0 and travels right
-        Input.Reset();
-        Input.Beam(0, 0, 1, 0);
-        return Input.CountEnergized();
+        return Input.NewBeam(0, 0, 1, 0);
     }
 
     protected override long Part2()
@@ -81,25 +76,15 @@ public class Day16 : Day<Day16.Cave>
         for (var i=0; i<Input.Grid.Length; i++)
         {
             // beam right from left, left from right
-            Input.Reset();
-            Input.Beam(0, i, 1, 0);
-            maxEnergized = Math.Max(maxEnergized, Input.CountEnergized());
-
-            Input.Reset();
-            Input.Beam(Input.Grid[0].Length-1, i, -1, 0);
-            maxEnergized = Math.Max(maxEnergized, Input.CountEnergized());
+            maxEnergized = Math.Max(maxEnergized, Input.NewBeam(0, i, 1, 0));
+            maxEnergized = Math.Max(maxEnergized, Input.NewBeam(Input.Grid[0].Length-1, i, -1, 0));
         }
 
         for (var i=0; i<Input.Grid[0].Length; i++)
         {
             // beam down from top, up from bottom
-            Input.Reset();
-            Input.Beam(i, 0, 0, 1);
-            maxEnergized = Math.Max(maxEnergized, Input.CountEnergized());
-
-            Input.Reset();
-            Input.Beam(i, Input.Grid.Length-1, 0, -1);
-            maxEnergized = Math.Max(maxEnergized, Input.CountEnergized());
+            maxEnergized = Math.Max(maxEnergized, Input.NewBeam(i, 0, 0, 1));
+            maxEnergized = Math.Max(maxEnergized, Input.NewBeam(i, Input.Grid.Length-1, 0, -1));
         }
 
         return maxEnergized;

@@ -31,7 +31,7 @@ public class Day6 : Day<List<Day6.Race>>
         return totalMargin;
     }
 
-    private long GetMargin(Race race)
+    private static long GetMargin(Race race)
     {
         // this can be done by brute force easily even with the real inputs (~300ms for part 2), but this is a quadratic with variable hold time and can be solved exactly.
 
