@@ -11,34 +11,35 @@ public class Day12 : Day<Day12.Map>
         // "Start" is E because we are searching backwards
         public (int, int) Start()
         {
-            for (var y = 0; y < Grid.Length; y++)
-            {
-                for (var x = 0; x < Grid[0].Length; x++)
-                {
-                    if (Grid[y][x] == 'E') return (x, y);
-                }
-            }
+            var found = Find('E', 1);
+            if (!found.Any()) throw new Exception("No start found");
 
-            throw new Exception("No start found");
+            return found.First();
         }
 
         // find all possible ends
         public HashSet<(int, int)> End(char endLevel)
         {
-            var ends = new HashSet<(int, int)>();
+            return Find(endLevel);
+        }
+
+        private HashSet<(int, int)> Find(char level, int? max = null)
+        {
+            var found = new HashSet<(int, int)>();
 
             for (var y = 0; y < Grid.Length; y++)
             {
                 for (var x = 0; x < Grid[0].Length; x++)
                 {
-                    if (Grid[y][x] == endLevel) ends.Add((x, y));
+                    if (Grid[y][x] == level)
+                    {
+                        found.Add((x, y));
+                        if (max != null && found.Count >= max.Value) return found;
+                    }
                 }
             }
 
-            if (!ends.Any())
-                throw new Exception("No end found!");
-
-            return ends;
+            return found;
         }
     }
 
