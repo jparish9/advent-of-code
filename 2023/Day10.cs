@@ -1,3 +1,5 @@
+using AOC.Utils;
+
 namespace AOC.AOC2023;
 
 public class Day10 : Day<char[][]>
@@ -6,7 +8,7 @@ public class Day10 : Day<char[][]>
     protected override string? SampleRawInputPart2 { get => "FF7FSF7F7F7F7F7F---7\nL|LJ||||||||||||F--J\nFL-7LJLJ||||||LJL-77\nF--JF--7||LJLJ7F7FJ-\nL---JF-JLJ.||-FJLJJ7\n|F|F-JF---7F7-L7L|7|\n|FFJF7L7F-JF7|JL---7\n7-L-JL7||F7|L7F-7F7|\nL.L7LFJ|||||FJL7||LJ\nL7JLJL-JLJLJL--JLJ.L"; }
 
     //private readonly Dictionary<int, HashSet<int>> _pathMap = new();     // need to look up if a coordinate is on the path often, so store it for efficient lookup
-    private readonly List<Tuple<int, int>> _orderedPath = new();        // need path order for part 2
+    private readonly List<(long, long)> _orderedPath = new();        // need path order for part 2
 
     protected override long Part1()
     {
@@ -16,28 +18,14 @@ public class Day10 : Day<char[][]>
 
     protected override long Part2()
     {
-        DeterminePath();
-
         // well, after trying to get count crossings without success, I found out about the shoelace formula and learned something new today!
         // https://en.wikipedia.org/wiki/Shoelace_formula
         // a formula using only matrix determinants of ordered vertices to calculate the area of a polygon.
         // then apply Pick's theorem to get the number of interior points, since all of the vertices are lattice points.
-
         // another option is to expand the grid so that there are no "squeezed" pipes and use a flood fill algorithm to count the area, but this is so succinct!
 
-        var detSum = 0;
-        for (var i=0; i<_orderedPath.Count; i++)
-        {
-            detSum += _orderedPath[i].Item1 * _orderedPath[(i+1)%_orderedPath.Count].Item2 - _orderedPath[i].Item2 * _orderedPath[(i+1)%_orderedPath.Count].Item1;
-        }
-
-        detSum = Math.Abs(detSum);      // will be negative if the path is clockwise, positive if counter-clockwise
-
-        var area = detSum/2;
-
-        // using Pick's theorem, area = i + b/2 - 1 where b is the number of boundary points, i is the number of interior points (which we want)
-        // i = area - b/2 + 1
-        return area - _orderedPath.Count/2 + 1;
+        DeterminePath();
+        return Polygon.CountInteriorLatticePoints(_orderedPath);
     }
 
     private void DeterminePath()
@@ -68,7 +56,7 @@ public class Day10 : Day<char[][]>
         var yStart = y;
 
         //_pathMap.Add(y, new HashSet<int>() {x});
-        _orderedPath.Add(new Tuple<int, int>(y, x));
+        _orderedPath.Add((y, x));
 
         var xDir = 0;
         var yDir = 0;
@@ -90,7 +78,7 @@ public class Day10 : Day<char[][]>
         {
             //if (!_pathMap.ContainsKey(y)) _pathMap.Add(y, new HashSet<int>() {x});
             //else _pathMap[y].Add(x);
-            _orderedPath.Add(new Tuple<int, int>(y, x));
+            _orderedPath.Add((y, x));
 
             char next = Input[y][x];
             //System.Console.WriteLine("at " + x + "," + y + ", found " + next);

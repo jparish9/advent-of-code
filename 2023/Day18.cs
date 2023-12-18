@@ -1,3 +1,5 @@
+using AOC.Utils;
+
 namespace AOC.AOC2023;
 
 public class Day18 : Day<Day18.Digger>
@@ -33,22 +35,15 @@ public class Day18 : Day<Day18.Digger>
         {
             ApplyInstructions();
 
-            var detSum = 0L;
             var borderPoints = 0L;
             for (var i=0; i<Corners.Count; i++)
             {
-                detSum += Corners[i].Item1 * Corners[(i+1)%Corners.Count].Item2 - Corners[i].Item2 * Corners[(i+1)%Corners.Count].Item1;
                 borderPoints += Math.Abs(Corners[i].Item1 - Corners[(i+1)%Corners.Count].Item1) + Math.Abs(Corners[i].Item2 - Corners[(i+1)%Corners.Count].Item2);
             }
 
-            detSum = Math.Abs(detSum);      // will be negative if the path is clockwise, positive if counter-clockwise
-
-            var area = detSum/2;
-
             // using Pick's theorem, area = i + b/2 - 1 where b is the number of boundary lattice points, i is the number of interior lattice points.
             // i = area - b/2 + 1
-            return borderPoints
-                + area - borderPoints/2 + 1;
+            return borderPoints + Polygon.CountInteriorLatticePoints(Corners, borderPoints);
         }
     }
 
