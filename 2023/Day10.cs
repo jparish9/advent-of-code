@@ -25,7 +25,7 @@ public class Day10 : Day<char[][]>
         // another option is to expand the grid so that there are no "squeezed" pipes and use a flood fill algorithm to count the area, but this is so succinct!
 
         DeterminePath();
-        return Polygon.CountInteriorLatticePoints(_orderedPath);
+        return Polygon.GridLatticePoints(_orderedPath, true);
     }
 
     private void DeterminePath()

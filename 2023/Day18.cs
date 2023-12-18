@@ -34,16 +34,7 @@ public class Day18 : Day<Day18.Digger>
         public long LagoonArea()
         {
             ApplyInstructions();
-
-            var borderPoints = 0L;
-            for (var i=0; i<Corners.Count; i++)
-            {
-                borderPoints += Math.Abs(Corners[i].Item1 - Corners[(i+1)%Corners.Count].Item1) + Math.Abs(Corners[i].Item2 - Corners[(i+1)%Corners.Count].Item2);
-            }
-
-            // using Pick's theorem, area = i + b/2 - 1 where b is the number of boundary lattice points, i is the number of interior lattice points.
-            // i = area - b/2 + 1
-            return borderPoints + Polygon.CountInteriorLatticePoints(Corners, borderPoints);
+            return Polygon.GridLatticePoints(Corners, false);
         }
     }
 
