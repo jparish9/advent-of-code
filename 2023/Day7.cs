@@ -1,12 +1,30 @@
 namespace AOC.AOC2023;
 
-public class Day7 : Day<List<Day7.Hand>>
+public class Day7 : Day<Day7.HandGroup>
 {
     protected override string? SampleRawInput { get => "32T3K 765\nT55J5 684\nKK677 28\nKTJJT 220\nQQQJA 483"; }
-
     protected override bool Part2ParsedDifferently => true;             // for part 2, 'J' is a joker (not a jack), and has value 0 for comparing within ranks
 
     public enum HandRank { NotSet, HighCard, Pair, TwoPair, ThreeOfAKind, Flush, FullHouse, FourOfAKind, FiveOfAKind}
+
+    public class HandGroup
+    {
+        public required List<Hand> Hands { get; set; }
+        
+        public long GetWinnings()
+        {
+            Hands.ForEach(h => h.Evaluate());
+            Hands.Sort();
+
+            var winnings = 0;
+            for (var i=0; i<Hands.Count; i++)
+            {
+                winnings += Hands[i].Bid * (i+1);
+            }
+
+            return winnings;
+        }
+    }
 
     public class Hand : IComparable<Hand>
     {
@@ -60,29 +78,15 @@ public class Day7 : Day<List<Day7.Hand>>
     // these have access to Input, which has been configured by RunPart*(true/false)
     protected override long Part1()
     {
-        return GetWinnings();
+        return Input.GetWinnings();
     }
 
     protected override long Part2()
     {
-        return GetWinnings();
+        return Input.GetWinnings();
     }
 
-    private long GetWinnings()
-    {
-        Input.ForEach(h => h.Evaluate());
-        Input.Sort();
-
-        var winnings = 0;
-        for (var i=0; i<Input.Count; i++)
-        {
-            winnings += Input[i].Bid * (i+1);
-        }
-
-        return winnings;
-    }
-
-    protected override List<Hand> Parse(string input)
+    protected override HandGroup Parse(string input)
     {
         var lines = input.Split('\n').Where(p => p != "").ToArray();
 
@@ -108,6 +112,6 @@ public class Day7 : Day<List<Day7.Hand>>
             });
         }
 
-        return hands;
+        return new HandGroup() { Hands = hands };
     }
 }

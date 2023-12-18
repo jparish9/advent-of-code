@@ -10,12 +10,26 @@ public class Day11 : Day<Day11.Map>
         public long YSize { get; set; }
         public required List<Galaxy> Galaxies { get; set; }
 
-        public Map MakeCopy()
+        public long SumPairwiseShortestPaths(int expansionFactor)
         {
-            return new Map() { XSize = XSize, YSize = YSize, Galaxies = Galaxies.Select(p => new Galaxy() { X = p.X, Y = p.Y }).ToList() };
-        }
+            // make a copy as we will be modifying it
+            var map = new Map() { XSize = XSize, YSize = YSize, Galaxies = Galaxies.Select(p => new Galaxy() { X = p.X, Y = p.Y }).ToList() };
+            map.Expand(expansionFactor);
 
-        public void Expand(int expansionFactor)
+            var totalDist = 0L;
+            for (var i=0; i<map.Galaxies.Count; i++)
+            {
+                for (var j=i+1; j<map.Galaxies.Count; j++)
+                {
+                    // Manhattan distance, as there are no obstacles and we can only take cardinal-direction steps
+                    totalDist += Math.Abs(map.Galaxies[i].X - map.Galaxies[j].X) + Math.Abs(map.Galaxies[i].Y - map.Galaxies[j].Y);
+                }
+            }
+
+            return totalDist;
+        }
+        
+        private void Expand(int expansionFactor)
         {
             // if no galaxies found in a given row or column, add expansionFactor empty rows or columns as the next one(s), and skip the expanded rows/colums
             for (var x=0; x<XSize; x++)
@@ -38,21 +52,6 @@ public class Day11 : Day<Day11.Map>
                 }
             }
         }
-
-        public long SumPairwiseShortestPaths()
-        {
-            var totalDist = 0L;
-            for (var i=0; i<Galaxies.Count; i++)
-            {
-                for (var j=i+1; j<Galaxies.Count; j++)
-                {
-                    // Manhattan distance, as there are no obstacles and we can only take cardinal-direction steps
-                    totalDist += Math.Abs(Galaxies[i].X - Galaxies[j].X) + Math.Abs(Galaxies[i].Y - Galaxies[j].Y);
-                }
-            }
-
-            return totalDist;
-        }
     }
 
     public class Galaxy
@@ -63,19 +62,12 @@ public class Day11 : Day<Day11.Map>
 
     protected override long Part1()
     {
-        // make a copy so we can modify it while still having cached Input between parts
-        var map = Input.MakeCopy();
-        map.Expand(1);
-
-        return map.SumPairwiseShortestPaths();
+        return Input.SumPairwiseShortestPaths(1);
     }
 
     protected override long Part2()
     {
-        var map = Input.MakeCopy();
-        map.Expand(999999);
-
-        return map.SumPairwiseShortestPaths();
+        return Input.SumPairwiseShortestPaths(999999);
     }
 
     protected override Map Parse(string input)
