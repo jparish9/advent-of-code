@@ -90,10 +90,23 @@ public class Day19 : Day<Day19.PartClassifier>
 
     protected override long Part2()
     {
+        // my second implementation after looking over the solution thread.
+        // instead of an overly-complicated negative approach (finding all of the rejected ranges with bottom-up tree traversal, having to intersect them, and subtracting them from the whole space of possible part ratings),
+        // this is a positive approach summing the volumes with a simple top-down tree traversal of a binary k-d tree (k=4, d=4000).
+        // I did realize the rules were best represented by a tree and built a tree in my own first implementation,
+        // but didn't realize how easy it was to aggregate what we need in this way, or that it is called a k-d(imensional) tree.
+        // what a handy structure.
+        // it is worth noting that the negative approach also works with this simple top-down traversal, by subtracting the sum of the rejected volumes from the total 4000^4 space,
+        // but it is an unnecessary extra step.
+        var keys = new char[] {'x','m','a','s'};
+        var hypercube = keys.ToDictionary(p => p, p => (1, 4000));
+        return SumAcceptedNodes(Input.Classifier, hypercube);
+
+        /*
+
+        // my first implementation (all mine, took most of the day):
         // find the (disjoint) sets of part ratings that are rejected by each path that results in a rejection.
         // then substract those from the whole space of possible part ratings (4000^4).
-
-        var keys = new char[] {'x','m','a','s'};
 
         var rejectedLeafNodes = new List<WorkflowTreeNode>();
         FindRejectedLeafNodes(Input.Classifier, rejectedLeafNodes);
@@ -171,15 +184,48 @@ public class Day19 : Day<Day19.PartClassifier>
 
         foreach (var rej in finalRejected)
         {
-            var remove = 1L;
-            for (var k=0; k<keys.Length; k++)
-            {
-                remove *= rej[keys[k]].Item2 - rej[keys[k]].Item1 + 1;
-            }
-            valid -= remove;
+            valid -= rej.Aggregate(1L, (a, b) => a * (b.Value.Item2 - b.Value.Item1 + 1));
         }
 
         return valid;
+        */
+    }
+
+    // binary k-d tree traversal (sum 4-dimensional volume at accepted leaf nodes)
+    private long SumAcceptedNodes(WorkflowTreeNode node, Dictionary<char, (int, int)> hypercube)
+    {
+        if (node == null) return 0;
+
+        // non-conditional node pointing to indicated workflow, next node is the first rule of that workflow
+        if (node.Node is DefaultWorkflowRule def)
+        {
+            if (node.Node.Accept == true) return hypercube.Values.Aggregate(1L, (a, b) => a * (b.Item2 - b.Item1 + 1));
+            return SumAcceptedNodes(node.IfTrue!, hypercube);
+        }
+
+        // conditional node
+        var cond = (ConditionalWorkflowRule)node.Node;
+        var partRatingType = cond.PartRatingType;
+        var inequality = cond.Inequality;
+        var rating = cond.Rating;
+
+        var ifTrueHypercube = new Dictionary<char, (int, int)>(hypercube);
+        var ifFalseHypercube = new Dictionary<char, (int, int)>(hypercube);
+
+        if (inequality == '<')
+        {
+            ifTrueHypercube[partRatingType] = (hypercube[partRatingType].Item1, rating-1);
+            ifFalseHypercube[partRatingType] = (rating, hypercube[partRatingType].Item2);
+        }
+        else
+        {
+            ifTrueHypercube[partRatingType] = (rating+1, hypercube[partRatingType].Item2);
+            ifFalseHypercube[partRatingType] = (hypercube[partRatingType].Item1, rating);
+        }
+
+        //System.Console.WriteLine($"{partRatingType} {inequality} {rating} {ifTrueHypercube[partRatingType].Item1} {ifTrueHypercube[partRatingType].Item2} {ifFalseHypercube[partRatingType].Item1} {ifFalseHypercube[partRatingType].Item2}");
+
+        return SumAcceptedNodes(node.IfTrue!, ifTrueHypercube) + SumAcceptedNodes(node.IfFalse!, ifFalseHypercube);
     }
 
     private void FindRejectedLeafNodes(WorkflowTreeNode node, List<WorkflowTreeNode> rejectedLeafNodes)
