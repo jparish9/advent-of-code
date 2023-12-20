@@ -1,3 +1,5 @@
+using AOC.Utils;
+
 namespace AOC.AOC2023;
 
 public class Day8 : Day<Day8.RouteDef>
@@ -68,27 +70,9 @@ public class Day8 : Day<Day8.RouteDef>
                 if (i == path.Length) i = 0;
             }
             pathLengths.Add(pathLength);
-
-            /*
-            System.Console.Write("starting " + node.Name + " enter loop at " + pathLength);
-
-            // verify cycle
-            pathLength = 0;
-            do
-            {
-                var pathChar = path[i];
-                currentNode = Input.Nodes[pathChar == 'L' ? currentNode.Left : currentNode.Right];
-                i++;
-                pathLength++;
-                if (i == path.Length) i = 0;
-            }
-            while (!currentNode.EndsInZ);
-
-            System.Console.WriteLine(" cycle length " + pathLength);
-            */
         }
 
-        return pathLengths.Aggregate(LeastCommonMultiple);
+        return pathLengths.Aggregate(Maths.LeastCommonMultiple);
         
         /*
         BRUTE-FORCE (150M in 7 minutes, actual solution is in the trillions, good luck)
@@ -123,21 +107,6 @@ public class Day8 : Day<Day8.RouteDef>
         return pathLength;*/
     }
 
-    private long LeastCommonMultiple(long a, long b)
-    {
-        return Math.Abs(a * b) / GreatestCommonDivisor(a, b);
-    }
-
-    private static long GreatestCommonDivisor(long a, long b)
-    {
-        while (b != 0)
-        {
-            var temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
 
     protected override RouteDef Parse(string input)
     {
