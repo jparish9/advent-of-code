@@ -30,7 +30,7 @@ public class Day5 : Day<List<Day5.Line>>
     {
         if (_result.ContainsKey(InputHashCode)) return _result[InputHashCode];
 
-        var covered = new Dictionary<(int, int, bool), int>();
+        var covered = new Dictionary<(int X, int Y, bool isCovered), int>();
 
         foreach (var line in Input)
         {
@@ -51,7 +51,7 @@ public class Day5 : Day<List<Day5.Line>>
             CountCovered(covered, x, y, isDiagonal);
         }
 
-        _result.Add(InputHashCode, new int[] { covered.Count(p => !p.Key.Item3 && p.Value > 1), covered.Count(p => p.Key.Item3 && p.Value > 1) });
+        _result.Add(InputHashCode, new int[] { covered.Count(p => !p.Key.isCovered && p.Value > 1), covered.Count(p => p.Key.isCovered && p.Value > 1) });
         return _result[InputHashCode];
     }
 
