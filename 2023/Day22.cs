@@ -1,3 +1,5 @@
+using System.Security.AccessControl;
+
 namespace AOC.AOC2023;
 
 public class Day22 : Day<Day22.BrickSnapshot>
@@ -13,7 +15,7 @@ public class Day22 : Day<Day22.BrickSnapshot>
     public class BrickSnapshot
     {
         public required List<Brick> Bricks { get; set; }
-        public Dictionary<int, HashSet<int>>? Supports { get; set; }         // to be calculated upon Settle()ing
+        public Dictionary<int, HashSet<int>>? SupportedBy { get; set; }         // to be calculated upon Settle()ing
         private bool _isSettled = false;
 
         // print profile maps as shown in the problem description
@@ -118,20 +120,25 @@ public class Day22 : Day<Day22.BrickSnapshot>
 
         private void CalculateSupports()
         {
-            Supports = new Dictionary<int, HashSet<int>>();
+            SupportedBy = new Dictionary<int, HashSet<int>>();
 
             for (var i=0; i<Bricks.Count; i++)
             {
-                Supports[i] = new HashSet<int>();
+                SupportedBy[i] = new HashSet<int>();
+                if (Bricks[i].From.Z == 1) {
+                    SupportedBy[i].Add(-1);
+                    continue;
+                }
+
                 for (var j=0; j<Bricks.Count; j++)
                 {
                     if (i == j) continue;
 
-                    if (Bricks[j].From.Z == Bricks[i].To.Z + 1 &&
+                    if (Bricks[j].To.Z == Bricks[i].From.Z - 1 &&
                         ((Bricks[j].From.X <= Bricks[i].From.X && Bricks[j].To.X >= Bricks[i].From.X) || (Bricks[j].From.X >= Bricks[i].From.X && Bricks[j].From.X <= Bricks[i].To.X))
                         && ((Bricks[j].From.Y <= Bricks[i].From.Y && Bricks[j].To.Y >= Bricks[i].From.Y) || (Bricks[j].From.Y >= Bricks[i].From.Y && Bricks[j].From.Y <= Bricks[i].To.Y)))
                     {
-                        Supports[i].Add(j);         // brick i supports brick j
+                        SupportedBy[i].Add(j);         // brick i is supported by brick j
                     }
                 }
             }
@@ -142,28 +149,26 @@ public class Day22 : Day<Day22.BrickSnapshot>
     {
         Input.Settle();         // sets Input.Supports
         var canBeRemoved = 0;
-        foreach (var kv in Input.Supports!)
+
+        foreach (var v in Input.SupportedBy!.Keys)
         {
-            // a brick can be removed if it is not the only support of any other brick.
-            if (!kv.Value.Any(v => Input.Supports.Where(p => p.Key != kv.Key).All(p => !p.Value.Contains(v))))
+            if (Input.SupportedBy.Where(p => p.Key != v).All(p => p.Value.Any(q => q != v)))
                 canBeRemoved++;
         }
 
         return canBeRemoved;
+
     }
 
     protected override long Part2()
     {
-        // this runs in about 45 seconds despite everything we are doing lookups on being a dictionary or a hashset,
-        // and not doing the work of Settling or calculating the supports again.
-        // there may be further ways to optimize but this is definitely good enough.
-
         Input.Settle();         // sets Input.Supports
         var ct = 0;
-        foreach (var kv in Input.Supports!)
+
+        foreach (var kv in Input.SupportedBy!)
         {
             // count the number of bricks that would fall if this brick was removed, and follow the chain of support upward.
-            var wouldFall = kv.Value.Where(v => Input.Supports.Where(p => p.Key != kv.Key).All(p => !p.Value.Contains(v))).ToList();
+            var wouldFall = Input.SupportedBy.Where(p => p.Key != kv.Key && !p.Value.Any(q => q != kv.Key)).Select(p => p.Key).ToList();
             var totalWouldFall = new HashSet<int>(wouldFall);
             WalkSupportChain(totalWouldFall, wouldFall);
 
@@ -177,9 +182,11 @@ public class Day22 : Day<Day22.BrickSnapshot>
     {
         foreach (var brick in wouldFall)
         {
-            var newFall = Input.Supports![brick].Where(v => Input.Supports.Where(p => !totalWouldFall.Contains(p.Key)).All(p => !p.Value.Contains(v))).ToList();
-            newFall.ForEach(p => totalWouldFall.Add(p));
+            // count the number of bricks that would fall, given that those in totalWouldFall have already fallen (are no longer supports), and continue the chain of support upward.
+            var newFall = Input.SupportedBy!.Where(p => p.Key != brick && !totalWouldFall.Contains(p.Key)
+                && !p.Value.Any(q => q != brick && !totalWouldFall.Contains(q))).Select(p => p.Key).ToList();
 
+            newFall.ForEach(p => totalWouldFall.Add(p));
             WalkSupportChain(totalWouldFall, newFall);
         }
     }
