@@ -1,3 +1,4 @@
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AOC.AOC2023;
@@ -28,6 +29,39 @@ public class Day21 : Day<Day21.Garden>
             CalculateSteps(StepMap, new List<(int, int)> { start });
         }
 
+        // return a new Garden with the given map repeated factor times in each direction from the center
+        public static Garden Expand(char[][] map, int factor)
+        {
+            var f = 1+factor*2;
+            char[][] expanded = new char[map.Length * f][];
+
+            for (var i=0; i<expanded.Length; i++)
+            {
+                expanded[i] = new char[map[0].Length * f];
+            }
+
+            for (var i=0; i<f; i++)
+            {
+                for (var j=0; j<f; j++)
+                {
+                    for (var y=0; y<map.Length; y++)
+                    {
+                        for (var x=0; x<map[y].Length; x++)
+                        {
+                            expanded[i*map.Length+y][j*map[y].Length+x] = map[y][x] == 'S' ? (i==factor && j==factor ? 'S' : '.') : map[y][x];
+                        }
+                    }
+                }
+            }
+
+            return new Garden(expanded);
+        }
+
+        public long EvalSteps(int steps)
+        {
+            return StepMap.Sum(p => p.Count(q => q != null && q <= steps && q%2 == steps%2));
+        }
+
         private int?[][] InitializeStepMap()
         {
             var stepMap = new int?[YSize][];
@@ -50,7 +84,7 @@ public class Day21 : Day<Day21.Garden>
                 var nextSteps = new List<(int, int)>();
                 foreach (var step in positions)
                 {
-                    var nextStepsForThis = FindSteps(step, true);
+                    var nextStepsForThis = FindSteps(step);
                     foreach (var nextStep in nextStepsForThis)
                     {
                         if (stepMap[nextStep.Item1][nextStep.Item2] > stepMap[step.Item1][step.Item2] + 1)
@@ -91,7 +125,7 @@ public class Day21 : Day<Day21.Garden>
             throw new Exception("No start found");
         }
 
-        public List<(int, int)> FindSteps((int, int) pos, bool bounded)
+        public List<(int, int)> FindSteps((int, int) pos)
         {
             var steps = new List<(int, int)>();
 
@@ -119,48 +153,48 @@ public class Day21 : Day<Day21.Garden>
     {
         var steps = Input.Map.Length > 11 ? 64 : 6;         // real or sample input
 
-        return Input.StepMap.Sum(p => p.Count(q => q != null && q <= steps && q%2 == steps%2));
+        return Input.EvalSteps(steps);
     }
 
     protected override long Part2()
     {
         if (Input.Map.Length <= 11) return 0;           // ignore sample for part 2.
 
-        // all credit to https://github.com/villuna/aoc23/wiki/A-Geometric-solution-to-advent-of-code-2023,-day-21.
+        // because of the properties of our actual input (not the sample), we get to the edge of the home grid in (map size/2) steps.  (there is a clear path from our S in each direction)
+        // as we are expanding in two dimensions, we can try fitting a quadratic to the first 3 numbers of steps that we expect to be cyclic,
+        // that is, (map size/2), (map size/2 + map size), and (map size/2 + 2*map size).
+        // we can quickly calculate these first 3 points, then evaluate at the desired step count,
+        // which is 26501365 (not an arbitrary number, 26501365 % 131 = 65, so we get to the edge of 26501365 / 131 (integer division) complete grids in each direction plus our starting grid.
 
-        // I would not have come to this solution on my own.  I suspected there was a stabilization that happened (obviously this couldn't be brute-forced),
-        // but I was looking in the wrong place, trying to extend the grid in each direction until the step counts to keep traversing in that direction stabilized.
-        // I saw that there was the same parity in each square, but because the real input is different I wouldn't have been able to see that the expansion results in a diamond shape,
-        // or that the parity swaps between adjacent squares.
+        var s = Input.Map.Length;
+        var x0 = s / 2;
+        var x = new List<long> { 0, 1, 2 };
+        var y = new List<long> {
+            Input.EvalSteps(x0),
+            Garden.Expand(Input.Map, 1).EvalSteps(x0 + s),
+            Garden.Expand(Input.Map, 2).EvalSteps(x0 + 2*s)
+        };
 
-        // summarizing:
-        // the actual input has properties the sample does not, which is annoying.
-        // namely, in the actual input there is an empty row and column going through our S.
-        // the input is 131x131, which means the requested number of steps is specially chosen.
-        // 26501365/131 = 202300, and 26501365 % 131 = 65.
-        // thus if we go in the same direction (any of the 4 directions), we traverse exactly 202300 grid extensions (all the way to the edge of that final grid),
-        // beginning with 65 steps to get to the edge of our home grid.
-        // because of this symmetry, the maximum extent draws out a diamond shape.
-        // in part 1, I noticed that each tile has parity, that is, any given tile can only be reached in an odd or an even number of steps (not both).
-        // we will also need the minimum step counts from the search done in part 1, both for parity and to exclude "corners" at the border (see below).
-        // as 131 is odd, this means that each square has the opposite parity of its adajacent squares.
-        // if we start with odd parity at the center, it means that for our diamond size of 202300 (even) in any direction, the border squares will also have odd parity.
-        // the total number of squares at each expansion of the diamond (if we increase n by 2 in steps) is (n+1)^2 odd and n^2 even.
-        // that leaves the corners at the edge of our diamond.
-        // we need to subtract out outer corners of odd squares and add an extra even corner from even squares to complete our diamond
-        // (given that odd squares are the partial squares on the border of our diamond).
+        // fit a quadratic, with x=0,1,2 this is simplified from the general formula
 
-        // note that none of this works if our requested steps results in (steps - MapSize/2)/MapSize not being an integer (or the map not being square),
-        // and it would have to be adjusted for parity if n came out odd.
-        var evenCorners = (long)Input.StepMap.Sum(p => p.Count(q => q != null && q % 2 == 0 && q > 65));
-        var oddCorners = (long)Input.StepMap.Sum(p => p.Count(q => q != null && q % 2 == 1 && q > 65));
+        // y[0] = a*0^2 + b*0 + c  ==> c = y[0]
+        // y[1] = a*1^2 + b*1 + c  ==> a + b = y[1] - y[0]
+        // y[2] = a*2^2 + b*2 + c  ==> 4a + 2b = y[2] - y[0]
+        // 2a = y[2] - 2(y[1] - y[0]) ==> a = (y[2] - 2*y[1] + y[0]) / 2
+        // b = y[1] - y[0] - a
 
-        var evenFull = (long)Input.StepMap.Sum(p => p.Count(q => q != null && q % 2 == 0));
-        var oddFull = (long)Input.StepMap.Sum(p => p.Count(q => q != null && q % 2 == 1));
+        var c = y[0];
+        var a = (y[2] - 2*y[1] + y[0]) / 2;
+        var b = y[1] - y[0] - a;
 
-        var n = (26501365L - (Input.Map.Length/2))/Input.Map.Length;
+        // check x=3
+        var y3 = Garden.Expand(Input.Map, 3).EvalSteps(x0 + 3*s);
+        if (y3 != a*3*3 + b*3 + c)
+            throw new Exception("Quadratic fit failed!");
 
-        return (n+1)*(n+1)*oddFull + n*n*evenFull - (n+1)*oddCorners + n*evenCorners;
+        var n = 26501365 / Input.Map.Length;
+
+        return a*n*n + b*n + c;
     }
 
     protected override Garden Parse(string input)
