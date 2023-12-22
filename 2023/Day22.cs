@@ -1,5 +1,3 @@
-using System.Security.AccessControl;
-
 namespace AOC.AOC2023;
 
 public class Day22 : Day<Day22.BrickSnapshot>
@@ -101,9 +99,7 @@ public class Day22 : Day<Day22.BrickSnapshot>
                     if (brick.From.Z == 1) continue;            // this brick is on the ground already
 
                     // check for no bricks below this one, if none found, move this brick down one Z level, flag that there was something to do, and continue.
-                    if (!Bricks.Any(p => p.To.Z == brick.From.Z - 1 &&
-                        ((p.From.X <= brick.From.X && p.To.X >= brick.From.X) || (p.From.X >= brick.From.X && p.From.X <= brick.To.X))
-                        && ((p.From.Y <= brick.From.Y && p.To.Y >= brick.From.Y) || (p.From.Y >= brick.From.Y && p.From.Y <= brick.To.Y))))
+                    if (!Bricks.Any(p => IsSupportedBy(brick, p)))
                     {
                         brick.From = (brick.From.X, brick.From.Y, brick.From.Z - 1);
                         brick.To = (brick.To.X, brick.To.Y, brick.To.Z - 1);
@@ -125,8 +121,9 @@ public class Day22 : Day<Day22.BrickSnapshot>
             for (var i=0; i<Bricks.Count; i++)
             {
                 SupportedBy[i] = new HashSet<int>();
-                if (Bricks[i].From.Z == 1) {
-                    SupportedBy[i].Add(-1);
+                if (Bricks[i].From.Z == 1)
+                {
+                    SupportedBy[i].Add(-1);     // supported by the ground; add as non-removable "brick" index -1
                     continue;
                 }
 
@@ -134,14 +131,17 @@ public class Day22 : Day<Day22.BrickSnapshot>
                 {
                     if (i == j) continue;
 
-                    if (Bricks[j].To.Z == Bricks[i].From.Z - 1 &&
-                        ((Bricks[j].From.X <= Bricks[i].From.X && Bricks[j].To.X >= Bricks[i].From.X) || (Bricks[j].From.X >= Bricks[i].From.X && Bricks[j].From.X <= Bricks[i].To.X))
-                        && ((Bricks[j].From.Y <= Bricks[i].From.Y && Bricks[j].To.Y >= Bricks[i].From.Y) || (Bricks[j].From.Y >= Bricks[i].From.Y && Bricks[j].From.Y <= Bricks[i].To.Y)))
-                    {
-                        SupportedBy[i].Add(j);         // brick i is supported by brick j
-                    }
+                    if (IsSupportedBy(Bricks[i], Bricks[j])) SupportedBy[i].Add(j);         // brick i is supported by brick j
                 }
             }
+        }
+
+        // returns true if Brick i is supported by Brick j
+        private static bool IsSupportedBy(Brick i, Brick j)
+        {
+            return j.To.Z == i.From.Z - 1 &&
+                ((j.From.X <= i.From.X && j.To.X >= i.From.X) || (j.From.X >= i.From.X && j.From.X <= i.To.X))
+                && ((j.From.Y <= i.From.Y && j.To.Y >= i.From.Y) || (j.From.Y >= i.From.Y && j.From.Y <= i.To.Y));
         }
     }
 
@@ -150,9 +150,9 @@ public class Day22 : Day<Day22.BrickSnapshot>
         Input.Settle();         // sets Input.Supports
         var canBeRemoved = 0;
 
-        foreach (var v in Input.SupportedBy!.Keys)
+        foreach (var k in Input.SupportedBy!.Keys)
         {
-            if (Input.SupportedBy.Where(p => p.Key != v).All(p => p.Value.Any(q => q != v)))
+            if (Input.SupportedBy.Where(p => p.Key != k).All(p => p.Value.Any(q => q != k)))
                 canBeRemoved++;
         }
 
@@ -165,10 +165,10 @@ public class Day22 : Day<Day22.BrickSnapshot>
         Input.Settle();         // sets Input.Supports
         var ct = 0;
 
-        foreach (var kv in Input.SupportedBy!)
+        foreach (var k in Input.SupportedBy!.Keys)
         {
             // count the number of bricks that would fall if this brick was removed, and follow the chain of support upward.
-            var wouldFall = Input.SupportedBy.Where(p => p.Key != kv.Key && !p.Value.Any(q => q != kv.Key)).Select(p => p.Key).ToList();
+            var wouldFall = Input.SupportedBy.Where(p => p.Key != k && !p.Value.Any(q => q != k)).Select(p => p.Key).ToList();
             var totalWouldFall = new HashSet<int>(wouldFall);
             WalkSupportChain(totalWouldFall, wouldFall);
 
