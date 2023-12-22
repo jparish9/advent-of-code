@@ -22,19 +22,19 @@ public class Day1 : Day<List<string>>
         var sum = 0;
         foreach (var line in Input)
         {
-            var first = matches.Select(p => new Tuple<string, int>(p, line.IndexOf(p))).Where(p => p.Item2 != -1).OrderBy(p => p.Item2).First();
-            var last = matches.Select(p => new Tuple<string, int>(p, line.LastIndexOf(p))).Where(p => p.Item2 != -1).OrderByDescending(p => p.Item2).First();
+            var first = matches.Select(p => (match: p, pos: line.IndexOf(p))).Where(p => p.pos != -1).OrderBy(p => p.pos).Select(p => p.match).First();
+            var last = matches.Select(p => (match: p, pos: line.LastIndexOf(p))).Where(p => p.pos != -1).OrderByDescending(p => p.pos).Select(p => p.match).First();
 
-            if (int.TryParse(first.Item1, out var firstInt)) {
+            if (int.TryParse(first, out var firstInt)) {
                 sum += 10*firstInt;
             } else {
-                sum += 10*(Array.IndexOf(matches, first.Item1)-8);
+                sum += 10*(Array.IndexOf(matches, first)-8);
             }
 
-            if (int.TryParse(last.Item1, out var lastInt)) {
+            if (int.TryParse(last, out var lastInt)) {
                 sum += lastInt;
             } else {
-                sum += Array.IndexOf(matches, last.Item1)-8;
+                sum += Array.IndexOf(matches, last)-8;
             }
         }
 

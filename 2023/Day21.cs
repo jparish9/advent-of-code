@@ -25,7 +25,7 @@ public class Day21 : Day<Day21.Garden>
             StepMap = InitializeStepMap();
 
             var start = FindStart();
-            StepMap[start.Item1][start.Item2] = 0;
+            StepMap[start.Y][start.X] = 0;
             CalculateSteps(StepMap, new List<(int, int)> { start });
         }
 
@@ -77,7 +77,7 @@ public class Day21 : Day<Day21.Garden>
             return stepMap;
         }
 
-        private void CalculateSteps(int?[][] stepMap, List<(int, int)> positions)
+        private void CalculateSteps(int?[][] stepMap, List<(int Y, int X)> positions)
         {
             while (positions.Count > 0)
             {
@@ -87,9 +87,9 @@ public class Day21 : Day<Day21.Garden>
                     var nextStepsForThis = FindSteps(step);
                     foreach (var nextStep in nextStepsForThis)
                     {
-                        if (stepMap[nextStep.Item1][nextStep.Item2] > stepMap[step.Item1][step.Item2] + 1)
+                        if (stepMap[nextStep.Y][nextStep.X] > stepMap[step.Y][step.X] + 1)
                         {
-                            stepMap[nextStep.Item1][nextStep.Item2] = stepMap[step.Item1][step.Item2] + 1;
+                            stepMap[nextStep.Y][nextStep.X] = stepMap[step.Y][step.X] + 1;
                             nextSteps.Add(nextStep);
                         }
                     }
@@ -109,7 +109,7 @@ public class Day21 : Day<Day21.Garden>
             }
         }
 
-        public (int, int) FindStart()
+        public (int Y, int X) FindStart()
         {
             for (var y=0; y<Map.Length; y++)
             {
@@ -125,25 +125,25 @@ public class Day21 : Day<Day21.Garden>
             throw new Exception("No start found");
         }
 
-        public List<(int, int)> FindSteps((int, int) pos)
+        public List<(int Y, int X)> FindSteps((int Y, int X) pos)
         {
             var steps = new List<(int, int)>();
 
             // up
-            if (pos.Item1 > 0 && Map[pos.Item1-1][pos.Item2] != '#')
-                steps.Add((pos.Item1-1, pos.Item2));
+            if (pos.Y > 0 && Map[pos.Y-1][pos.X] != '#')
+                steps.Add((pos.Y-1, pos.X));
 
             // down
-            if (pos.Item1 < Map.Length-1 && Map[pos.Item1+1][pos.Item2] != '#')
-                steps.Add((pos.Item1+1, pos.Item2));
+            if (pos.Y < Map.Length-1 && Map[pos.Y+1][pos.X] != '#')
+                steps.Add((pos.Y+1, pos.X));
 
             // left
-            if (pos.Item2 > 0 && Map[pos.Item1][pos.Item2-1] != '#')
-                steps.Add((pos.Item1, pos.Item2-1));
+            if (pos.X > 0 && Map[pos.Y][pos.X-1] != '#')
+                steps.Add((pos.Y, pos.X-1));
 
             // right
-            if (pos.Item2 < Map[pos.Item1].Length-1 && Map[pos.Item1][pos.Item2+1] != '#')
-                steps.Add((pos.Item1, pos.Item2+1));
+            if (pos.X < Map[pos.Y].Length-1 && Map[pos.Y][pos.X+1] != '#')
+                steps.Add((pos.Y, pos.X+1));
 
             return steps;
         }

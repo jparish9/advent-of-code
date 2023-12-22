@@ -14,7 +14,7 @@ public class Day12 : Day<Day12.Map>
         private (int, int)? _start;
 
         // "Start" is E because we are searching backwards
-        public (int, int) Start()
+        public (int X, int Y) Start()
         {
             if (_start != null) return _start.Value;
 
@@ -76,18 +76,18 @@ public class Day12 : Day<Day12.Map>
     private List<AStarGridSearch.Node> GetNeighbors(AStarGridSearch.Node currentNode, char endLevel)
     {
         var adjacentNodes = new List<AStarGridSearch.Node>();
-        var dirs = new List<(int, int)>() { (-1, 0), (1, 0), (0, -1), (0, 1) };
+        var dirs = new [] { (-1, 0), (1, 0), (0, -1), (0, 1) };
 
-        var x = currentNode.Position.Item1;
-        var y = currentNode.Position.Item2;
+        var x = currentNode.Position.X;
+        var y = currentNode.Position.Y;
 
-        foreach (var dir in dirs)
+        foreach (var (X, Y) in dirs)
         {
-            var newX = x + dir.Item1;
-            var newY = y + dir.Item2;
+            var newX = x + X;
+            var newY = y + Y;
 
             if (newX < 0 || newY < 0 || newY >= Input.Grid.Length || newX >= Input.Grid[0].Length) continue;           // out of bounds
-            if (newY == Input.Start().Item2 && newX == Input.Start().Item1) continue;                        // don't revisit start
+            if (newY == Input.Start().Y && newX == Input.Start().X) continue;                        // don't revisit start
 
             // if searching backwards, we can go down at most 1, but up any amount
             var currentLevel = Input.Grid[y][x] == 'E' ? 'z'+1 : Input.Grid[y][x];

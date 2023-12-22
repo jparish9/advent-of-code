@@ -1,3 +1,4 @@
+using System.Configuration.Assemblies;
 using System.Data;
 
 namespace AOC.AOC2023;
@@ -99,26 +100,24 @@ public class Day19 : Day<Day19.PartClassifier>
         // it is worth noting that the negative approach also works with this simple top-down traversal, by subtracting the sum of the rejected volumes from the total 4000^4 space,
         // but it is an unnecessary extra step.
         var keys = new char[] {'x','m','a','s'};
-        var hypercube = keys.ToDictionary(p => p, p => (1, 4000));
+        var hypercube = keys.ToDictionary(p => p, p => (low: 1, high: 4000));
         return SumAcceptedNodes(Input.Classifier, hypercube);
-
-        /*
 
         // my first implementation (all mine, took most of the day):
         // find the (disjoint) sets of part ratings that are rejected by each path that results in a rejection.
         // then substract those from the whole space of possible part ratings (4000^4).
 
-        var rejectedLeafNodes = new List<WorkflowTreeNode>();
+        /*var rejectedLeafNodes = new List<WorkflowTreeNode>();
         FindRejectedLeafNodes(Input.Classifier, rejectedLeafNodes);
 
         // each path results in a single range of rejected part ratings for each part rating type (x,m,a,s).  if there are multiple conditions on a part rating type, the range gets intersected.
-        var rejected = new List<Dictionary<char, (int, int)>>();
+        var rejected = new List<Dictionary<char, (int low, int high)>>();
 
         // walk each leaf node back to the root, keeping track of the intersected rejected range for each part rating type
         foreach (var node in rejectedLeafNodes)
         {
             // start by rejecting everything, as we run into conditional rules we'll intersect the current rejected ranges with the range rejected by that rule.
-            var rejectedRanges = keys.ToDictionary(p => p, p => (1, 4000));
+            var rejectedRanges = keys.ToDictionary(p => p, p => (low: 1, high: 4000));
             
             var currentNode = node;
             WorkflowTreeNode? childNode = null;         // keep track of which path we took (ifTrue or ifFalse) so we know how to construct the rejected range
@@ -130,11 +129,11 @@ public class Day19 : Day<Day19.PartClassifier>
 
                     // range rejected by following this rule (careful of the inequality and which path we took!)
                     var range = currentNode.IfFalse == childNode
-                            ? (cond.Inequality == '<' ? (cond.Rating, 4000) : (1, cond.Rating))
-                            : (cond.Inequality == '<' ? (1, cond.Rating-1) : (cond.Rating+1, 4000));
+                            ? (cond.Inequality == '<' ? (low: cond.Rating, high: 4000) : (low: 1, high: cond.Rating))
+                            : (cond.Inequality == '<' ? (low: 1, high: cond.Rating-1) : (low: cond.Rating+1, high: 4000));
 
                     // intersect
-                    rejectedRanges[partRatingType] = (Math.Max(rejectedRanges[partRatingType].Item1, range.Item1), Math.Min(rejectedRanges[partRatingType].Item2, range.Item2));
+                    rejectedRanges[partRatingType] = (Math.Max(rejectedRanges[partRatingType].low, range.low), Math.Min(rejectedRanges[partRatingType].high, range.high));
                 }
 
                 childNode = currentNode;
@@ -149,7 +148,7 @@ public class Day19 : Day<Day19.PartClassifier>
         // handle both supersets (replace the superset with the subset) and subsets (ignore the subset).
         // if neither a superset nor a subset, add it to the final list and continue.
 
-        var finalRejected = new List<Dictionary<char, (int, int)>> { rejected[0] };      // start with the first set of rejected ranges
+        var finalRejected = new List<Dictionary<char, (int low, int high)>> { rejected[0] };      // start with the first set of rejected ranges
 
         for (var i=1; i<rejected.Count; i++)
         {
@@ -160,11 +159,11 @@ public class Day19 : Day<Day19.PartClassifier>
                 var isSubset = true;
                 foreach (var key in keys)
                 {
-                    var thisRange = rejected[i].ContainsKey(key) ? rejected[i][key] : (1, 4000);
-                    var otherRange = finalRejected[j].ContainsKey(key) ? finalRejected[j][key] : (1, 4000);
+                    var thisRange = rejected[i].ContainsKey(key) ? rejected[i][key] : (low: 1, high: 4000);
+                    var otherRange = finalRejected[j].ContainsKey(key) ? finalRejected[j][key] : (low: 1, high: 4000);
                     
-                    if (thisRange.Item1 > otherRange.Item1 || thisRange.Item2 < otherRange.Item2) isSuperset = false;
-                    if (thisRange.Item1 < otherRange.Item1 || thisRange.Item2 > otherRange.Item2) isSubset = false;
+                    if (thisRange.low > otherRange.low || thisRange.high < otherRange.high) isSuperset = false;
+                    if (thisRange.low < otherRange.low || thisRange.high > otherRange.high) isSubset = false;
                 }
 
                 if (isSuperset)                     // if this range is a superset of the other range, replace the other range with this one in the final list
@@ -184,22 +183,21 @@ public class Day19 : Day<Day19.PartClassifier>
 
         foreach (var rej in finalRejected)
         {
-            valid -= rej.Aggregate(1L, (a, b) => a * (b.Value.Item2 - b.Value.Item1 + 1));
+            valid -= rej.Aggregate(1L, (a, b) => a * (b.Value.high - b.Value.low + 1));
         }
 
-        return valid;
-        */
+        return valid;*/
     }
 
     // binary k-d tree traversal (sum 4-dimensional volume at accepted leaf nodes)
-    private long SumAcceptedNodes(WorkflowTreeNode node, Dictionary<char, (int, int)> hypercube)
+    private long SumAcceptedNodes(WorkflowTreeNode node, Dictionary<char, (int low, int high)> hypercube)
     {
         if (node == null) return 0;
 
         // non-conditional node pointing to indicated workflow, next node is the first rule of that workflow
         if (node.Node is DefaultWorkflowRule def)
         {
-            if (node.Node.Accept == true) return hypercube.Values.Aggregate(1L, (a, b) => a * (b.Item2 - b.Item1 + 1));
+            if (node.Node.Accept == true) return hypercube.Values.Aggregate(1L, (a, b) => a * (b.high - b.low + 1));
             return SumAcceptedNodes(node.IfTrue!, hypercube);
         }
 
@@ -214,16 +212,14 @@ public class Day19 : Day<Day19.PartClassifier>
 
         if (inequality == '<')
         {
-            ifTrueHypercube[partRatingType] = (hypercube[partRatingType].Item1, rating-1);
-            ifFalseHypercube[partRatingType] = (rating, hypercube[partRatingType].Item2);
+            ifTrueHypercube[partRatingType] = (hypercube[partRatingType].low, rating-1);
+            ifFalseHypercube[partRatingType] = (rating, hypercube[partRatingType].high);
         }
         else
         {
-            ifTrueHypercube[partRatingType] = (rating+1, hypercube[partRatingType].Item2);
-            ifFalseHypercube[partRatingType] = (hypercube[partRatingType].Item1, rating);
+            ifTrueHypercube[partRatingType] = (rating+1, hypercube[partRatingType].high);
+            ifFalseHypercube[partRatingType] = (hypercube[partRatingType].low, rating);
         }
-
-        //System.Console.WriteLine($"{partRatingType} {inequality} {rating} {ifTrueHypercube[partRatingType].Item1} {ifTrueHypercube[partRatingType].Item2} {ifFalseHypercube[partRatingType].Item1} {ifFalseHypercube[partRatingType].Item2}");
 
         return SumAcceptedNodes(node.IfTrue!, ifTrueHypercube) + SumAcceptedNodes(node.IfFalse!, ifFalseHypercube);
     }

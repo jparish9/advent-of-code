@@ -38,8 +38,8 @@ public class Day17 : Day<Day17.Map>
     private List<AStarGridSearch.Node> GetNeighbors(AStarGridSearch.Node currentNode, int minDirSteps, int maxDirSteps)
     {
         var adjacentNodes = new List<AStarGridSearch.Node>();
-        var x = currentNode.Position.Item1;
-        var y = currentNode.Position.Item2;
+        var x = currentNode.Position.X;
+        var y = currentNode.Position.Y;
 
         var divisor = maxDirSteps+1;
 
@@ -49,18 +49,18 @@ public class Day17 : Day<Day17.Map>
         // conveniently, node state helps a lot here.
         int? onlyDirAllowed = currentNode.Position == (0,0) || currentNode.State % divisor >= minDirSteps ? null : currentNode.State / divisor;
 
-        var dirs = new List<(int, int)>() { (-1, 0), (1, 0), (0, -1), (0, 1) };
+        var dirs = new List<(int X, int Y)>() { (-1, 0), (1, 0), (0, -1), (0, 1) };
         for (var dirIndex=0; dirIndex<4; dirIndex++)
         {
             if (onlyDirAllowed.HasValue && dirIndex != onlyDirAllowed) continue;
-            var dir = dirs[dirIndex];
+            var (X, Y) = dirs[dirIndex];
 
-            var newX = x + dir.Item1;
-            var newY = y + dir.Item2;
+            var newX = x + X;
+            var newY = y + Y;
 
             if (newX < 0 || newY < 0 || newY >= Input.Grid.Length || newX >= Input.Grid[0].Length) continue;           // out of bounds
             if (newY == 0  && newX == 0) continue;            // don't revisit start
-            if (newX == currentNode.Parent?.Position.Item1 && newY == currentNode.Parent?.Position.Item2) continue;    // don't turn around
+            if (newX == currentNode.Parent?.Position.X && newY == currentNode.Parent?.Position.Y) continue;    // don't turn around
 
             // check max straight-line constraint
             var stepsInThisDir = currentNode.State / divisor == dirIndex ? currentNode.State % divisor : 0;

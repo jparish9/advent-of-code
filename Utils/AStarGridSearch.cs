@@ -7,7 +7,7 @@ public class AStarGridSearch
         public int F { get; set; }                  // estimated cost = actual cost + heuristic cost
         public int G { get; set; }                  // actual cost
         public int H { get; set; }                  // heuristic cost
-        public (int, int) Position { get; set; }    // (x, y)
+        public (int X, int Y) Position { get; set; }    // (x, y)
         public int State { get; set; }              // additional state for this node; can be used by GetNeighbors, and is referenced by EndStateCheck to determine if the end location is valid
         public Node? Parent { get; set; }
 
@@ -40,7 +40,7 @@ public class AStarGridSearch
     )
     {
         var startNode = new Node() { Position = StartLocation() };
-        var endNodes = new HashSet<(int, int)>() {};
+        var endNodes = new HashSet<(int X, int Y)>() {};
         var endLocations = EndLocations();
         foreach (var end in endLocations)
         {
@@ -94,9 +94,9 @@ public class AStarGridSearch
                 var hash = adjacentNode.HashCode;
                 if (closed.Contains(hash)) continue;
 
-                adjacentNode.G = currentNode!.G + Cost(adjacentNode.Position.Item1, adjacentNode.Position.Item2);
+                adjacentNode.G = currentNode!.G + Cost(adjacentNode.Position.X, adjacentNode.Position.Y);
                 // H (heuristic cost) is manhattan distance to end.  if multiple ends, use the closest one.
-                adjacentNode.H = endNodes.Min(p => Math.Abs(adjacentNode.Position.Item1 - p.Item1) + Math.Abs(adjacentNode.Position.Item2 - p.Item2));
+                adjacentNode.H = endNodes.Min(p => Math.Abs(adjacentNode.Position.X - p.X) + Math.Abs(adjacentNode.Position.Y - p.Y));
                 adjacentNode.F = adjacentNode.G + adjacentNode.H;
 
                 if (open.ContainsKey(hash) && open[hash].G <= adjacentNode.G) continue;         // already in open list with lower G score

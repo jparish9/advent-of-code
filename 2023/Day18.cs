@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using AOC.Utils;
 
 namespace AOC.AOC2023;
@@ -10,21 +12,21 @@ public class Day18 : Day<Day18.Digger>
     public class Digger
     {
         public required List<Instruction> Instructions { get; set; }
-        public (long, long) Position { get; set; } = (0, 0);
+        public (long X, long Y) Position { get; set; } = (0, 0);
         public List<(long, long)> Corners { get; set; } = new List<(long, long)>();
 
         public void ApplyInstructions()
         {
             // reset
             Position = (0, 0);
-            Corners = new List<(long, long)> { Position };
+            Corners = new List<(long X, long Y)> { Position };
 
             // save corners
             var newPosition = Position;
             foreach (var instruction in Instructions)
             {
-                newPosition.Item1 += instruction.Direction.Item1 * instruction.Distance;
-                newPosition.Item2 += instruction.Direction.Item2 * instruction.Distance;
+                newPosition.X += instruction.Direction.X * instruction.Distance;
+                newPosition.Y += instruction.Direction.Y * instruction.Distance;
 
                 if (!Corners.Contains(newPosition))
                     Corners.Add(newPosition);
@@ -40,7 +42,7 @@ public class Day18 : Day<Day18.Digger>
 
     public class Instruction
     {
-        public (int, int) Direction { get; set; }
+        public (int X, int Y) Direction { get; set; }
         public long Distance { get; set; }
     }
 

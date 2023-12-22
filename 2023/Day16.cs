@@ -8,14 +8,13 @@ public class Day16 : Day<Day16.Cave>
     {
         public required char[][] Grid { get; set; }
 
-        // x, y, xDir, yDir
-        public required HashSet<(int, int, int, int)> Energized { get; set; }
+        public required HashSet<(int X, int Y, int XDir, int YDir)> Energized { get; set; }
 
         public long NewBeam(int x, int y, int xDir, int yDir)
         {
             Energized.Clear();
             Beam(x, y, xDir, yDir);
-            return Energized.Select(p => (p.Item1, p.Item2)).Distinct().Count();
+            return Energized.Select(p => (p.X, p.Y)).Distinct().Count();
         }
 
         private void Beam(int x, int y, int xDir, int yDir)

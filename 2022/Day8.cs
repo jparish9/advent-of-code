@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+
 namespace AOC.AOC2022;
 
 public class Day8 : Day<List<Day8.Tree>>
@@ -70,7 +73,7 @@ public class Day8 : Day<List<Day8.Tree>>
         // for each tree, store its neighbors' heights in all 4 directions, as we need them for both parts.
         foreach (var tree in result)
         {
-            foreach (var dir in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
+            foreach (var (X, Y) in new []{ (-1, 0), (1, 0), (0, -1), (0, 1) })
             {
                 var x = tree.X;
                 var y = tree.Y;
@@ -79,8 +82,8 @@ public class Day8 : Day<List<Day8.Tree>>
 
                 while (true)
                 {
-                    x += dir.Item1;
-                    y += dir.Item2;
+                    x += X;
+                    y += Y;
 
                     if (x < 0 || x >= trees[0].Length || y < 0 || y >= trees.Length) break;
                     orderedHeights.Add(trees[y][x]);
