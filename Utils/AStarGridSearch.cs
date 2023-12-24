@@ -31,12 +31,18 @@ public class AStarGridSearch
         }
     }
 
+    public static int ManhattanDistance((int X, int Y) thisNode, (int X, int Y) endNode)
+    {
+        return Math.Abs(thisNode.X - endNode.X) + Math.Abs(endNode.Y - endNode.Y);
+    }
+
     public static List<Node> Search(
         Func<(int, int)> StartLocation,         // return (single) starting location (x,y)
         Func<List<(int, int)>> EndLocations,    // return list of ending locations (x,y)
         Func<int, bool> EndStateCheck,          // in addition to reaching one of EndLocations, this function is called to check if the end state is valid.  just return true if not needed.
         Func<int, int, int> Cost,               // cost function, taking x and y and returning the cost to move there
-        Func<Node, List<Node>> Neighbors        // return list of valid neighbors, given the current Node
+        Func<Node, List<Node>> Neighbors,        // return list of valid neighbors, given the current Node
+        Func<(int thisX, int thisY), (int endX, int endY), int> Heuristic = null!    // optional heuristic cost function, will default to ManhattanDistance if not provided
     )
     {
         var startNode = new Node() { Position = StartLocation() };
@@ -96,7 +102,7 @@ public class AStarGridSearch
 
                 adjacentNode.G = currentNode!.G + Cost(adjacentNode.Position.X, adjacentNode.Position.Y);
                 // H (heuristic cost) is manhattan distance to end.  if multiple ends, use the closest one.
-                adjacentNode.H = endNodes.Min(p => Math.Abs(adjacentNode.Position.X - p.X) + Math.Abs(adjacentNode.Position.Y - p.Y));
+                adjacentNode.H = endNodes.Min(p => Heuristic != null ? Heuristic(adjacentNode.Position, p) : ManhattanDistance(adjacentNode.Position, p));
                 adjacentNode.F = adjacentNode.G + adjacentNode.H;
 
                 if (open.ContainsKey(hash) && open[hash].G <= adjacentNode.G) continue;         // already in open list with lower G score
