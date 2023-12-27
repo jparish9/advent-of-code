@@ -3,7 +3,6 @@ namespace AOC.AOC2023;
 public class Day12 : Day<Day12.SpringRowGroup>
 {
     protected override string? SampleRawInput { get => "???.### 1,1,3\n.??..??...?##. 1,1,3\n?#?#?#?#?#?#?#? 1,3,1,6\n????.#...#... 4,1,1\n????.######..#####. 1,6,5\n?###???????? 3,2,1"; }
-    protected override bool Part2ParsedDifferently => true;
 
     public class SpringRowGroup
     {

@@ -3,7 +3,6 @@ namespace AOC;
 public class DayTemplate : Day<DayTemplate.MyType>
 {
     protected override string? SampleRawInput { get => ""; }
-    // protected override bool Part2ParsedDifferently => true;
 
     public class MyType
     {

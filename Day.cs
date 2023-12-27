@@ -10,10 +10,16 @@ public abstract partial class Day<T>
     protected virtual string? SampleRawInputPart2 { get; }    // only needed if different than SampleInput [part 1]; omit if same
     [AllowNull]
     protected T Input;                                         // set at runtime, usable by each Part implementation and never null
-    protected virtual bool Part2ParsedDifferently => false; // derived classes should override this to true if part 2 input needs to be parsed differently than part 1
-    protected bool IsPart2 => _isPart2;                     // read-only property for derived classes to access in Parse implementations
-    protected int InputHashCode => (RawInput + (_isPart2 && Part2ParsedDifferently)).GetHashCode();     // input hash, accounting for if part 2 needs to be parsed differently.  used by ParseInput, and can also be referenced by derived classes if further caching is possible.
+    protected bool IsPart2 {                                   // derived classes can reference this to determine if part 2 is being run
+        get {
+            // if IsPart2 is being checked from Parse, that means we need to store the parse result with a distinct cache key.
+            if (!_part2ParsedDifferently && new StackFrame(1, false).GetMethod()!.Name.Contains("Parse"))
+                _part2ParsedDifferently = true;
 
+            return _isPart2;
+        }
+    }
+    protected int InputHashCode => (RawInput + (_isPart2 && _part2ParsedDifferently)).GetHashCode();     // input hash, accounting for if part 2 needs to be parsed differently.  used by ParseInput, and can also be referenced by derived classes if further caching is possible.
 
     // typed parsing function to be implemented by each Day, taking the actual input or SampleInput[Part2] and returning the desired type.
     // not callable directly; called by ParseInput
@@ -34,6 +40,7 @@ public abstract partial class Day<T>
     private string RawInput = "";
     private readonly Stopwatch _sw = new();
     private readonly int _year;
+    private bool _part2ParsedDifferently = false;
 
     public Day()
     {

@@ -3,7 +3,6 @@ namespace AOC.AOC2023;
 public class Day6 : Day<Day6.RaceGroup>
 {
     protected override string? SampleRawInput { get => "Time:      7  15   30\nDistance:  9  40  200"; }
-    protected override bool Part2ParsedDifferently => true;         // for part 2, all of the numbers are treated as a single number.
 
     public class RaceGroup
     {

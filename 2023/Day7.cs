@@ -3,7 +3,6 @@ namespace AOC.AOC2023;
 public class Day7 : Day<Day7.HandGroup>
 {
     protected override string? SampleRawInput { get => "32T3K 765\nT55J5 684\nKK677 28\nKTJJT 220\nQQQJA 483"; }
-    protected override bool Part2ParsedDifferently => true;             // for part 2, 'J' is a joker (not a jack), and has value 0 for comparing within ranks
 
     public enum HandRank { NotSet, HighCard, Pair, TwoPair, ThreeOfAKind, Flush, FullHouse, FourOfAKind, FiveOfAKind}
 
