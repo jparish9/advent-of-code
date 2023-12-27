@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AOC.Utils;
 
 namespace AOC.AOC2023;
 
@@ -41,21 +42,45 @@ public class Day23 : Day<Day23.TrailMap>
         }
     }
 
-    // simple weighted graph implementation for two-dimensional graph vertices; probably factor out at some point, make generic, maybe add general graph search algos
-    private class Graph
+    private class Day23Graph
     {
-        public List<Node> Nodes { get; set; } = new List<Node>();
+        public List<Day23Node> Nodes { get; set; } = new List<Day23Node>();
+
+        // convert this to a standard shared weighted graph so we can reuse search code.
+        // it is very close already, but this graph has nodes with positions as ids, and edges that care about their initial direction (at least when building the graph).
+        // could probably clean this up further.
+        public Graph ToStandardGraph()
+        {
+            var graph = new Graph();
+
+            foreach (var node in Nodes)
+            {
+                graph.Nodes.Add(new Node() { Name = node.Position.ToString() });
+            }
+
+            foreach (var node in Nodes)
+            {
+                var weightedNode = graph.Nodes.First(p => p.Name == node.Position.ToString());
+                foreach (var edge in node.Edges)
+                {
+                    var weightedEdge = new Edge() { From = weightedNode, To = graph.Nodes.First(p => p.Name == edge.To.Position.ToString()), Weight = edge.Weight };
+                    weightedNode.Edges.Add(weightedEdge);
+                }
+            }
+
+            return graph;
+        }
     }
 
-    private class Node
+    private class Day23Node
     {
         public (int X, int Y) Position { get; set; }
-        public List<Edge> Edges { get; set; } = new List<Edge>();
+        public List<Day23Edge> Edges { get; set; } = new List<Day23Edge>();
     }
 
-    private class Edge
+    private class Day23Edge
     {
-        public required Node To { get; set; }
+        public required Day23Node To { get; set; }
         public (int X, int Y) Direction { get; set; }
         public int Weight { get; set; }
     }
@@ -78,19 +103,25 @@ public class Day23 : Day<Day23.TrailMap>
         // where the edge weights are the lengths of the "roads" connecting them, and then probably just brute-force search the highest-weight path from start to end on the (much) smaller graph.
         // this is still just a (much) smaller NP-hard problem, but should be reduced enough that it can be brute-forced in a reasonable amount of time.
 
-        var graph = new Graph();
+        var graph = new Day23Graph();
         var start = Input.FindStart();
         var visited = new HashSet<(int X, int Y)>() { start };
-        var startNode = new Node() { Position = start };
+        var startNode = new Day23Node() { Position = start };
         graph.Nodes.Add(startNode);
-
         BuildGraph(graph, startNode, Input.FindEnd(), null, visited);
 
-        return FindHighestWeightPath(graph);
+        // coerce this graph into the standard weighted graph implementation, and search it.
+        // the search is a standard highest-weight search of the whole graph between a known start and end.
+        var wg = graph.ToStandardGraph();
+        return wg.Search(
+            start: wg.Nodes.First(p => p.Name == start.ToString()),
+            end: wg.Nodes.First(p => p.Name == Input.FindEnd().ToString()),
+            compare: Graph.Maximize
+        );
     }
 
     // build a graph of just the critical nodes (forks, start, end) in the map, with edge weights being the length of the "roads" connecting them.
-    private void BuildGraph(Graph graph, Node currentNode, (int X, int Y) endPos, (int X, int Y)? direction, HashSet<(int X, int Y)> visited)
+    private void BuildGraph(Day23Graph graph, Day23Node currentNode, (int X, int Y) endPos, (int X, int Y)? direction, HashSet<(int X, int Y)> visited)
     {
         // make a copy of visited, this is this path's visited set, not a global one (we don't want to modify the caller's visited set)
         var newVisited = new HashSet<(int X, int Y)>(visited);
@@ -150,13 +181,13 @@ public class Day23 : Day<Day23.TrailMap>
             var endNode = graph.Nodes.FirstOrDefault(p => p.Position == adjacentNodes[0]);
             if (endNode == null)
             {
-                endNode = new Node() { Position = adjacentNodes[0] };
+                endNode = new Day23Node() { Position = adjacentNodes[0] };
                 graph.Nodes.Add(endNode);
             }
 
             // currentNode may already have the end node as an edge, don't duplicate that either.
             if (!currentNode.Edges.Any(p => p.To == endNode))
-                currentNode.Edges.Add(new Edge() { To = endNode, Weight = weight, Direction = firstDir!.Value });
+                currentNode.Edges.Add(new Day23Edge() { To = endNode, Weight = weight, Direction = firstDir!.Value });
             return;
         }
 
@@ -166,13 +197,13 @@ public class Day23 : Day<Day23.TrailMap>
         var forkNode = graph.Nodes.FirstOrDefault(p => p.Position == (x, y));
         if (forkNode == null)
         {
-            forkNode = new Node() { Position = (x, y) };
+            forkNode = new Day23Node() { Position = (x, y) };
             graph.Nodes.Add(forkNode);
         }
         
         // don't duplicate the edge from currentNode to forkNode
         if (!currentNode.Edges.Any(p => p.To == forkNode))
-            currentNode.Edges.Add(new Edge() { To = forkNode, Weight = weight, Direction = firstDir!.Value });
+            currentNode.Edges.Add(new Day23Edge() { To = forkNode, Weight = weight, Direction = firstDir!.Value });
 
         foreach (var (adjX, adjY) in adjacentNodes)
         {
@@ -182,44 +213,6 @@ public class Day23 : Day<Day23.TrailMap>
             // recursive call for each unexplored fork path
             BuildGraph(graph, forkNode, endPos, adjacentDir, newVisited);
         }
-    }
-
-    // exhaustive search of the graph to find the path from start to end with highest weight
-    private int FindHighestWeightPath(Graph graph)
-    {
-        var start = graph.Nodes.First(p => p.Position == Input.FindStart());
-        var end = graph.Nodes.First(p => p.Position == Input.FindEnd());
-
-        var visited = new HashSet<Node>();
-        var path = new List<Node>();
-
-        var highestWeight = 0;
-
-        FindHighestWeightPath(start, end, visited, path, 0, ref highestWeight);
-
-        return highestWeight;
-    }
-
-    private void FindHighestWeightPath(Node current, Node end, HashSet<Node> visited, List<Node> path, int weight, ref int highestWeight)
-    {
-        if (current == end)
-        {
-            if (weight > highestWeight) highestWeight = weight;
-            return;
-        }
-
-        visited.Add(current);
-        path.Add(current);
-
-        foreach (var edge in current.Edges)
-        {
-            if (visited.Contains(edge.To)) continue;
-
-            FindHighestWeightPath(edge.To, end, visited, path, weight + edge.Weight, ref highestWeight);
-        }
-
-        visited.Remove(current);
-        path.Remove(current);
     }
 
     protected override TrailMap Parse(string input)

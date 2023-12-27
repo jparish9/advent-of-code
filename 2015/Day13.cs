@@ -47,7 +47,7 @@ public class Day13 : Day<Graph>
             start: Input.Nodes.First(),
             compare: Graph.Maximize,
             edges: (currentNode, visited, path, nodeCt) => currentNode.Edges.Where(p => !(visited.Contains(p.To) && (visited.Count != nodeCt || p.To != path[0]))),
-            pathComplete: (end, path, nodeCt) => path.Count == nodeCt + 1,
+            pathComplete: (currentNode, end, path, nodeCt) => path.Count == nodeCt && currentNode == path[0],
             edgeWeight: (edge) => edge.Weight + edge.To.Edges.Single(p => p.To == edge.From).Weight
         );
     }

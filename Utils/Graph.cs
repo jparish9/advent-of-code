@@ -9,15 +9,18 @@ public class Graph
     public static readonly Func<int, int, bool> Minimize = (a, b) => a < b;
     public static readonly Func<int, int, bool> Maximize = (a, b) => a > b;
     public static readonly Func<Node, HashSet<Node>, List<Node>, int, IEnumerable<Edge>> NotVisited = (currentNode, visited, path, nodeCt) => currentNode.Edges.Where(p => !visited.Contains(p.To));
-    public static readonly Func<Node?, List<Node>, int, bool> AllNodesVisitedOrEndReached = (endNode, path, nodeCt) => path.Count == nodeCt || path[^1] == endNode;
+    public static readonly Func<Node, Node?, List<Node>, int, bool> AllNodesVisitedOrEndReached = (currentNode, endNode, pathUpTo, nodeCt) => currentNode == endNode || pathUpTo.Count == nodeCt-1;
     public static readonly Func<Edge, int> EdgeWeight = (edge) => edge.Weight;
 
     // default search is to minimize total weight over any path that visits every node exactly once
     // override parameter(s) to change this.
-    public int Search(Node? start = null, Node? end = null,
-        int? startValue = null, Func<int, int, bool>? compare = null,
+    public int Search(
+        Node? start = null,
+        Node? end = null,
+        int? startValue = null,
+        Func<int, int, bool>? compare = null,
         Func<Node, HashSet<Node>, List<Node>, int, IEnumerable<Edge>>? edges = null,
-        Func<Node?, List<Node>, int, bool>? pathComplete = null,
+        Func<Node, Node?, List<Node>, int, bool>? pathComplete = null,
         Func<Edge, int>? edgeWeight = null)
     {
         compare ??= Minimize;
@@ -37,16 +40,11 @@ public class Graph
         return best;
     }
 
-    private void Search(Node current, Node? end, HashSet<Node> visited, List<Node> path,
-        int weight, ref int best, Func<int, int, bool> compare,
-        Func<Node, HashSet<Node>, List<Node>, int, IEnumerable<Edge>> edges,
-        Func<Node?, List<Node>, int, bool> pathComplete,
-        Func<Edge, int> edgeWeight)
+    private void Search(Node current, Node? end, HashSet<Node> visited, List<Node> path, int weight, ref int best,
+        Func<int, int, bool> compare, Func<Node, HashSet<Node>, List<Node>, int, IEnumerable<Edge>> edges,
+        Func<Node, Node?, List<Node>, int, bool> pathComplete, Func<Edge, int> edgeWeight)
     {
-        var thisVisited = new HashSet<Node>(visited) { current };
-        var thisPath = new List<Node>(path) { current };
-
-        if (pathComplete(end, thisPath, Nodes.Count))
+        if (pathComplete(current, end, path, Nodes.Count))
         {
             if (compare(weight, best))
             {
@@ -56,11 +54,16 @@ public class Graph
             return;
         }
 
-        foreach (var edge in edges(current, thisVisited, thisPath, Nodes.Count))
+        visited.Add(current);
+        path.Add(current);
+
+        foreach (var edge in edges(current, visited, path, Nodes.Count))
         {
-            //System.Console.WriteLine("Visiting " + edge.To.Name + " from " + edge.From.Name + "(current node " + current.Name + ") with weight " + edgeWeight(edge));
-            Search(edge.To, end, thisVisited, thisPath, weight + edgeWeight(edge), ref best, compare, edges, pathComplete, edgeWeight);        // unvisited; recurse
+            Search(edge.To, end, visited, path, weight + edgeWeight(edge), ref best, compare, edges, pathComplete, edgeWeight);        // unvisited; recurse
         }
+
+        visited.Remove(current);
+        path.Remove(current);
     }
 }
 
