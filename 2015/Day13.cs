@@ -1,6 +1,8 @@
+using AOC.Utils;
+
 namespace AOC.AOC2015;
 
-public class Day13 : Day<Day13.Graph>
+public class Day13 : Day<Graph>
 {
     protected override string? SampleRawInput { get => "Alice would gain 54 happiness units by sitting next to Bob.\n" +
         "Alice would lose 79 happiness units by sitting next to Carol.\n" +
@@ -15,32 +17,15 @@ public class Day13 : Day<Day13.Graph>
         "David would lose 7 happiness units by sitting next to Bob.\n" +
         "David would gain 41 happiness units by sitting next to Carol."; }
 
-    // yet another weighted graph!
-    public class Graph
-    {
-        public List<Node> Nodes { get; set; } = new List<Node>();
-    }
-
-    public class Node
-    {
-        public required string Name { get; set; }
-        public List<Edge> Edges { get; set; } = new List<Edge>();
-    }
-
-    public class Edge
-    {
-        public required Node From { get; set; }
-        public required Node To { get; set; }
-        public int Weight { get; set; }
-    }
 
     protected override long Part1()
     {
-        return FindPath(Input, int.MinValue, (a, b) => a > b);
+        return SearchGraph();
     }
 
     protected override long Part2()
     {
+        // add self, linked to all others, with bidirectional weight of 0
         var self = new Node() { Name = "Self" };
         foreach (var node in Input.Nodes)
         {
@@ -49,45 +34,22 @@ public class Day13 : Day<Day13.Graph>
         }
         Input.Nodes.Add(self);
 
-        return FindPath(Input, int.MinValue, (a, b) => a > b);
+        return SearchGraph();
     }
 
-    // search from a start node back to itself (hitting every node exactly once), keeping track of the "best" path length according to the given comparison function
-    private int FindPath(Graph graph, int startValue, Func<int, int, bool> compare)
+    private int SearchGraph()
     {
-        var best = startValue;
-
-        // start node shouldn't matter since every complete path is a cycle of every node
-        var path = new List<Node>();
-        var visited = new HashSet<Node>();
-
-        FindPath(graph.Nodes.First(), visited, path, 0, ref best, compare);
-
-        return best;
-    }
-
-    private void FindPath(Node current, HashSet<Node> visited, List<Node> path, int dist, ref int best, Func<int, int, bool> compare)
-    {
-        var thisVisited = new HashSet<Node>(visited) { current };
-        var thisPath = new List<Node>(path) { current };
-
-        if (thisPath.Count == Input.Nodes.Count + 1)         // must start and end at the same node
-        {
-            if (compare(dist, best))
-            {
-                best = dist;
-                //System.Console.WriteLine("Found a better path with distance " + dist + ": " + string.Join(" -> ", thisPath.Select(p => p.Name)));
-            }
-            return;
-        }
-
-        foreach (var edge in current.Edges)
-        {
-            if (thisVisited.Contains(edge.To) && (thisVisited.Count != Input.Nodes.Count || edge.To != thisPath[0])) continue;     // already visited, except if we are at the last node and can go back to the start
-
-            // edge weight is bidirectional!  A is now next to B, but that means B is also next to A
-            FindPath(edge.To, thisVisited, thisPath, dist + edge.Weight + edge.To.Edges.Single(p => p.To == current).Weight, ref best, compare);        // unvisited; recurse
-        }
+        // any start node should yield the same result, since every complete path is a cycle of all nodes.
+        // an edge is allowed if it is unvisited, plus a special case for the last edge back to the first node.
+        // a path is complete if it is a complete cycle of all nodes (start == end).
+        // edge weight needs to count bidirectional weight (A to B + B to A) when it is traversed.
+        return Input.Search(
+            start: Input.Nodes.First(),
+            compare: Graph.Maximize,
+            edges: (currentNode, visited, path, nodeCt) => currentNode.Edges.Where(p => !(visited.Contains(p.To) && (visited.Count != nodeCt || p.To != path[0]))),
+            pathComplete: (end, path, nodeCt) => path.Count == nodeCt + 1,
+            edgeWeight: (edge) => edge.Weight + edge.To.Edges.Single(p => p.To == edge.From).Weight
+        );
     }
 
     protected override Graph Parse(string input)
