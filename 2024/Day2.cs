@@ -12,7 +12,7 @@ public class Day2 : Day<Day2.ReportSet>
     public class Report
     {
         public required List<int> Values { get; set; }
-        public bool? IsSafeWithoutDampener { get; set; }        // cache result from part 1
+        public bool IsSafeWithoutDampener { get; set; }        // cache result from part 1; default unsafe
     }
 
     protected override long Part1()
@@ -20,19 +20,19 @@ public class Day2 : Day<Day2.ReportSet>
         var safeCount = 0;
         Input.Reports.ForEach(p => {
             p.IsSafeWithoutDampener = SafeCheck(p.Values);
-            safeCount += (p.IsSafeWithoutDampener ?? false) ? 1 : 0;
+            safeCount += p.IsSafeWithoutDampener ? 1 : 0;
         });
         return safeCount;
     }
 
     protected override long Part2()
     {
-        var safeCount = Input.Reports.Count(p => (bool)p.IsSafeWithoutDampener!);
-        foreach (var report in Input.Reports.Where(p => !(bool)p.IsSafeWithoutDampener!))
+        var safeCount = Input.Reports.Count(p => p.IsSafeWithoutDampener!);
+        foreach (var report in Input.Reports.Where(p => !p.IsSafeWithoutDampener!))
         {
             for (var i=0; i<report.Values.Count; i++)
             {
-                if (SafeCheck(report.Values.Take(i).Concat(report.Values.Skip(i+1)).ToList()))          // make copy of list without i-th element
+                if (SafeCheck(report.Values.Take(i).Concat(report.Values.Skip(i+1)).ToList()))          // make copy of list without i-th element and check again
                 {
                     safeCount++;
                     break;
