@@ -48,18 +48,21 @@ public class Day5 : Day<Day5.Manual>
     {
         public required List<int> Pages;
         public bool IsCorrect;
-        public List<RuleDef> ViolatedRules = new();
         public bool Check(Rules rules)
         {
-            ViolatedRules.Clear();
+            IsCorrect = true;
             for (var i=0; i<Pages.Count; i++)
             {
-                ViolatedRules.AddRange(rules.FirstRules(Pages[i]).Where(p => Pages.Take(i).Contains(p.Second)));
-                ViolatedRules.AddRange(rules.SecondRules(Pages[i]).Where(p => Pages.Skip(i+1).Contains(p.First)));
+                if (rules.FirstRules(Pages[i]).Any(p => Pages.Take(i).Contains(p.Second))
+                    || rules.SecondRules(Pages[i]).Any(p => Pages.Skip(i+1).Contains(p.First)))
+                    {
+                        IsCorrect = false;
+                        break;
+                    }
             }
-            IsCorrect = ViolatedRules.Count == 0;
             return IsCorrect;
         }
+
         public int Median() { return Pages[Pages.Count/2]; }
     }
 
@@ -77,22 +80,19 @@ public class Day5 : Day<Day5.Manual>
 
     protected override long Part2()
     {
-        var outOfOrder = Input.Updates.Where(p => !p.IsCorrect).ToList();
-
         var sum = 0;
 
-        // for each out of order page list, correct the first violated rule by swapping the pages defined by the rule, then recheck; repeat until correct
-        foreach (var update in outOfOrder)
+        // my first try swapped pages according to violated rules and rechecked until correct.
+        // this was effectively a bubblesort, and although fine for this input (~0.5s), there is a better way that uses native sort,
+        // and also does not need to keep track of violated rules or recheck at every reordering.
+        // the set of rules is effectively a comparator that can be used with native sorting.
+        foreach (var update in Input.Updates.Where(p => !p.IsCorrect))
         {
-            while (!update.IsCorrect)
-            {
-                var rule = update.ViolatedRules.First();
-                var temp = update.Pages[update.Pages.IndexOf(rule.First)];
-                update.Pages[update.Pages.IndexOf(rule.First)] = rule.Second;
-                update.Pages[update.Pages.IndexOf(rule.Second)] = temp;
-
-                update.Check(Input.Rules);
-            }
+            update.Pages.Sort(new Comparison<int>((a, b) => {
+                if (Input.Rules.FirstRules(a).Select(p => p.Second).Contains(b))
+                    return -1;
+                else return 1;
+            }));
 
             sum += update.Median();
         }
