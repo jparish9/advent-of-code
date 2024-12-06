@@ -17,24 +17,24 @@ public class Day5 : Day<Day5.Manual>
         public Rules(List<RuleDef> rules)
         {
             RuleDefs = rules;
-            FirstMap = rules.GroupBy(p => p.First).ToDictionary(p => p.Key, p => p.ToList());
-            SecondMap = rules.GroupBy(p => p.Second).ToDictionary(p => p.Key, p => p.ToList());
+            FirstMap = rules.GroupBy(p => p.First).ToDictionary(p => p.Key, p => p.Select(q => q.Second).ToHashSet());
+            SecondMap = rules.GroupBy(p => p.Second).ToDictionary(p => p.Key, p => p.Select(q => q.First).ToHashSet());
         }
 
         public List<RuleDef> RuleDefs;
 
         // maps for performance
-        private readonly Dictionary<int, List<RuleDef>> FirstMap;
-        private readonly Dictionary<int, List<RuleDef>> SecondMap;
+        private readonly Dictionary<int, HashSet<int>> FirstMap;
+        private readonly Dictionary<int, HashSet<int>> SecondMap;
 
-        public List<RuleDef> FirstRules(int page)
+        public HashSet<int> FirstRules(int page)
         {
-            return FirstMap.ContainsKey(page) ? FirstMap[page] : new List<RuleDef>();
+            return FirstMap.ContainsKey(page) ? FirstMap[page] : new HashSet<int>();
         }
 
-        public List<RuleDef> SecondRules(int page)
+        public HashSet<int> SecondRules(int page)
         {
-            return SecondMap.ContainsKey(page) ? SecondMap[page] : new List<RuleDef>();
+            return SecondMap.ContainsKey(page) ? SecondMap[page] : new HashSet<int>();
         }
     }
 
@@ -53,8 +53,8 @@ public class Day5 : Day<Day5.Manual>
             IsCorrect = true;
             for (var i=0; i<Pages.Count; i++)
             {
-                if (rules.FirstRules(Pages[i]).Any(p => Pages.Take(i).Contains(p.Second))
-                    || rules.SecondRules(Pages[i]).Any(p => Pages.Skip(i+1).Contains(p.First)))
+                if (rules.FirstRules(Pages[i]).Any(p => Pages.Take(i).Contains(p))
+                    || rules.SecondRules(Pages[i]).Any(p => Pages.Skip(i+1).Contains(p)))
                     {
                         IsCorrect = false;
                         break;
@@ -89,7 +89,7 @@ public class Day5 : Day<Day5.Manual>
         foreach (var update in Input.Updates.Where(p => !p.IsCorrect))
         {
             update.Pages.Sort(new Comparison<int>((a, b) => {
-                if (Input.Rules.FirstRules(a).Select(p => p.Second).Contains(b))
+                if (Input.Rules.FirstRules(a).Contains(b))
                     return -1;
                 else return 1;
             }));
