@@ -22,16 +22,35 @@ public class Day7 : Day<Day7.Bridge>
         (a, b) => long.Parse(a.ToString() + b.ToString())
     };
 
+    private static readonly List<Func<long, long, long>> InvOperators = new()
+    {
+        (a, b) => {
+            if (a > b) return a-b;
+            throw new Exception();
+        },
+        (a, b) => {
+            if (a % b > 0) throw new Exception();
+            return a / b;
+        },
+        (a, b) => {
+            var astr = a.ToString();
+            var bstr = b.ToString();
+            if (!astr.EndsWith(bstr)) throw new Exception();
+            return long.Parse(astr[..^bstr.Length]);
+        }
+    };
+
     protected override long Part1()
     {
-        return Check(Operators.Take(2).ToList());
+        return Check2(InvOperators.Take(2).ToList());
     }
 
     protected override long Part2()
     {
-        return Check(Operators);
+        return Check2(InvOperators);
     }
 
+    // iterative solution that permutes all possible operations; part 2 in ~16sec
     private long Check(List<Func<long, long, long>> operators)
     {
         var valid = 0L;
@@ -55,6 +74,41 @@ public class Day7 : Day<Day7.Bridge>
             }
         }
         return valid;
+    }
+
+    // recursive solution that uses inverse operations only if valid; part 2 in ~0.5sec
+    private long Check2(List<Func<long, long, long>> operators)
+    {
+        var valid = 0L;
+        foreach (var calibration in Input.Calibrations)
+        {
+            var testValue = calibration.TestValue;
+            var operands = calibration.Operands.Select(p => p).ToList();
+            operands.Reverse();
+            foreach (var op in operators)
+            {
+                if (CheckRecursive(testValue, operands, op, operators)) {
+                    valid += testValue;
+                    break;
+                }
+            }
+        }
+        return valid;
+    }
+
+    private bool CheckRecursive(long testValue, List<long> operands, Func<long, long, long> op, List<Func<long, long, long>> operators)
+    {
+        if (operands.Count == 1) return testValue == operands[0];
+        try
+        {
+            testValue = op(testValue, operands[0]);
+        } catch { return false; }
+
+        foreach (var op2 in operators)
+        {
+            if (CheckRecursive(testValue, operands.Skip(1).ToList(), op2, operators)) return true;
+        }
+        return false;
     }
 
     protected override Bridge Parse(string input)
