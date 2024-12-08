@@ -38,8 +38,6 @@ public class Day8 : Day<Day8.City>
     {
         var antinodes = new List<(int x, int y)>();
 
-        var allAntennas = Input.Antennas.Values.SelectMany(x => x).ToList();
-
         foreach (var antennaType in Input.Antennas.Keys)
         {
             var antennas = Input.Antennas[antennaType];
