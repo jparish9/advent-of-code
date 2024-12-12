@@ -140,13 +140,13 @@ public class Day12 : Day<Day12.Garden>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.FindRegions();
         return Input.Price();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.BulkPrice();
     }

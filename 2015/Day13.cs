@@ -18,12 +18,12 @@ public class Day13 : Day<Graph>
         "David would gain 41 happiness units by sitting next to Carol."; }
 
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return SearchGraph();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // add self, linked to all others, with bidirectional weight of 0
         var self = new Node() { Name = "Self" };

@@ -52,7 +52,7 @@ public class Day19 : Day<Day19.Machine>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var replacements = Input.Replacements;
         var molecule = Input.Molecule;
@@ -74,7 +74,7 @@ public class Day19 : Day<Day19.Machine>
         return molecules.Count;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // there are some solutions that work for specific inputs, by trying replacements starting from the end of the string until we get to "e".
         // this doesn't work in the general case, or for my input.

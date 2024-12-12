@@ -14,12 +14,12 @@ public class Day3 : Day<Day3.Triangles>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.CountValid();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.CountValid();
     }

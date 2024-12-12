@@ -18,7 +18,7 @@ public class Day4 : Day<Day4.Kiosk>
         public required string Checksum { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var valid = 0;
         foreach (var room in Input.Rooms)
@@ -31,7 +31,7 @@ public class Day4 : Day<Day4.Kiosk>
         return valid;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         foreach (var room in Input.Rooms)
         {

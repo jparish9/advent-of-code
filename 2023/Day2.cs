@@ -11,14 +11,14 @@ public class Day2 : Day<List<Day2.Game>>
         public required Dictionary<string, int> Maxes { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var constraints = new Dictionary<string, int>() {{"red", 12}, {"green", 13}, {"blue", 14}};
 
         return Input.Sum(p => p.Maxes.All(q => q.Value <= constraints[q.Key]) ? p.Id : 0);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var pwr = 0.0;
 

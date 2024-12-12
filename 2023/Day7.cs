@@ -75,12 +75,12 @@ public class Day7 : Day<Day7.HandGroup>
     }
 
     // these have access to Input, which has been configured by RunPart*(true/false)
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.GetWinnings();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.GetWinnings();
     }

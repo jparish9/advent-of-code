@@ -23,7 +23,7 @@ public class Day8 : Day<Day8.RouteDef>
         public required bool EndsInZ { get; set; }          // do this up-front
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var path = Input.Path;
         var node = Input.Nodes["AAA"];
@@ -42,7 +42,7 @@ public class Day8 : Day<Day8.RouteDef>
         return pathLength;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // okay, well this was fun.  brute-force got to 150M in 7 minutes before I gave up.  Reddit says the iterative step count is like 100T.
         // is there a better way?

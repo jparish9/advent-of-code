@@ -9,12 +9,12 @@ public class DayTemplate : Day<DayTemplate.MyType>
 
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         throw new NotImplementedException();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         throw new NotImplementedException();
     }

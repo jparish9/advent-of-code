@@ -11,12 +11,12 @@ public class Day5 : Day<List<Day5.Seat>>
         public int Id { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Max(p => p.Id);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var seats = Input.OrderBy(p => p.Id).ToList();
         for (var i=0; i<seats.Count-1; i++)

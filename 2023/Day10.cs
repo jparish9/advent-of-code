@@ -136,12 +136,12 @@ public class Day10 : Day<Day10.PipeMaze>
             return orderedPath;
         }
     }
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.DeterminePath().Count / 2;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // well, after trying to get count crossings without success, I found out about the shoelace formula and learned something new today!
         // https://en.wikipedia.org/wiki/Shoelace_formula

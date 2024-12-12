@@ -26,12 +26,12 @@ public class Day15 : Day<List<Day15.Step>>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Sum(p => p.Hash());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var boxes = new List<List<Step>>();
         for (var i=0; i<256; i++) { boxes.Add(new List<Step>()); }

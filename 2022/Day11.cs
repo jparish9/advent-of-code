@@ -71,12 +71,12 @@ public class Day11 : Day<Day11.MonkeyGroup>
         public long Inspected { get; set;}
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Copy().Run(20, 3);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Copy().Run(10000, 1);
     }

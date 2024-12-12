@@ -12,7 +12,7 @@ public class Day2 : Day<List<Day2.Dimension>>
 
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Select(d =>
             2*d.L*d.W + 2 *d.W*d.H + 2*d.H*d.L                      // surface area
@@ -20,7 +20,7 @@ public class Day2 : Day<List<Day2.Dimension>>
         ).Sum();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Select(d =>
             2 * new[] { d.L + d.W, d.W + d.H, d.H + d.L }.Min()     // smallest perimeter

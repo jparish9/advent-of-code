@@ -32,12 +32,12 @@ public class Day5 : Day<List<Day5.MaybeNice>>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Count(w => w.IsNice());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Count(w => w.IsNicer());
     }

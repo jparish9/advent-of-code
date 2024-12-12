@@ -17,7 +17,7 @@ public class Day4 : Day<Day4.Grid>
 
     private static readonly string Xmas = "XMAS";
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var found = 0;
         for (var sr=0; sr<Input.RowCount; sr++)
@@ -48,7 +48,7 @@ public class Day4 : Day<Day4.Grid>
         return found;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var found = 0;
         for (var sr=1; sr<Input.RowCount-1; sr++)

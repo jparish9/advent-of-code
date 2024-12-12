@@ -20,12 +20,12 @@ public class Day15 : Day<Day15.Cookie>
         public int Calories { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return BestCookie();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return BestCookie((c) => c == 500);
     }

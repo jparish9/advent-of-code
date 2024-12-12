@@ -14,7 +14,7 @@ public class Day2 : Day<List<Day2.Play>>
     public enum RPS { Rock = 1, Paper, Scissors };
     public enum Instr { Lose, Draw, Win };              // for part 2
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var score = 0;
         foreach (var line in Input)
@@ -31,7 +31,7 @@ public class Day2 : Day<List<Day2.Play>>
         return score;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var score = 0;
         foreach (var line in Input)

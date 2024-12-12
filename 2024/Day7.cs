@@ -40,12 +40,12 @@ public class Day7 : Day<Day7.Bridge>
         }
     };
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Check2(InvOperators.Take(2).ToList());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Check2(InvOperators);
     }

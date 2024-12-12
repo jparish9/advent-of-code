@@ -4,7 +4,7 @@ public class Day1 : Day<List<int>>
 {
     protected override string? SampleRawInput { get => "1721\n979\n366\n299\n675\n1456"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var product = -1;
         // find 2 entries that sum to 2020
@@ -23,7 +23,7 @@ public class Day1 : Day<List<int>>
         return product;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // for a much larger input set, sort and binary search could probably be used, but this is more than fast enough at ~10ms
         var product = -1;

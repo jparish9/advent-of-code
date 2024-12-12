@@ -9,12 +9,12 @@ public class Day6 : Day<List<Day6.Answers>>
         public required List<string> Person { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Sum(p => p.Person.SelectMany(p => p).Distinct().Count());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Sum(p => p.Person.SelectMany(p => p).Distinct().Count(q => p.Person.All(r => r.Contains(q))));
     }

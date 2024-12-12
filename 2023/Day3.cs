@@ -25,13 +25,13 @@ public class Day3 : Day<Day3.Engine>
         public char Sym { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Parts.Where(p => Input.Symbols.Any(q => q.X >= p.X-1 && q.X <= p.EndX+1 && q.Y >= p.Y-1 && q.Y <= p.Y+1))
             .Sum(p => p.Number);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // the predicate is here twice but can't really be abstracted out because of the caller dependency.
         return Input.Symbols.Where(p => p.Sym == '*' && Input.Parts.Count(q => p.X >= q.X-1 && p.X <= q.EndX+1 && p.Y >= q.Y-1 && p.Y <= q.Y+1) == 2)

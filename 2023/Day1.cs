@@ -5,7 +5,7 @@ public class Day1 : Day<List<string>>
     protected override string? SampleRawInput { get => "1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet"; }
     protected override string? SampleRawInputPart2 { get => "two1nine\neightwothree\nabcone2threexyz\nxtwone3four\n4nineeightseven2\nzoneight234\n7pqrstsixteen"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var match = new [] {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
         var sum = 0;
@@ -16,7 +16,7 @@ public class Day1 : Day<List<string>>
         return sum;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var matches = new [] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
         var sum = 0;

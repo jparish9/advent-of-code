@@ -20,7 +20,7 @@ public class Day5 : Day<Day5.StackMover>
         public int To { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         // make a copy of the stacks so Parts don't interact
         var stacks = Input.Stacks.Select(p => new Stack<char>(p.Reverse())).ToList();
@@ -42,11 +42,10 @@ public class Day5 : Day<Day5.StackMover>
             result += stack.Pop();
         }
 
-        System.Console.WriteLine(result);
-        return 0;
+        return result;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // make a copy of the stacks so Parts don't interact
         var stacks = Input.Stacks.Select(p => new Stack<char>(p.Reverse())).ToList();
@@ -71,8 +70,7 @@ public class Day5 : Day<Day5.StackMover>
             result += stack.Pop();
         }
 
-        System.Console.WriteLine(result);
-        return 0;
+        return result;
     }
 
     protected override StackMover Parse(string input)

@@ -64,12 +64,12 @@ public class Day12 : Day<Day12.SpringRowGroup>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.GetTotalPermutations();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.GetTotalPermutations();
     }

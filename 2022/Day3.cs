@@ -5,7 +5,7 @@ public class Day3 : Day<List<string>>
     protected override string? SampleRawInput { get => "vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw"; }
     // public override bool Part2ParsedDifferently => true;
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var result = new List<char>();
 
@@ -21,7 +21,7 @@ public class Day3 : Day<List<string>>
         return GetPrioritySum(result);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var result = new List<char>();
 

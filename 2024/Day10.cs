@@ -74,14 +74,14 @@ public class Day10 : Day<Day10.Map>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.ComputeScores();
 
         return Input.TrailheadScores.SelectMany(p => p.part2Scores).Count();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // scores already computed
         return Input.TrailheadScores.SelectMany(p => p.part2Scores).Sum();

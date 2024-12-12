@@ -64,14 +64,14 @@ public class Day16 : Day<Day16.SueFinder>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         if (Input == null || Input.Sues.Count == 0) return 0;           // no sample
 
         return Input.Sues.First(p => p.Matches(Criteria)).Number;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         if (Input == null || Input.Sues.Count == 0) return 0;           // no sample
 

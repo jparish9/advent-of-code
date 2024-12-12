@@ -77,7 +77,7 @@ public class Day4 : Day<Day4.Bingo>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var i=0;
         Card? winning = null;
@@ -94,7 +94,7 @@ public class Day4 : Day<Day4.Bingo>
         return winning!.SumUnmarked() * Input.Numbers[i];
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var i=0;
         Card? winning = null;

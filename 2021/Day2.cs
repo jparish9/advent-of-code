@@ -10,7 +10,7 @@ public class Day2 : Day<List<Day2.Instruction>>
         public int Distance { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var x = 0;
         var depth = 0;
@@ -34,7 +34,7 @@ public class Day2 : Day<List<Day2.Instruction>>
         return x * depth;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var x=0;
         var depth=0;

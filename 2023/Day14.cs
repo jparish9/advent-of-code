@@ -84,7 +84,7 @@ public class Day14 : Day<Day14.RockField>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var copy = Input.Copy();
         copy.Tilt(0, -1);
@@ -92,7 +92,7 @@ public class Day14 : Day<Day14.RockField>
         return copy.CalculateLoad();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var copy = Input.Copy();
 

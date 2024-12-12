@@ -83,12 +83,12 @@ public class Day23 : Day<Day23.TrailMap>
         public int Weight { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return GetLongestPath();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return GetLongestPath();
     }

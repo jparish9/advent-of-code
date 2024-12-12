@@ -43,12 +43,12 @@ public class Day18 : Day<Day18.Digger>
         public long Distance { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.LagoonArea();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.LagoonArea();
     }

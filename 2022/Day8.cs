@@ -42,12 +42,12 @@ public class Day8 : Day<List<Day8.Tree>>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Count(p => p.IsVisible());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Max(p => p.ScenicScore());
     }

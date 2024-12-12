@@ -232,7 +232,7 @@ public class Day20 : Day<Day20.Machine>
         public override void ProcessReceivedPulses(int cycle) {}
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.ClearAllState();
         for (var i=0; i<1000; i++)
@@ -243,7 +243,7 @@ public class Day20 : Day<Day20.Machine>
         return Input.Modules.Sum(p => p.Value.HighPulsesSent) * Input.Modules.Sum(p => p.Value.LowPulsesSent);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         if (!Input.Modules.ContainsKey("rx")) return -1;            // sample input may not have rx output, can't run part 2 in that case
 

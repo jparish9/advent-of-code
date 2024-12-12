@@ -4,12 +4,12 @@ public class Day1 : Day<List<int>>
 {
     protected override string? SampleRawInput { get => "199\n200\n208\n210\n200\n207\n240\n269\n260\n263"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return CountIncreased(1);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return CountIncreased(3);
     }

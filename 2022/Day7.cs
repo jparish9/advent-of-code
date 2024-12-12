@@ -23,7 +23,7 @@ public class Day7 : Day<Day7.Dir>
         public required int Size { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         // PrintDirectory(Input, 0);
         var dirs = FindAll(Input, p => p.TotalSize <= 100000);
@@ -31,7 +31,7 @@ public class Day7 : Day<Day7.Dir>
         return dirs.Sum(p => p.TotalSize);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var neededSpace = 30000000 - (70000000 - Input.TotalSize);
         var dir = FindAll(Input, p => p.TotalSize >= neededSpace).OrderBy(p => p.TotalSize).First();

@@ -61,12 +61,12 @@ public class Day2 : Day<Day2.KeyPad>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return int.Parse(Input.GetCode());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         System.Console.WriteLine(Input.GetCode(true));          // string answer
         return 0;

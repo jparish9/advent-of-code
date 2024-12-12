@@ -149,14 +149,14 @@ public class Day21 : Day<Day21.Garden>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var steps = Input.Map.Length > 11 ? 64 : 6;         // real or sample input
 
         return Input.EvalSteps(steps);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         if (Input.Map.Length <= 11) return 0;           // ignore sample for part 2.
 

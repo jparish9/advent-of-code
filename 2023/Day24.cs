@@ -44,7 +44,7 @@ public class Day24 : Day<Day24.Sky>
         public required (long X, long Y, long Z) Velocity { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var (low, high) = Input.Hailstones.Count > 5 ? (low: 200000000000000L, high: 400000000000000L) : (low: 7L, high: 27L);         // real or sample input
 
@@ -65,7 +65,7 @@ public class Day24 : Day<Day24.Sky>
         return ct;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // I didn't come up with any workable approaches to this on my own.  I thought it might have something to do with using a few (more) equations (in x,y,z) to use
         // in combination with the desired rock's initial position and velocity as unknowns for a larger system of equations, but couldn't quite figure it out.

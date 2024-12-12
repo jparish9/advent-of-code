@@ -13,7 +13,7 @@ public class Day17 : Day<Day17.Map>
         public required int[][] Grid { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return AStarGridSearch.Search(
             () => (0, 0),
@@ -24,7 +24,7 @@ public class Day17 : Day<Day17.Map>
         ).Last().G;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return AStarGridSearch.Search(
             () => (0, 0),

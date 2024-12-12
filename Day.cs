@@ -29,8 +29,8 @@ public abstract partial class Day<T>
     // algorithms to be implemented by each Day, returning each Part's single answer.
     // these use Input (either parsed sample or real input), and can also reference InputHashCode to do further caching if possible.
     // not callable directly; called by RunPart*
-    protected abstract long Part1();
-    protected abstract long Part2();
+    protected abstract Answer Part1();
+    protected abstract Answer Part2();
 
 
     // internal state
@@ -51,7 +51,7 @@ public abstract partial class Day<T>
     }
 
     // public methods
-    public long RunPart1(bool useSampleInput)
+    public Answer RunPart1(bool useSampleInput)
     {
         _isPart2 = false;
         _useSampleInput = useSampleInput;
@@ -59,7 +59,7 @@ public abstract partial class Day<T>
         return Part1();
     }
 
-    public long RunPart2(bool useSampleInput)
+    public Answer RunPart2(bool useSampleInput)
     {
         _isPart2 = true;
         _useSampleInput = useSampleInput;
@@ -113,7 +113,7 @@ public abstract partial class Day<T>
     }
 
 
-    private void TryRun(Func<long> func)
+    private void TryRun(Func<Answer> func)
     {
         _sw.Start();
         try
@@ -143,5 +143,25 @@ public abstract partial class Day<T>
 
         _cache.Add(ih, result);
         return result;
+    }
+
+
+    // in some rare cases the answer is a string, but most of the time it is a number.
+    // with the implicit operators, this is a little bit of syntactic sugar that allows for just returning a number or a string.
+    public class Answer
+    {
+        public long Value { get; set; }
+        public string? Text { get; set; }
+
+        public Answer(long value, string? text = null)
+        {
+            Value = value;
+            Text = text;
+        }
+
+        public static implicit operator Answer(long value) => new(value);
+        public static implicit operator Answer(string text) => new(0, text);
+
+        public override string ToString() => Text ?? Value.ToString();
     }
 }

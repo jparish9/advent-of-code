@@ -12,12 +12,12 @@ public class Day4 : Day<List<Day4.Card>>
         public int Matches { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return (int)Input.Sum(p => p.Matches != 0 ? Math.Pow(2, p.Matches-1) : 0);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var extras = new int[Input.Count];
 

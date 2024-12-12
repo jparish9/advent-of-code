@@ -11,7 +11,7 @@ public class Day1 : Day<Day1.Lists>
         public int TotalCount { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var diff = 0;
         for (var i=0; i<Input.TotalCount; i++)
@@ -21,7 +21,7 @@ public class Day1 : Day<Day1.Lists>
         return diff;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var sim = 0;
         Input.Left.ForEach(p => sim += p * Input.Right.Count(q => q == p));

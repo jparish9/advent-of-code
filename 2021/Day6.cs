@@ -4,12 +4,12 @@ public class Day6 : Day<List<long>>
 {
     protected override string? SampleRawInput { get => "3,4,3,1,2"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return GetPopulation(Input.ToList(), 80);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return GetPopulation(Input.ToList(), 256);
     }

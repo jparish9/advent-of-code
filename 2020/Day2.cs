@@ -13,7 +13,7 @@ public class Day2 : Day<List<Day2.Password>>
         public required string Pwd { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var valid = 0;
 
@@ -29,7 +29,7 @@ public class Day2 : Day<List<Day2.Password>>
         return valid;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // each password must contain the char at exactly one of the two positions
         return Input.Count(p => p.Pwd[p.Min-1] == p.Char ^ p.Pwd[p.Max-1] == p.Char);

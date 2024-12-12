@@ -84,12 +84,12 @@ public class Day19 : Day<Day19.PartClassifier>
         public int Rating { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Parts.Where(Input.ClassifyPart).Sum(p => p.Ratings.Sum(q => q.Rating));
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // my second implementation after looking over the solution thread.
         // instead of an overly-complicated negative approach (finding all of the rejected ranges with bottom-up tree traversal, having to intersect them, and subtracting them from the whole space of possible part ratings),

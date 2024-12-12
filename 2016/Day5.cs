@@ -34,23 +34,19 @@ public class Day5 : Day<Day5.SecurityDoor>
                 }
             }
 
-            System.Console.WriteLine(PasswordChars.Count);
-
             return part2 ? string.Join("", PasswordChars.OrderBy(p => p.pos).Select(p => p.c))
                 : string.Join("", PasswordChars.Select(p => p.c));
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
-        System.Console.WriteLine(Input.ComputePassword());
-        return 0;
+        return Input.ComputePassword();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
-        System.Console.WriteLine(Input.ComputePassword(true));
-        return 0;
+        return Input.ComputePassword(true);
     }
 
     protected override SecurityDoor Parse(string input)

@@ -6,12 +6,12 @@ public class Day10 : Day<string>
 {
     protected override string? SampleRawInput { get => "1"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return LookAndSay(Input, 40);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return LookAndSay(Input, 50);
     }

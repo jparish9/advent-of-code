@@ -48,7 +48,7 @@ public class Day10 : Day<List<Day10.Instruction>>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var signalStrength = 0;
 
@@ -67,7 +67,7 @@ public class Day10 : Day<List<Day10.Instruction>>
         return signalStrength;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var raster = new char[6][];
         for (var i=0; i<raster.Length; i++)
@@ -94,13 +94,7 @@ public class Day10 : Day<List<Day10.Instruction>>
         }
         while (cpu.Step());
 
-        for (var i=0; i<raster.Length; i++)
-        {
-            Console.WriteLine(new string(raster[i]));
-        }
-
-        // one of the few days that doesn't have an integer answer.
-        return 0;
+        return "\n" + string.Join("\n", raster.Select(p => new string(p)));
     }
 
     protected override List<Instruction> Parse(string input)

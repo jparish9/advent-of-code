@@ -4,12 +4,12 @@ public class Day6 : Day<string>
 {
     protected override string? SampleRawInput { get => "mjqjpqmgbljsphdztnvjfqwrcgsmlb"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return FindMarker(4);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return FindMarker(14);
     }

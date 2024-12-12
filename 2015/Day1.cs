@@ -4,12 +4,12 @@ public class Day1 : Day<string>
 {
     protected override string? SampleRawInput { get => "()())"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Aggregate(0, (floor, c) => floor + (c == '(' ? 1 : -1));
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var floor = 0;
         var pos = 0;

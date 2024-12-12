@@ -82,13 +82,13 @@ public class Day6 : Day<Day6.Map>
 
     public enum MoveResult { Success, OffMap, EnteredLoop };
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         while (Input.TryMove() != MoveResult.OffMap);
         return Input.GuardStateLog.Select(p => p.Position).Distinct().Count();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // iterate over visited positions (MINUS THE STARTING ONE) to place an obstacle and see if we enter a loop.
         // my first attempt, putting an obstacle at each visited position and running the guard from its initial position, got the correct answer but took almost 4 minutes.

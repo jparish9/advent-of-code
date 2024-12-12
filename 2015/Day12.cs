@@ -6,12 +6,12 @@ public class Day12 : Day<JToken>
 {
     protected override string? SampleRawInput { get => "{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return SumNumbers(Input);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return SumNumbers(Input, true);
     }

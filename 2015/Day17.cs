@@ -9,12 +9,12 @@ public class Day17 : Day<Day17.Refrigerator>
         public required List<int> Containers { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return GetCombinations().Count;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var combinations = GetCombinations();
         return combinations.Count(p => p.Count == combinations.Min(p => p.Count));

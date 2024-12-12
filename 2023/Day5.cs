@@ -31,7 +31,7 @@ public class Day5 : Day<Day5.Garden>
         public long End { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         // true copy
         var seeds = new List<Seed>();
@@ -58,7 +58,7 @@ public class Day5 : Day<Day5.Garden>
         return seeds.Min(p => p.Id);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // copy seed definitions to initial ranges
         var ranges = new List<Range>();

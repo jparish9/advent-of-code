@@ -60,12 +60,12 @@ public class Day11 : Day<Day11.Map>
         public long Y { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.SumPairwiseShortestPaths(1);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.SumPairwiseShortestPaths(999999);
     }

@@ -4,7 +4,7 @@ public class Day4 : Day<string>
 {
     protected override string? SampleRawInput { get => ""; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         if (Input == "") return 0;          // ignore no sample
 
@@ -18,7 +18,7 @@ public class Day4 : Day<string>
         return i;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         if (Input == "") return 0;          // ignore no sample
 

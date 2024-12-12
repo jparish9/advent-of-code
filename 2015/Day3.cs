@@ -27,7 +27,7 @@ public class Day3 : Day<Day3.Delivery>
             };
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.Clear();
 
@@ -43,7 +43,7 @@ public class Day3 : Day<Day3.Delivery>
         return Input.Visited.Count;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         Input.Clear();
 

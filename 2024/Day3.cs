@@ -20,12 +20,12 @@ public partial class Day3 : Day<Day3.Instructions>
         public required List<int> Args;         // empty for do, don't; 2 integers for mul
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Items.Where(p => p.Command == "mul").Sum(p => p.Args[0] * p.Args[1]);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var enabled = true;
         var result = 0;

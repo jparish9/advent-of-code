@@ -58,7 +58,7 @@ public class Day13 : Day<List<Day13.Packet>>
         public Packet? SubPacket { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var sum = 0;
         for (var i=0; i<Input.Count; i+=2)
@@ -68,7 +68,7 @@ public class Day13 : Day<List<Day13.Packet>>
         return sum;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var all = new List<Packet>();
         all.AddRange(Input);

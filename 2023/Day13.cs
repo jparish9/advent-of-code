@@ -77,12 +77,12 @@ public class Day13 : Day<List<Day13.Grid>>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Sum(p => p.GetReflection());
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var total = 0;
 

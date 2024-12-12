@@ -9,12 +9,12 @@ public class Day11 : Day<Day11.Corridor>
         public required List<long> Stones;
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Blink(25);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Blink(75);
     }

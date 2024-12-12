@@ -107,20 +107,20 @@ public class Day7 : Day<Day7.Circuit>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.Reset();
         Input.ApplyInstructions();
         return Input.Wires.ContainsKey("a") ? Input.Wires["a"] : -1;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var part1 = Part1();
 
         Input.Reset();
         Input.Instructions.RemoveAll(p => p.Output == "b");
-        Input.Instructions.Add(new SignalInstruction() { Circuit = Input, Output = "b", Signal = (ushort)part1 });
+        Input.Instructions.Add(new SignalInstruction() { Circuit = Input, Output = "b", Signal = (ushort)part1.Value });
         Input.ApplyInstructions();
         return Input.Wires.ContainsKey("a") ? Input.Wires["a"] : -1;
     }

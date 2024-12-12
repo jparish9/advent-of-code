@@ -51,12 +51,12 @@ public class Day6 : Day<Day6.RaceGroup>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.TotalMargin();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.TotalMargin();
     }

@@ -15,7 +15,7 @@ public class Day2 : Day<Day2.ReportSet>
         public bool IsSafeWithoutDampener { get; set; }        // cache result from part 1; default unsafe
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var safeCount = 0;
         Input.Reports.ForEach(p => {
@@ -25,7 +25,7 @@ public class Day2 : Day<Day2.ReportSet>
         return safeCount;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var safeCount = Input.Reports.Count(p => p.IsSafeWithoutDampener!);
         foreach (var report in Input.Reports.Where(p => !p.IsSafeWithoutDampener!))

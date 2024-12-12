@@ -6,13 +6,13 @@ public class Day11 : Day<string>
 {
     protected override string? SampleRawInput { get => "ghijklmn"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         System.Console.WriteLine(NextPassword(Input));
         return 0;           // not a numeric answer
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         System.Console.WriteLine(NextPassword(NextPassword(Input)));
         return 0;           // not a numeric answer

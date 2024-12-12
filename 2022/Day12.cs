@@ -51,7 +51,7 @@ public class Day12 : Day<Day12.Map>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return AStarGridSearch.Search(
             Input.Start,
@@ -62,7 +62,7 @@ public class Day12 : Day<Day12.Map>
         ).Last().G;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return AStarGridSearch.Search(
             Input.Start,

@@ -66,7 +66,7 @@ public class Day5 : Day<Day5.Manual>
         public int Median() { return Pages[Pages.Count/2]; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var sum = 0;
         foreach (var update in Input.Updates)
@@ -78,7 +78,7 @@ public class Day5 : Day<Day5.Manual>
         return sum;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var sum = 0;
 

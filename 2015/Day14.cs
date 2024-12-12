@@ -27,12 +27,12 @@ public class Day14 : Day<Day14.ReindeerRace>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Deer.Max(p => p.DistanceTravelled(Input.Deer.Count == 2 ? 1000 : 2503));
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var scores = new Dictionary<string, int>();
         for (int i = 1; i <= (Input.Deer.Count == 2 ? 1000 : 2503); i++)

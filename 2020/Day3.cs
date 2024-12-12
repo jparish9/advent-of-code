@@ -4,12 +4,12 @@ public class Day3 : Day<char[][]>
 {
     protected override string? SampleRawInput { get => "..##.......\n#...#...#..\n.#....#..#.\n..#.#...#.#\n.#...##..#.\n..#.##.....\n.#.#.#....#\n.#........#\n#.##...#...\n#...##....#\n.#..#...#.#"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return CountTrees(3, 1);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return CountTrees(1, 1) * CountTrees(3, 1) * CountTrees(5, 1) * CountTrees(7, 1) * CountTrees(1, 2);
     }

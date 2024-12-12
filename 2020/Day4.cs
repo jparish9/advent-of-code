@@ -9,13 +9,13 @@ public class Day4 : Day<List<Day4.Passport>>
         public required Dictionary<string, string> Fields { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         // passport is valid if it contains all fields except cid
         return Input.Count(p => p.Fields.Count == 8 || (p.Fields.Count == 7 && !p.Fields.ContainsKey("cid")));
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // part 1, plus additional validation rules
         var ct = 0;

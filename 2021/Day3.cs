@@ -4,7 +4,7 @@ public class Day3 : Day<List<List<bool>>>
 {
     protected override string? SampleRawInput { get => "00100\n11110\n10110\n10111\n10101\n01111\n00111\n11100\n10000\n11001\n00010\n01010"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var gamma = 0;
         var epsilon = 0;
@@ -18,7 +18,7 @@ public class Day3 : Day<List<List<bool>>>
         return gamma * epsilon;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var qualifiedReadings = Input.Select(p => p.ToList()).ToList();
         for (var i=0; i<Input[0].Count; i++)

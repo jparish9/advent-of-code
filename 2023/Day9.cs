@@ -6,12 +6,12 @@ public class Day9 : Day<List<List<int>>>
 
     private readonly Dictionary<int, int[]> _predictions = new();
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return GetPrediction()[1];
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return GetPrediction()[0];
     }

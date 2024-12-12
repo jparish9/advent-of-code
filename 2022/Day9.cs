@@ -75,12 +75,12 @@ public class Day9 : Day<List<Day9.Move>>
         public int Y { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return RopeBridge(1);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return RopeBridge(9);
     }

@@ -75,7 +75,7 @@ public class Day6 : Day<Day6.LightGrid>
         Toggle
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.TurnOffAllLights();
 
@@ -88,7 +88,7 @@ public class Day6 : Day<Day6.LightGrid>
         return Input.State();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         Input.TurnOffAllLights();
 

@@ -4,12 +4,12 @@ public class Day7 : Day<List<int>>
 {
     protected override string? SampleRawInput { get => "16,1,2,0,4,2,7,1,2,14"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return GetAlignmentCost(p => p);                    // cost is 1 for each step
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return GetAlignmentCost(p => p * (p+1) / 2);        // cost starts at 1, increases by 1 for each step
     }

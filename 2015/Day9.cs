@@ -6,12 +6,12 @@ public class Day9 : Day<Graph>
 {
     protected override string? SampleRawInput { get => "London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141"; }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Search(compare: Graph.Minimize);       // try all starts, traversing the whole graph, minimizing total Edge.Weight
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Search(compare: Graph.Maximize);
     }

@@ -18,7 +18,7 @@ public class Day4 : Day<List<Day4.Pairs>>
         public int High { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var contained = 0;
         foreach (var line in Input.Select(p => p.Values))
@@ -31,7 +31,7 @@ public class Day4 : Day<List<Day4.Pairs>>
         return contained;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var overlap = 0;
         foreach (var line in Input.Select(p => p.Values))

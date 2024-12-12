@@ -61,7 +61,7 @@ public class Day25 : Day<Day25.Graph>
         public int NavigatedCount { get; set; }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         var rnd = new Random();
         int ct = 0;
@@ -91,7 +91,7 @@ public class Day25 : Day<Day25.Graph>
         return (Input.Nodes.Count - ct) * ct;
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return 0;           // there is no part 2!
     }

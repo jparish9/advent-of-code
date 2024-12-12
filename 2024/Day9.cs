@@ -31,7 +31,7 @@ public class Day9 : Day<Day9.DiskMap>
         public int Size;
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         // make a copy so we don't have to parse it again, and we can modify the copy in-place (don't interfere with part 2)
         var map = new DiskMap() { Blocks = Input.Blocks.Select(p => new Block { FileId = p.FileId, FileSize = p.FileSize }).ToList() };
@@ -56,7 +56,7 @@ public class Day9 : Day<Day9.DiskMap>
     After I saw a suggestion to use a sorted list/priority queue to keep track of the "best" free space, I tried that and ran into a different problem resulting from overcomplicating that sort.
     It turns out it only needs to be/stay sorted by position from left to right.  Now it runs in ~0.5s and gets the correct answer.
     */
-    protected override long Part2()
+    protected override Answer Part2()
     {
         // scan for all free blocks and put them in a list (sorted by position, because that is the order they are scanned/inserted in)
         var freeBlocks = new List<FreeBlock>();

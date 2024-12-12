@@ -51,12 +51,12 @@ public class Day1 : Day<Day1.Directions>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return Input.Move();
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return Input.Move(true);
     }

@@ -145,7 +145,7 @@ public class Day22 : Day<Day22.BrickSnapshot>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         Input.Settle();         // sets Input.Supports
         var canBeRemoved = 0;
@@ -160,7 +160,7 @@ public class Day22 : Day<Day22.BrickSnapshot>
 
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         Input.Settle();         // sets Input.Supports
         var ct = 0;

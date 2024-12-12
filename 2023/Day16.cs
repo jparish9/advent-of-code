@@ -62,13 +62,13 @@ public class Day16 : Day<Day16.Cave>
         }
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         // beam of light starts at 0,0 and travels right
         return Input.NewBeam(0, 0, 1, 0);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         var maxEnergized = 0L;
 

@@ -74,12 +74,12 @@ public class Day8 : Day<Day8.City>
         return antinodes.Count;
     }
 
-    protected override long Part1()
+    protected override Answer Part1()
     {
         return CountAntinodes(false);
     }
 
-    protected override long Part2()
+    protected override Answer Part2()
     {
         return CountAntinodes(true);
     }
