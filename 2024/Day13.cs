@@ -17,16 +17,13 @@ public class Day13 : Day<Day13.Arcade>
                 var det = machine.AButton.X * machine.BButton.Y - machine.AButton.Y * machine.BButton.X;
                 if (det == 0) continue;         // no solution
 
-                // x = A^-1 * B
-                var x = (machine.BButton.Y * machine.Prize.X - machine.BButton.X * machine.Prize.Y) / (double)det;
-                var y = (machine.AButton.X * machine.Prize.Y - machine.AButton.Y * machine.Prize.X) / (double)det;
-
-                // check for integer solution
-                var roundedX = (long)Math.Round(x);
-                var roundedY = (long)Math.Round(y);
-                if (Math.Abs(x - roundedX) > 1e-12 || Math.Abs(y - roundedY) > 1e-12) continue;
-
-                tokens += roundedX * 3 + roundedY;
+                // x = A^-1 * B, check for integer solution using mod
+                var xInv = machine.BButton.Y * machine.Prize.X - machine.BButton.X * machine.Prize.Y;
+                if (xInv % det != 0) continue;
+                var yInv = machine.AButton.X * machine.Prize.Y - machine.AButton.Y * machine.Prize.X;
+                if (yInv % det != 0) continue;
+                
+                tokens += xInv/det * 3 + yInv/det;
             }
             return tokens;
         }
