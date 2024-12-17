@@ -19,7 +19,7 @@ public class Day17 : Day<Day17.Map>
             () => (0, 0),
             () => new List<(int, int)> {(Input.Grid[0].Length-1, Input.Grid.Length-1)},
             (state) => true,
-            (x, y) => Input.Grid[y][x],
+            (current, dest) => Input.Grid[dest.Position.Y][dest.Position.X],
             (currentNode) => GetNeighbors(currentNode, 0, 3)
         ).Last().G;
     }
@@ -30,7 +30,7 @@ public class Day17 : Day<Day17.Map>
             () => (0, 0),
             () => new List<(int, int)> {(Input.Grid[0].Length-1, Input.Grid.Length-1)},
             (state) => state % 11 >= 4,
-            (x, y) => Input.Grid[y][x],
+            (current, dest) => Input.Grid[dest.Position.Y][dest.Position.X],
             (currentNode) => GetNeighbors(currentNode, 4, 10)
         ).Last().G;
     }

@@ -57,7 +57,7 @@ public class Day12 : Day<Day12.Map>
             Input.Start,
             () => Input.End('S'),
             (state) => true,
-            (x, y) => 1,
+            (current, dest) => 1,
             (currentNode) => GetNeighbors(currentNode, 'S')
         ).Last().G;
     }
@@ -68,7 +68,7 @@ public class Day12 : Day<Day12.Map>
             Input.Start,
             () => Input.End('a'),
             (state) => true,
-            (x, y) => 1,
+            (current, dest) => 1,
             (currentNode) => GetNeighbors(currentNode, 'a')
         ).Last().G;
     }
