@@ -14,47 +14,50 @@ public class Day18 : Day<Day18.MemorySpace>
         public int Width;
         public int Height;
         public int Take;                                      // how many corrupted bytes to use
-        public List<AStarGridSearch.Node>? LastPath;          // save the path for part 2
     }
 
     protected override Answer Part1()
     {
-        Input.LastPath = AStarGridSearch.Search(
+        return AStarGridSearch.Search(
             () => (0, 0),
             () => [(Input.Width-1, Input.Height-1)],
             (state) => true,
             (current, dest) => 1,
             (currentNode) => GetNeighbors(currentNode, Input.Take)
-        );
-
-        return Input.LastPath.Last().G;
+        ).Last().G;
     }
 
     protected override Answer Part2()
     {
-        // we know the minimum to block the path is at least byte Take+1, and have saved the last path from using byte Take (part 1).
-        // just iterate until we find it.  this takes ~5 minutes with no optimizations.
-        // we can optimize by only re-searching the path when the new corrupted byte is on the last path.
-        // for my input, this tries 1828 bytes but only has to re-search 36 of them, finishing in ~7 seconds.
-        var take = Input.Take+1;
-        while (true)
-        {
-            if (Input.LastPath!.Any(n => n.Position == Input.Corrupted[take-1]))
-            {
-                Input.LastPath = AStarGridSearch.Search(
-                    () => (0, 0),
-                    () => [(Input.Width-1, Input.Height-1)],
-                    (state) => true,
-                    (current, dest) => 1,
-                    (currentNode) => GetNeighbors(currentNode, take));
-                if (Input.LastPath.Count == 0) break;           // no path found
-            }
+        // the minimum to block the path is at least byte Take+1.
+        // my first approach was iteration.  brute-force took ~5 minutes.
+        // then I optimized by only re-searching the path when the new corrupted byte was on the last path.
+        // for my input, this tried 1828 bytes but only had to re-search 36 of them, and finished in ~7 seconds.
+        // after checking the subreddit I tried a binary search of the failing corrupted byte position.
+        // for my input, this searches just 13 times, finishing in under a second.
 
-            take++;
+        var lpos = Input.Take;
+        var hpos = Input.Corrupted.Count;
+
+        while (lpos != hpos)
+        {
+            var mpos = (lpos + hpos) / 2;
+            var take = mpos + 1;
+
+            var result = AStarGridSearch.Search(
+                () => (0, 0),
+                () => [(Input.Width-1, Input.Height-1)],
+                (state) => true,
+                (current, dest) => 1,
+                (currentNode) => GetNeighbors(currentNode, take));
+
+            if (result.Count == 0)                          // path not found, set high pointer to current position
+                hpos = mpos;
+            else                                            // path found, set low pointer to current position (account for edge case when hpos-lpos=1)
+                lpos = mpos + (lpos == mpos ? 1 : 0);
         }
 
-        // return the byte that caused no path to be found.
-        return Input.Corrupted[take-1].X + "," + Input.Corrupted[take-1].Y;
+        return Input.Corrupted[lpos].X + "," + Input.Corrupted[lpos].Y;
     }
 
     private List<AStarGridSearch.Node> GetNeighbors(AStarGridSearch.Node currentNode, int take)
