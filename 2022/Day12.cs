@@ -96,7 +96,7 @@ public class Day12 : Day<Day12.Map>
             if (neighborLevel < currentLevel-1) continue;
 
             // allowable neighbor
-            var newNode = new AStarGridSearch.Node() { Position = (newX, newY), Parent = currentNode };
+            var newNode = new AStarGridSearch.Node() { Position = (newX, newY) };
             adjacentNodes.Add(newNode);
         }
 

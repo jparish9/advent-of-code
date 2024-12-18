@@ -92,7 +92,12 @@ public class AStarGridSearch
 
             // get all adjacent nodes
             var adjacentNodes = new List<Node>();
-            adjacentNodes.AddRange(Neighbors(currentNode));
+            var neighbors = Neighbors(currentNode);
+            foreach (var neighbor in neighbors)
+            {
+                neighbor.Parent = currentNode;
+            }
+            adjacentNodes.AddRange(neighbors);
 
             // loop through adjacent nodes
             foreach (var adjacentNode in adjacentNodes)
@@ -114,7 +119,7 @@ public class AStarGridSearch
             }
         }
 
-        Console.WriteLine("did not find a path!");
+        // did not find a path, this path list will be empty
         return path;
     }
 }

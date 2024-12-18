@@ -67,7 +67,7 @@ public class Day17 : Day<Day17.Map>
             if (stepsInThisDir >= maxDirSteps) continue;
 
             // allowable neighbor
-            var newNode = new AStarGridSearch.Node() { Position = (newX, newY), Parent = currentNode, State = divisor*dirIndex+stepsInThisDir+1};
+            var newNode = new AStarGridSearch.Node() { Position = (newX, newY), State = divisor*dirIndex+stepsInThisDir+1};
             adjacentNodes.Add(newNode);
         }
 
