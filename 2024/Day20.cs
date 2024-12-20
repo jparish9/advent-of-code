@@ -32,9 +32,8 @@ public class Day20 : Day<Day20.Racetrack>
             Steps[pos.y][pos.x] = 0;
             while (Grid[pos.y][pos.x] != 'E')
             {
-                for (var dirIndex=0; dirIndex<4; dirIndex++)
+                foreach (var (X, Y) in Directions)
                 {
-                    var (X, Y) = Directions[dirIndex];
                     var newX = pos.x + X;
                     var newY = pos.y + Y;
 
@@ -67,10 +66,11 @@ public class Day20 : Day<Day20.Racetrack>
 
                             var cheatDistance = Math.Abs(newX - x) + Math.Abs(newY - y);
                             if (cheatDistance > 20) continue;                                                               // manhattan distance > 20
-                            if (Steps[newY][newX] - Steps[y][x] <= cheatDistance) continue;                                 // not shorter than full path
+                            var saved = Steps[newY][newX] - Steps[y][x] - cheatDistance;
+                            if (saved <= 0) continue;                                                                       // not shorter than full path
                             
                             // valid cheat
-                            Cheats.Add(new Cheat() { From = (x, y), To = (newX, newY), Steps = cheatDistance, Saved = Steps[newY][newX] - Steps[y][x] - cheatDistance });
+                            Cheats.Add(new Cheat() { From = (x, y), To = (newX, newY), Steps = cheatDistance, Saved = saved });
                         }
                     }
                 }
