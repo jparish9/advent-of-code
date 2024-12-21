@@ -4,27 +4,115 @@ namespace AOC.AOC2024;
 
 public static class Extensions
 {
-    public static IEnumerable<IEnumerable<T>> CartesianProduct<T>
-        (this IEnumerable<IEnumerable<T>> sequences) 
-    { 
-        IEnumerable<IEnumerable<T>> emptyProduct = [[]]; 
-        return sequences.Aggregate( 
-            emptyProduct, 
-            (accumulator, sequence) => 
-            from accseq in accumulator 
-            from item in sequence 
-            select accseq.Concat([item]));
+    // given a list-of-lists where each list item has one or more elements, return the cartesian product (all combinations) of picking one element in each list,
+    // as another list-of-lists.
+    // example:  [[1,2], [3], [4,5,6]] => [[1,3,4], [1,3,5], [1,3,6], [2,3,4], [2,3,5], [2,3,6]]
+    public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)
+    {
+        IEnumerable<IEnumerable<T>> emptyProduct = [[]];
+        return sequences.Aggregate(
+            emptyProduct,
+            (accumulator, sequence) =>
+                from accseq in accumulator
+                from item in sequence
+                select accseq.Concat([item]));
     }
 }
 
-public class Day21 : Day<Day21.DoorCodes>
+public partial class Day21 : Day<Day21.DoorCodes>
 {
     protected override string? SampleRawInput { get => "029A\n980A\n179A\n456A\n379A"; }
     private static readonly (int X, int Y)[] Directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
-    public class DoorCodes
+    public partial class DoorCodes
     {
         public required List<string> Codes { get; set; }
+
+        public long GetComplexity(int robots)
+        {
+            // shoutout to this thread: https://www.reddit.com/r/adventofcode/comments/1hj8380/2024_day_21_part_2_i_need_help_three_days_in_row/
+            // a few key observations:
+            // - the cost of moving any directional keypad from X to Y doesn't depend on the directing keypad or any keypads that move _that_ directing keypad, since they all start and end at 'A' for any given move.
+            // - thus the cost is only dependent on the current and target position on the current keypad, from which we can compute the (best) cost to direct that movement on the directing keypad.
+            // - we can iterate up the chain for 2 (part 1), 25 (part 2), or any number of keypads with linear time and only a fixed memory cost.
+            var dirKeypad = new DirectionalKeypad();
+
+            var costs = new Dictionary<(char, char), long>();
+
+            // base costs
+            foreach (var button1 in dirKeypad.ButtonSet.Values)
+            {
+                foreach (var button2 in dirKeypad.ButtonSet.Values)
+                {
+                    dirKeypad.Position = button1.Value;
+                    if (button1.Value == button2.Value) continue;
+                    costs[(button1.Value, button2.Value)] = dirKeypad.FindPaths(button2.Value).Select(p => p.Count).Min();
+                }
+            }
+
+            // now, for each pair of buttons on the next keypad, find the lowest cost to go from any button to any other button, using costs from the previous keypad.
+            // replace costs and continue with the next keypad.
+            for (var j=0; j<robots-1; j++)
+            {
+                var nextCosts = new Dictionary<(char, char), long>();
+                
+                foreach (var button1 in dirKeypad.ButtonSet.Values)
+                {
+                    foreach (var button2 in dirKeypad.ButtonSet.Values)
+                    {
+                        if (button1.Value == button2.Value) continue;
+
+                        dirKeypad.Position = button1.Value;
+
+                        var paths = dirKeypad.DirectionalKeypadPresses(button2.Value.ToString());
+                        var minCost = long.MaxValue;
+
+                        foreach (var path in paths)
+                        {
+                            var thisCost = costs[('A', path[0])];
+                            for (var i=1; i<path.Length; i++)
+                            {
+                                thisCost += path[i-1] == path[i] ? 1 : costs[(path[i-1], path[i])];
+                            }
+                            if (thisCost < minCost) minCost = thisCost;
+                        }
+
+                        nextCosts[(button1.Value, button2.Value)] = minCost;
+                    }
+                }
+
+                costs = nextCosts;
+            }
+
+            // now that we know the lowest cost for the highest-order robot arm to recursively do all of the moves, find all paths for the input and pick the shortest one.
+            var numKeypad = new NumericKeypad();
+            var complexity = 0L;
+            foreach (var str in Codes)
+            {
+                var code = str.ToCharArray();
+                var minCost = long.MaxValue;
+
+                var paths = numKeypad.DirectionalKeypadPresses(str);
+
+                foreach (var path in paths)
+                {
+                    var thisCost = costs[('A', path[0])];
+                    for (var i=1; i<path.Length; i++)
+                    {
+                        thisCost += path[i-1] == path[i] ? 1 : costs[(path[i-1], path[i])];         // if repeating the same button, cost is 1 since we are back at 'A' and just need to press the button again.
+                    }
+                    if (thisCost < minCost) minCost = thisCost;
+                }
+
+                var numeric = int.Parse(MatchAlphabet().Replace(str, ""));
+                complexity += minCost * numeric;
+            }
+
+            return complexity;
+        }
+
+        [GeneratedRegex("[A-Z]")]
+        private static partial Regex MatchAlphabet();
     }
 
     public abstract class Keypad
@@ -57,7 +145,7 @@ public class Day21 : Day<Day21.DoorCodes>
             
             foreach (var ch in code)
             {
-                allMoveSets.Add(Press(ch));
+                allMoveSets.Add(FindPaths(ch));
             }
 
             // convert these to their strings first
@@ -76,11 +164,11 @@ public class Day21 : Day<Day21.DoorCodes>
             return allMoves.CartesianProduct().Select(p => string.Join("", p)).ToList();
         }
 
-        public List<List<Move>> Press(char dest)
+        public List<List<Move>> FindPaths(char dest)
         {
             // we need to enumerate ALL possible moves to dest from current position (avoiding the gap), and return them.
             // with the buttons implemented as nodes, we can use the modified djikstra from day 18 to return all paths.
-            // it might be a little overkill (this grid is small and explicit enumeration is possible), but it is unlikely to be slow and is more general.
+            // djikstra might be a little overkill (this grid is small and explicit enumeration is possible), but it is unlikely to be slow and is more general.
 
             if (_pathCache.ContainsKey((Position, dest)))
             {
@@ -124,9 +212,8 @@ public class Day21 : Day<Day21.DoorCodes>
                         allMoves.Add(moves);
                     }
 
-                    // update our position for the next move
+                    // cache the found paths and update our position for the next move
                     _pathCache[(Position, dest)] = allMoves;
-
                     Position = dest;
 
                     return allMoves;
@@ -157,6 +244,7 @@ public class Day21 : Day<Day21.DoorCodes>
             return [];
         }
 
+        // collect all equivalent best paths
         private static List<List<ButtonNode>> FindAllPaths(ButtonNode current, Dictionary<ButtonNode, List<ButtonNode>> predecessors, ButtonNode start)
         {
             if (current == start)
@@ -242,45 +330,12 @@ public class Day21 : Day<Day21.DoorCodes>
 
     protected override Answer Part1()
     {
-        var totalComplexity = 0;
-
-        var keypad = new NumericKeypad();
-        var dirKeypad1 = new DirectionalKeypad();
-        var dirKeypad2 = new DirectionalKeypad();
-
-        foreach (var code in Input.Codes)
-        {
-            var minLength = int.MaxValue;
-            string aMove = "";
-
-            var moves = keypad.DirectionalKeypadPresses(code);
-
-            foreach (var move in moves)
-            {
-                var moves2 = dirKeypad1.DirectionalKeypadPresses(move);
-
-                foreach (var move2 in moves2)
-                {
-                    var moves3 = dirKeypad2.DirectionalKeypadPresses(move2);
-                    var len = moves3.Select(p => p.Length).Min();
-                    if (len < minLength)
-                    {
-                        minLength = len;
-                        aMove = moves3.First();
-                    }
-                }
-            }
-
-            var complexity = int.Parse(Regex.Replace(code, "[A-Z]", ""));
-            totalComplexity += aMove.Length * complexity;
-        }
-
-        return totalComplexity;
+        return Input.GetComplexity(2);
     }
 
     protected override Answer Part2()
     {
-        throw new NotImplementedException();
+        return Input.GetComplexity(25);
     }
 
     protected override DoorCodes Parse(string input)
