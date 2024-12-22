@@ -2,7 +2,7 @@ using AOC.Utils;
 
 namespace AOC.AOC2015;
 
-public class Day13 : Day<Graph>
+public class Day13 : Day<Graph<NamedNode>>
 {
     protected override string? SampleRawInput { get => "Alice would gain 54 happiness units by sitting next to Bob.\n" +
         "Alice would lose 79 happiness units by sitting next to Carol.\n" +
@@ -26,11 +26,11 @@ public class Day13 : Day<Graph>
     protected override Answer Part2()
     {
         // add self, linked to all others, with bidirectional weight of 0
-        var self = new Node() { Name = "Self" };
+        var self = new NamedNode() { Name = "Self"};
         foreach (var node in Input.Nodes)
         {
-            node.Edges.Add(new Edge() { From = node, To = self, Weight = 0 });
-            self.Edges.Add(new Edge() { From = self, To = node, Weight = 0 });
+            node.AddEdge(self, 0);
+            self.AddEdge(node, 0);
         }
         Input.Nodes.Add(self);
 
@@ -45,16 +45,16 @@ public class Day13 : Day<Graph>
         // edge weight needs to count bidirectional weight (A to B + B to A) when it is traversed.
         return Input.Search(
             start: Input.Nodes.First(),
-            compare: Graph.Maximize,
+            compare: Graph<NamedNode>.Maximize,
             edges: (currentNode, visited, path, nodeCt) => currentNode.Edges.Where(p => !(visited.Contains(p.To) && (visited.Count != nodeCt || p.To != path[0]))),
             pathComplete: (currentNode, end, path, nodeCt) => path.Count == nodeCt && currentNode == path[0],
             edgeWeight: (edge) => edge.Weight + edge.To.Edges.Single(p => p.To == edge.From).Weight
         );
     }
 
-    protected override Graph Parse(string input)
+    protected override Graph<NamedNode> Parse(string input)
     {
-        var graph = new Graph();
+        var graph = new Graph<NamedNode>();
 
         foreach (var line in input.Split("\n").Where(p => p != ""))
         {
@@ -66,20 +66,19 @@ public class Day13 : Day<Graph>
             var fromNode = graph.Nodes.FirstOrDefault(n => n.Name == from);
             if (fromNode == null)
             {
-                fromNode = new Node() { Name = from };
+                fromNode = new NamedNode() { Name = from };
                 graph.Nodes.Add(fromNode);
             }
 
             var toNode = graph.Nodes.FirstOrDefault(n => n.Name == to);
             if (toNode == null)
             {
-                toNode = new Node() { Name = to };
+                toNode = new NamedNode() { Name = to };
                 graph.Nodes.Add(toNode);
             }
 
             // edges are not bidirectional!  different weights from A to B as from B to A.  single edge per input line.
-            var edge = new Edge() { From = fromNode, To = toNode, Weight = weight };
-            fromNode.Edges.Add(edge);
+            fromNode.AddEdge(toNode, weight);
         }
 
         return graph;

@@ -7,15 +7,10 @@ public class Day23 : Day<Day23.TrailMap>
 {
     protected override string? SampleRawInput { get => "#.#####################\n#.......#########...###\n#######.#########.#.###\n###.....#.>.>.###.#.###\n###v#####.#v#.###.#.###\n###.>...#.#.#.....#...#\n###v###.#.#.#########.#\n###...#.#.#.......#...#\n#####.#.#.#######.#.###\n#.....#.#.#.......#...#\n#.#####.#.#.#########v#\n#.#...#...#...###...>.#\n#.#.#v#######v###.###v#\n#...#.>.#...>.>.#.###.#\n#####v#.#.###v#.#.###.#\n#.....#...#...#.#.#...#\n#.#########.###.#.#.###\n#...###...#...#...#.###\n###.###.#.###v#####v###\n#...#...#.#.>.>.#.>.###\n#.###.###.#.###.#.#v###\n#.....###...###...#...#\n#####################.#"; }
 
-    public class TrailMap
+    [method: SetsRequiredMembers]
+    public class TrailMap(char[][] map)
     {
-        [SetsRequiredMembers]
-        public TrailMap(char[][] map)
-        {
-            Map = map;
-        }
-
-        public required char[][] Map { get; set; }
+        public required char[][] Map { get; set; } = map;
 
         public (int X, int Y) FindStart()
         {
@@ -40,47 +35,22 @@ public class Day23 : Day<Day23.TrailMap>
         }
     }
 
-    private class Day23Graph
+    // extend the base Node class to include position and edges that include direction
+    private class TrailMapNode : BaseNode<TrailMapNode>
     {
-        public List<Day23Node> Nodes { get; set; } = new List<Day23Node>();
+        public (int X, int Y) Position { get; set; }
 
-        // convert this to a standard shared weighted graph so we can reuse search code.
-        // it is very close already, but this graph has nodes with positions as ids, and edges that care about their initial direction (at least when building the graph).
-        // could probably clean this up further.
-        public Graph ToStandardGraph()
+        // add an edge extended with direction
+        public void AddEdge(TrailMapNode to, int weight, (int X, int Y) direction)
         {
-            var graph = new Graph();
-
-            foreach (var node in Nodes)
-            {
-                graph.Nodes.Add(new Node() { Name = node.Position.ToString() });
-            }
-
-            foreach (var node in Nodes)
-            {
-                var weightedNode = graph.Nodes.First(p => p.Name == node.Position.ToString());
-                foreach (var edge in node.Edges)
-                {
-                    var weightedEdge = new Edge() { From = weightedNode, To = graph.Nodes.First(p => p.Name == edge.To.Position.ToString()), Weight = edge.Weight };
-                    weightedNode.Edges.Add(weightedEdge);
-                }
-            }
-
-            return graph;
+            Edges.Add(new TrailMapEdge() { From = this, To = to, Weight = weight, Direction = direction });
         }
     }
 
-    private class Day23Node
+    // extend the base Edge class to include direction
+    private class TrailMapEdge : Edge<TrailMapNode>
     {
-        public (int X, int Y) Position { get; set; }
-        public List<Day23Edge> Edges { get; set; } = new List<Day23Edge>();
-    }
-
-    private class Day23Edge
-    {
-        public required Day23Node To { get; set; }
         public (int X, int Y) Direction { get; set; }
-        public int Weight { get; set; }
     }
 
     protected override Answer Part1()
@@ -101,25 +71,23 @@ public class Day23 : Day<Day23.TrailMap>
         // where the edge weights are the lengths of the "roads" connecting them, and then probably just brute-force search the highest-weight path from start to end on the (much) smaller graph.
         // this is still just a (much) smaller NP-hard problem, but should be reduced enough that it can be brute-forced in a reasonable amount of time.
 
-        var graph = new Day23Graph();
+        var graph = new Graph<TrailMapNode>();
         var start = Input.FindStart();
         var visited = new HashSet<(int X, int Y)>() { start };
-        var startNode = new Day23Node() { Position = start };
+        var startNode = new TrailMapNode() { Position = start };
         graph.Nodes.Add(startNode);
         BuildGraph(graph, startNode, Input.FindEnd(), null, visited);
+        var endNode = graph.Nodes.First(p => p.Position == Input.FindEnd());
 
-        // coerce this graph into the standard weighted graph implementation, and search it.
-        // the search is a standard highest-weight search of the whole graph between a known start and end.
-        var wg = graph.ToStandardGraph();
-        return wg.Search(
-            start: wg.Nodes.First(p => p.Name == start.ToString()),
-            end: wg.Nodes.First(p => p.Name == Input.FindEnd().ToString()),
-            compare: Graph.Maximize
+        return graph.Search(
+            start: startNode,
+            end: endNode,
+            compare: Graph<NamedNode>.Maximize
         );
     }
 
     // build a graph of just the critical nodes (forks, start, end) in the map, with edge weights being the length of the "roads" connecting them.
-    private void BuildGraph(Day23Graph graph, Day23Node currentNode, (int X, int Y) endPos, (int X, int Y)? direction, HashSet<(int X, int Y)> visited)
+    private void BuildGraph(Graph<TrailMapNode> graph, TrailMapNode currentNode, (int X, int Y) endPos, (int X, int Y)? direction, HashSet<(int X, int Y)> visited)
     {
         // make a copy of visited, this is this path's visited set, not a global one (we don't want to modify the caller's visited set)
         var newVisited = new HashSet<(int X, int Y)>(visited);
@@ -128,7 +96,7 @@ public class Day23 : Day<Day23.TrailMap>
 
         var allDirs = new[] { (-1, 0), (1, 0), (0, -1), (0, 1) };
 
-        var dirs = direction != null ? new[] { ((int, int))direction } : allDirs;       // when called recursively, our single initial direction (from the fork node) is given.
+        var dirs = direction != null ? [((int, int))direction] : allDirs;       // when called recursively, our single initial direction (from the fork node) is given.
         var firstDir = direction;
         
         var x = currentNode.Position.X;
@@ -171,7 +139,7 @@ public class Day23 : Day<Day23.TrailMap>
         }
         while (adjacentNodes.Count == 1 && (adjacentNodes[0] != endPos));           // iterate until we hit a fork, a dead end, or the target
 
-        if (!adjacentNodes.Any()) return;           // dead end
+        if (adjacentNodes.Count == 0) return;           // dead end
 
         if (adjacentNodes[0] == endPos)            // reached the target
         {
@@ -179,13 +147,14 @@ public class Day23 : Day<Day23.TrailMap>
             var endNode = graph.Nodes.FirstOrDefault(p => p.Position == adjacentNodes[0]);
             if (endNode == null)
             {
-                endNode = new Day23Node() { Position = adjacentNodes[0] };
+                endNode = new TrailMapNode() { Position = adjacentNodes[0] };
                 graph.Nodes.Add(endNode);
             }
 
             // currentNode may already have the end node as an edge, don't duplicate that either.
             if (!currentNode.Edges.Any(p => p.To == endNode))
-                currentNode.Edges.Add(new Day23Edge() { To = endNode, Weight = weight, Direction = firstDir!.Value });
+                currentNode.AddEdge(endNode, weight, firstDir!.Value);
+                //currentNode.Edges.Add(new Day23Edge<Day23Node>() { To = endNode, Weight = weight, Direction = firstDir!.Value });
             return;
         }
 
@@ -195,18 +164,19 @@ public class Day23 : Day<Day23.TrailMap>
         var forkNode = graph.Nodes.FirstOrDefault(p => p.Position == (x, y));
         if (forkNode == null)
         {
-            forkNode = new Day23Node() { Position = (x, y) };
+            forkNode = new TrailMapNode() { Position = (x, y) };
             graph.Nodes.Add(forkNode);
         }
         
         // don't duplicate the edge from currentNode to forkNode
         if (!currentNode.Edges.Any(p => p.To == forkNode))
-            currentNode.Edges.Add(new Day23Edge() { To = forkNode, Weight = weight, Direction = firstDir!.Value });
+            currentNode.AddEdge(forkNode, weight, firstDir!.Value);
+            //currentNode.Edges.Add(new Day23Edge() { To = forkNode, Weight = weight, Direction = firstDir!.Value });
 
         foreach (var (adjX, adjY) in adjacentNodes)
         {
             var adjacentDir = (adjX - x, adjY - y);
-            if (forkNode.Edges.Any(p => p.Direction == adjacentDir)) continue;          // we've already been in this direction from this node
+            if (forkNode.Edges.Any(p => ((TrailMapEdge)p).Direction == adjacentDir)) continue;          // we've already been in this direction from this node
 
             // recursive call for each unexplored fork path
             BuildGraph(graph, forkNode, endPos, adjacentDir, newVisited);
