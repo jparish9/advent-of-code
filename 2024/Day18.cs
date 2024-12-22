@@ -91,14 +91,13 @@ public class Day18 : Day<Day18.MemorySpace>
     {
         var corrupted = input.Split("\n").Where(p => p != "").Select(p => p.Split(",")).Select(p => (X: int.Parse(p[0]), Y: int.Parse(p[1]))).ToList();
 
-        // 7x7 for sample (0-6), 71x71 for real input (0-70).
-        var isSample = corrupted.Count < 30;
+        // 7x7 for sample (0-6), 71x71 for real input4 (0-70).
         return new MemorySpace()
         {
             Corrupted = corrupted,
-            Width = isSample ? 7 : 71,
-            Height = isSample ? 7 : 71,
-            Take = isSample ? 12 : 1024
+            Width = IsSampleInput ? 7 : 71,
+            Height = IsSampleInput ? 7 : 71,
+            Take = IsSampleInput ? 12 : 1024
         };
     }
 }

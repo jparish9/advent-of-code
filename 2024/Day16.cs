@@ -13,7 +13,7 @@ public class Day16 : Day<Day16.Map>
     // this edge case exposed a bug where reaching a location from two different directions was incorrectly considered the same node.
     //protected override string? SampleRawInput { get => "##########\n#.......E#\n#.##.#####\n#..#.....#\n##.#####.#\n#S.......#\n##########"; }
 
-    private static readonly (int X, int Y)[] Directions = new[] { (0, -1), (1, 0), (0, 1), (-1, 0) };           // up, right, down, left
+    private static readonly (int X, int Y)[] Directions = [(0, -1), (1, 0), (0, 1), (-1, 0)];           // up, right, down, left
 
     public class Map
     {
@@ -51,8 +51,8 @@ public class Day16 : Day<Day16.Map>
             foreach (var node in AllNodes)
             {
                 // allow turning left or right
-                node.Edges.Add((To: nodeGrid[node.Y][node.X][(node.Facing + 1) % 4], Weight: 1000 ));
-                node.Edges.Add((To: nodeGrid[node.Y][node.X][(4 + (node.Facing - 1)) % 4], Weight: 1000 ));
+                node.AddEdge(nodeGrid[node.Y][node.X][(node.Facing + 1) % 4], 1000);
+                node.AddEdge(nodeGrid[node.Y][node.X][(4 + (node.Facing - 1)) % 4], 1000);
 
                 // check one step in the current facing direction
                 var (xDir, yDir) = Directions[node.Facing];
@@ -64,7 +64,7 @@ public class Day16 : Day<Day16.Map>
                 if (Grid[newY][newX] == '#') continue;           // wall
 
                 // allow move one step in facing direction
-                node.Edges.Add((To: nodeGrid[newY][newX][node.Facing], Weight: 1));
+                node.AddEdge(nodeGrid[newY][newX][node.Facing], 1);
             }
         }
 

@@ -4,7 +4,6 @@ namespace AOC.Utils;
 public abstract class BaseNode<T> where T : BaseNode<T>
 {
     public List<Edge<T>> Edges = [];
-    public int BestWeight = int.MaxValue;
 
     public void AddEdge(T to, int weight=1)
     {

@@ -111,8 +111,6 @@ public class Day14 : Day<Day14.Swarm>
             robots.Add(new Robot() { StartingPosition = (int.Parse(pos[0]), int.Parse(pos[1])), Velocity = (int.Parse(vel[0]), int.Parse(vel[1])) });
         }
 
-        var isSample = robots.Count <= 12;
-
-        return new Swarm() { Robots = robots, Width = isSample ? 11 : 101, Height = isSample ? 7 : 103 };
+        return new Swarm() { Robots = robots, Width = IsSampleInput ? 11 : 101, Height = IsSampleInput ? 7 : 103 };
     }
 }

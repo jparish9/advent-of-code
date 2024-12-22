@@ -134,7 +134,7 @@ public partial class Day21 : Day<Day21.DoorCodes>
                     var b = ButtonSet.FirstOrDefault(p => p.Value.Position == (x + dirX, y + dirY));
                     if (b.Value != null)
                     {
-                        button.Value.Edges.Add((To: b.Value, Weight: 1));
+                        button.Value.AddEdge(b.Value, 1);
                     }
                 }
             }

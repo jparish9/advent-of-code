@@ -2,10 +2,12 @@ namespace AOC.Utils;
 
 // Djikstra's algorithm.
 
-// base node class.  callers should extend this Node to add any other needed information per node.
-public class DjikstraNode<T> where T : DjikstraNode<T>
+// extend the base node to store best weight, but allow callers to further extend it.
+// like A*, it's a little weird that we are storing search state in the node itself.
+// A cleaner idea would be to return something like a Result<T> which contains the path(s), lowest total weight, etc
+// and leaves the nodes themselves unmodified.
+public class DjikstraNode<T> : BaseNode<T> where T : DjikstraNode<T>
 {
-    public List<(T To, int Weight)> Edges = [];
     public int BestWeight = int.MaxValue;
 }
 
@@ -41,24 +43,24 @@ public class Djikstra<T> where T : DjikstraNode<T>
             var currentWeight = weights[current].Weight;
             //var currentWeight = current.BestWeight;
 
-            foreach (var (To, Weight) in current.Edges)
+            foreach (var edge in current.Edges)
             {
                 //var weight = To.BestWeight;
-                var weight = weights[To].Weight;
-                var newWeight = currentWeight + Weight;
+                var weight = weights[edge.To].Weight;
+                var newWeight = currentWeight + edge.Weight;
 
                 if (newWeight < weight)
                 {
-                    weights[To] = (current, newWeight);
+                    weights[edge.To] = (current, newWeight);
                     //To.BestWeight = newWeight;
-                    predecessors[To] = [current];
-                    queue.Remove(To, out _, out _);           // .NET 9
-                    queue.Enqueue(To, newWeight);
+                    predecessors[edge.To] = [current];
+                    queue.Remove(edge.To, out _, out _);           // .NET 9
+                    queue.Enqueue(edge.To, newWeight);
                 }
                 else if (newWeight == weight)
                 {
                     //if (!predecessors.ContainsKey(To)) predecessors[To] = [];
-                    predecessors[To].Add(current);            // save predeccessors for all paths that led to this same lowest weight
+                    predecessors[edge.To].Add(current);            // save predeccessors for all paths that led to this same lowest weight
                 }
             }
         }

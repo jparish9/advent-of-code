@@ -21,6 +21,8 @@ public abstract partial class Day<T>
     }
     protected int InputHashCode => (RawInput + (_isPart2 && _part2ParsedDifferently)).GetHashCode();     // input hash, accounting for if part 2 needs to be parsed differently.  used by ParseInput, and can also be referenced by derived classes if further caching is possible.
 
+    protected bool IsSampleInput => _useSampleInput;           // derived classes can reference this to determine if sample input is being used
+
     // typed parsing function to be implemented by each Day, taking the actual input or SampleInput[Part2] and returning the desired type.
     // not callable directly; called by ParseInput
     // Implementations can reference IsPart2 as needed if part 2 is to be parsed differently (also override Part2ParsedDifferently to true)
