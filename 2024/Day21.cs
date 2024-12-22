@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using AOC.Utils;
 
 namespace AOC.AOC2024;
 
@@ -120,7 +121,7 @@ public partial class Day21 : Day<Day21.DoorCodes>
         public char Position;
         public Dictionary<char, ButtonNode> ButtonSet = [];
 
-        private static Dictionary<(char, char), List<List<Move>>> _pathCache = new();
+        private static Dictionary<(char, char), List<List<Move>>> _pathCache = [];
  
         protected void Initialize()
         {
@@ -128,12 +129,12 @@ public partial class Day21 : Day<Day21.DoorCodes>
             {
                 // determine neighbors (manhattan distance of 1)
                 var (x, y) = button.Value.Position;
-                foreach (var (X, Y) in Directions)
+                foreach (var (dirX, dirY) in Directions)
                 {
-                    var b = ButtonSet.FirstOrDefault(p => p.Value.Position == (x + X, y + Y));
+                    var b = ButtonSet.FirstOrDefault(p => p.Value.Position == (x + dirX, y + dirY));
                     if (b.Value != null)
                     {
-                        button.Value.Neighbors.Add(b.Value);
+                        button.Value.Edges.Add((To: b.Value, Weight: 1));
                     }
                 }
             }
@@ -177,98 +178,35 @@ public partial class Day21 : Day<Day21.DoorCodes>
                 return result;
             }
 
-            var start = ButtonSet[Position];
-            var (endX, endY) = ButtonSet[dest].Position;
+            var allPaths = Djikstra<ButtonNode>.Search(ButtonSet[Position], [.. ButtonSet.Values], p => p.Value == dest);
 
-            var weights = ButtonSet.Values.Select(p => (Node: p, details: (Previous: (ButtonNode?)null, Weight: int.MaxValue))).ToDictionary(p => p.Node, p => p.details);
-            var queue = new PriorityQueue<ButtonNode, int>();
+            // convert these to moves
+            var allMoves = new List<List<Move>>();
 
-            var predecessors = new Dictionary<ButtonNode, List<ButtonNode>>();
-
-            weights[start] = (null, 0);
-
-            queue.Enqueue(start, 0);
-
-            while (queue.Count > 0)
+            foreach (var path in allPaths)
             {
-                var current = queue.Dequeue();
-
-                if (current.Position.X == endX && current.Position.Y == endY)
+                var moves = new List<Move>();
+                for (var i=0; i<path.Count-1; i++)
                 {
-                    var allPaths = FindAllPaths(current, predecessors, start);
-
-                    // convert these to moves
-                    var allMoves = new List<List<Move>>();
-
-                    foreach (var path in allPaths)
-                    {
-                        var moves = new List<Move>();
-                        for (var i=0; i<path.Count-1; i++)
-                        {
-                            moves.Add(new Move() { Direction = (path[i+1].Position.X - path[i].Position.X, path[i+1].Position.Y - path[i].Position.Y) });
-                        }
-                        // add a "move" at the end of each move list representing the button press
-                        moves.Add(new Move() { Direction = (0, 0) });
-                        allMoves.Add(moves);
-                    }
-
-                    // cache the found paths and update our position for the next move
-                    _pathCache[(Position, dest)] = allMoves;
-                    Position = dest;
-
-                    return allMoves;
+                    moves.Add(new Move() { Direction = (path[i+1].Position.X - path[i].Position.X, path[i+1].Position.Y - path[i].Position.Y) });
                 }
-
-                var currentWeight = weights[current].Weight;
-
-                foreach (var edge in current.Neighbors)
-                {
-                    var weight = weights[edge].Weight;
-                    var newWeight = currentWeight + 1;
-
-                    if (newWeight < weight)
-                    {
-                        weights[edge] = (current, newWeight);
-                        predecessors[edge] = [current];
-                        queue.Remove(edge, out _, out _);           // .NET 9
-                        queue.Enqueue(edge, newWeight);
-                    }
-                    else if (newWeight == weight)
-                    {
-                        predecessors[edge].Add(current);            // save equivalent path
-                    }
-                }
+                // add a "move" at the end of each move list representing the button press
+                moves.Add(new Move() { Direction = (0, 0) });
+                allMoves.Add(moves);
             }
 
-            System.Console.WriteLine("Didn't find a path!");
-            return [];
-        }
+            // cache the found paths and update our position for the next move
+            _pathCache[(Position, dest)] = allMoves;
+            Position = dest;
 
-        // collect all equivalent best paths
-        private static List<List<ButtonNode>> FindAllPaths(ButtonNode current, Dictionary<ButtonNode, List<ButtonNode>> predecessors, ButtonNode start)
-        {
-            if (current == start)
-                return [[current]];
-
-            var paths = new List<List<ButtonNode>>();
-
-            foreach (var predecessor in predecessors[current])
-            {
-                foreach (var path in FindAllPaths(predecessor, predecessors, start))
-                {
-                    paths.Add([.. path, current]);
-                }
-            }
-
-            return paths;
+            return allMoves;
         }
     }
 
-    public class ButtonNode
+    public class ButtonNode : DjikstraNode<ButtonNode>
     {
         public (int X, int Y) Position;
         public char Value;
-        public List<ButtonNode> Neighbors = [];
     }
 
 
