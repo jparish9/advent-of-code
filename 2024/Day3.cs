@@ -58,6 +58,6 @@ public partial class Day3 : Day<Day3.Instructions>
     }
 
     // match mul(a,b), do(), don't()
-    [GeneratedRegex("(mul|do|don't)\\((?:\\)|(\\d+),(\\d+)\\))")]
+    [GeneratedRegex(@"(mul|do|don't)\((?:\)|(\d+),(\d+)\))")]
     private static partial Regex InstructionMatch();
 }
