@@ -11,6 +11,8 @@ public class Day23 : Day<Day23.NetworkMap>
         public required List<NamedNode> Nodes;
 
         public required List<(string From, string To)> Edges;           // for part 2, original set of edges (not duplicated because of bidirectionality)
+
+        public List<string> ConnectedSet = [];                          // the biggest connected set (cache for part 2)
     }
 
     protected override Answer Part1()
@@ -61,8 +63,17 @@ public class Day23 : Day<Day23.NetworkMap>
         //   initialize the connected set with the 2 nodes.
         //   for every node not part of the connected set:
         //     check if it is connected to every node in the current connected set.  add it to the connected set if it is.
-        // this gets the right answer.  there may be a more efficient way to do this (this seems at least O(n^2), maybe O(n^3)), but it's fast enough for this input size.
+        // this gets the right answer.  there may be a more efficient way to do this (this seems at least O(n^2), maybe O(n^3)), but it's fast enough for this input size (a few seconds).
 
+        // this is apparently the "clique problem", and is NP-hard.
+        // rewritten to use the Bron-Kerbosch algorithm, which is exactly what is needed here (a recursive backtracking algorithm to find all maximal cliques in an undirected graph).
+        // the basic version 70% faster (less than a second).  the pivot version is even faster (~300ms).
+
+        BronKerbosch([], Input.Nodes, []);
+        return string.Join(",", Input.ConnectedSet);
+
+        /*
+        // original code:
         var largestConnectedSet = new HashSet<string>();
 
         foreach (var (From, To) in Input.Edges)
@@ -83,8 +94,47 @@ public class Day23 : Day<Day23.NetworkMap>
                 largestConnectedSet = connectedSet;
             }
         }
+        return string.Join(",", largestConnectedSet.OrderBy(p => p));*/
+    }
 
-        return string.Join(",", largestConnectedSet.OrderBy(p => p));
+    // thanks, https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm !
+    /*
+        algorithm BronKerbosch2(R, P, X) is
+        if P and X are both empty then
+            report R as a maximal clique
+        choose a pivot vertex u in P ⋃ X
+        for each vertex v in P \ N(u) do
+            BronKerbosch2(R ⋃ {v}, P ⋂ N(v), X ⋂ N(v))
+            P := P \ {v}
+            X := X ⋃ {v}
+    */
+    // could alter this a bit for reuse instead of having the side effect of setting Input.ConnectedSet (the maximal list of connected node names) and returning nothing.
+    private void BronKerbosch(List<NamedNode> R, List<NamedNode> P, List<NamedNode> X)
+    {
+        if (P.Count == 0 && X.Count == 0)
+        {
+            if (R.Count <= Input.ConnectedSet.Count) return;            // not maximal (so far)
+
+            Input.ConnectedSet = [.. R.Select(p => p.Name).OrderBy(p => p)];
+            return;
+        }
+
+        // choose a pivot node from P [union] X
+        var pivot = P.Count > 0 ? P[0] : X[0];
+        var pivotNeighbors = pivot.Edges.Select(p => p.To).ToList();
+
+        var p = new List<NamedNode>(P);
+        foreach (var node in P.Where(p => !pivotNeighbors.Contains(p)).ToList())            // don't recursively test neighbors of the pivot
+        {
+            var newR = new List<NamedNode>(R) { node };
+            var newP = P.Where(p => node.Edges.Select(q => q.To).Contains(p)).ToList();
+            var newX = X.Where(p => node.Edges.Select(q => q.To).Contains(p)).ToList();
+
+            BronKerbosch(newR, newP, newX);
+
+            P.Remove(node);
+            X.Add(node);
+        }
     }
 
     protected override NetworkMap Parse(string input)
