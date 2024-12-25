@@ -6,16 +6,14 @@ public class Day12 : Day<Day12.Garden>
 {
     protected override string? SampleRawInput { get => "RRRRIICCFF\nRRRRIICCCF\nVVRRRCCFFF\nVVRCCCJFFF\nVVVVCJJCFE\nVVIVCCJJEE\nVVIIICJJEE\nMIIIIIJJEE\nMIIISIJEEE\nMMMISSJEEE"; }
 
-    private static readonly List<(int x, int y)> Directions = new() { (0, 1), (-1, 0), (0, -1), (1, 0) };            // down, left, up, right
-
     public class Plot
     {
         public char Type;
         public int? Region;
         public int Y;
         public int X;
-        public bool[] CountPerimeters = new bool[4] { true, true, true, true };         // down, left, up, right
-        public int[] PerimeterSides = new int[4] { -1, -1, -1, -1 };                    // for part 2
+        public bool[] CountPerimeters = [true, true, true, true];         // up, right, down, left  (same as GridCardinals)
+        public int[] PerimeterSides = [-1, -1, -1, -1];                    // for part 2
     }
 
     public class Garden
@@ -71,9 +69,9 @@ public class Day12 : Day<Day12.Garden>
                 var side = 1;
                 foreach (var plot in plots)
                 {
-                    for (var k=0; k<Directions.Count; k++)
+                    for (var k=0; k<GridCardinals.Length; k++)
                     {
-                        var walks = new List<(int x, int y)> { Directions[(k+1)%4], Directions[(k+3)%4] };          // walk left and right if on bottom edge, etc.
+                        var walks = new List<(int x, int y)> { GridCardinals[(k+1)%4], GridCardinals[(k+3)%4] };          // walk left and right if on bottom edge, etc.
                         if (plot.CountPerimeters[k] && plot.PerimeterSides[k] == -1)
                         {
                             plot.PerimeterSides[k] = side;
@@ -107,9 +105,9 @@ public class Day12 : Day<Day12.Garden>
             Map[i][j].Region = region;
 
             // check for connected Region in every direction to nullify mutual perimiters
-            for (var k=0; k<Directions.Count; k++)
+            for (var k=0; k<GridCardinals.Length; k++)
             {
-                var (x, y) = Directions[k];
+                var (x, y) = GridCardinals[k];
                 if (InBounds(j + x, i + y) && Map[i + y][j + x].Region == region)
                 {
                     Map[i][j].CountPerimeters[k] = false;
@@ -117,7 +115,7 @@ public class Day12 : Day<Day12.Garden>
                 }
             }
 
-            foreach (var (x, y) in Directions)
+            foreach (var (x, y) in GridCardinals)
             {
                 if (InBounds(j + x, i + y) && Map[i + y][j + x].Type == Map[i][j].Type)
                 {

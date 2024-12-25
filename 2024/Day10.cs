@@ -8,7 +8,7 @@ public class Day10 : Day<Day10.Map>
     {
         public required int[][] Grid;
 
-        public List<(int x, int y, List<int> part2Scores)> TrailheadScores = new();         // cached between part 1 and 2; only search grid once
+        public List<(int x, int y, List<int> part2Scores)> TrailheadScores = [];         // cached between part 1 and 2; only search grid once
 
         public void ComputeScores()
         {

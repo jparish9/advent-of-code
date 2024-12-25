@@ -86,10 +86,13 @@ public abstract partial class Day<T>
         TryRun(() => RunPart2(false));
     }
 
+    /* other highly reused statics */
+
     // this regex is used by several implementations to strip extra spaces from input
     [GeneratedRegex(" +")]
     protected static partial Regex Spaces();
 
+    protected static readonly (int X, int Y)[] GridCardinals = [(0, -1), (1, 0), (0, 1), (-1, 0)];           // up, right, down, left
 
     // remaining private methods for processing each Day; no more abstract or public methods below.
     private void ConfigureInput()

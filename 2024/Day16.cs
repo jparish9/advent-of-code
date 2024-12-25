@@ -13,8 +13,6 @@ public class Day16 : Day<Day16.Map>
     // this edge case exposed a bug where reaching a location from two different directions was incorrectly considered the same node.
     //protected override string? SampleRawInput { get => "##########\n#.......E#\n#.##.#####\n#..#.....#\n##.#####.#\n#S.......#\n##########"; }
 
-    private static readonly (int X, int Y)[] Directions = [(0, -1), (1, 0), (0, 1), (-1, 0)];           // up, right, down, left
-
     public class Map
     {
         public Map(char[][] Grid)
@@ -33,9 +31,9 @@ public class Day16 : Day<Day16.Map>
                     if (Grid[y][x] == '#') continue;
                     if (Grid[y][x] == 'E') End = (x, y);
 
-                    nodeGrid[y][x] = new Node[Directions.Length];
+                    nodeGrid[y][x] = new Node[GridCardinals.Length];
 
-                    for (var facingNdx=0; facingNdx<Directions.Length; facingNdx++)
+                    for (var facingNdx=0; facingNdx<GridCardinals.Length; facingNdx++)
                     {
                         var node = new Node() { X = x, Y = y, Facing = facingNdx };
                         AllNodes.Add(node);
@@ -55,13 +53,13 @@ public class Day16 : Day<Day16.Map>
                 node.AddEdge(nodeGrid[node.Y][node.X][(4 + (node.Facing - 1)) % 4], 1000);
 
                 // check one step in the current facing direction
-                var (xDir, yDir) = Directions[node.Facing];
+                var (xDir, yDir) = GridCardinals[node.Facing];
                 var newX = node.X + xDir;
                 var newY = node.Y + yDir;
 
                 if (newX < 0 || newY < 0 || newY >= Grid.Length || newX >= Grid[0].Length) continue;
-                if (newY == Start.Y && newX == Start.X) continue;                        // don't revisit start
-                if (Grid[newY][newX] == '#') continue;           // wall
+                if (newY == Start.Y && newX == Start.X) continue;                       // don't revisit start
+                if (Grid[newY][newX] == '#') continue;                                  // wall
 
                 // allow move one step in facing direction
                 node.AddEdge(nodeGrid[newY][newX][node.Facing], 1);

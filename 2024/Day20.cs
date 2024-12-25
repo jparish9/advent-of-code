@@ -4,8 +4,6 @@ public class Day20 : Day<Day20.Racetrack>
 {
     protected override string? SampleRawInput { get => "###############\n#...#...#.....#\n#.#.#.#.#.###.#\n#S#...#.#.#...#\n#######.#.#.###\n#######.#.#...#\n#######.#.###.#\n###..E#...#...#\n###.#######.###\n#...###...#...#\n#.#####.#.###.#\n#.#...#.#.#...#\n#.#.#.#.#.#.###\n#...#...#...###\n###############"; }
 
-    private static readonly (int X, int Y)[] Directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-
     public class Racetrack
     {
         public Racetrack(char[][] grid)
@@ -32,7 +30,7 @@ public class Day20 : Day<Day20.Racetrack>
             Steps[pos.y][pos.x] = 0;
             while (Grid[pos.y][pos.x] != 'E')
             {
-                foreach (var (X, Y) in Directions)
+                foreach (var (X, Y) in GridCardinals)
                 {
                     var newX = pos.x + X;
                     var newY = pos.y + Y;

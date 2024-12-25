@@ -3,27 +3,9 @@ using AOC.Utils;
 
 namespace AOC.AOC2024;
 
-public static class Extensions
-{
-    // given a list-of-lists where each list item has one or more elements, return the cartesian product (all combinations) of picking one element in each list,
-    // as another list-of-lists.
-    // example:  [[1,2], [3], [4,5,6]] => [[1,3,4], [1,3,5], [1,3,6], [2,3,4], [2,3,5], [2,3,6]]
-    public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)
-    {
-        IEnumerable<IEnumerable<T>> emptyProduct = [[]];
-        return sequences.Aggregate(
-            emptyProduct,
-            (accumulator, sequence) =>
-                from accseq in accumulator
-                from item in sequence
-                select accseq.Concat([item]));
-    }
-}
-
 public partial class Day21 : Day<Day21.DoorCodes>
 {
     protected override string? SampleRawInput { get => "029A\n980A\n179A\n456A\n379A"; }
-    private static readonly (int X, int Y)[] Directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
     public partial class DoorCodes
     {
@@ -129,7 +111,7 @@ public partial class Day21 : Day<Day21.DoorCodes>
             {
                 // determine neighbors (manhattan distance of 1)
                 var (x, y) = button.Value.Position;
-                foreach (var (dirX, dirY) in Directions)
+                foreach (var (dirX, dirY) in GridCardinals)
                 {
                     var b = ButtonSet.FirstOrDefault(p => p.Value.Position == (x + dirX, y + dirY));
                     if (b.Value != null)

@@ -4,8 +4,6 @@ public class Day3 : Day<Day3.MemoryGrid>
 {
     protected override string? SampleRawInput { get => "23"; }
 
-    private static readonly (int X, int Y)[] Directions = [(1, 0), (0, -1), (-1, 0), (0, 1)];           // right, up, left, down
-
     public class MemoryGrid
     {
         public required int Size;
@@ -30,7 +28,7 @@ public class Day3 : Day<Day3.MemoryGrid>
             var val = 1;
             var step = 1;
             var directionNdx = 0;
-            var direction = Directions[directionNdx];
+            var direction = GridCardinals[directionNdx];
 
             var stop = false;
             var sum = 0L;
@@ -51,7 +49,7 @@ public class Day3 : Day<Day3.MemoryGrid>
                 if (stop) break;
 
                 directionNdx = (directionNdx + 1) % 4;
-                direction = Directions[directionNdx];
+                direction = GridCardinals[directionNdx];
                 if (directionNdx % 2 == 0) step++;
             }
 

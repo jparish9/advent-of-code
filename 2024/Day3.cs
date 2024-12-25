@@ -53,8 +53,8 @@ public partial class Day3 : Day<Day3.Instructions>
         return new Instructions() {
             Items = InstructionMatch().Matches(input)
                 .Select(p => new Instruction() { Command = p.Groups[1].Value, Args = p.Groups[1].Value == "mul"
-                    ? new List<int>() { int.Parse(p.Groups[2].Value), int.Parse(p.Groups[3].Value) }            // save arguments for mul
-                    : new List<int>() }).ToList() };
+                    ? [int.Parse(p.Groups[2].Value), int.Parse(p.Groups[3].Value)]            // save arguments for mul
+                    : [] }).ToList() };
     }
 
     // match mul(a,b), do(), don't()

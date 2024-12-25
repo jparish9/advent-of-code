@@ -9,7 +9,7 @@ public class Day19 : Day<Day19.Onsen>
         public required List<string> Patterns;
         public required List<string> Designs;
         public Dictionary<string, long> DesignFragments = [];           // cache
-        public Dictionary<string, long> DesignCounts = [];           // cache
+        public Dictionary<string, long> DesignCounts = [];              // cache
 
         public void CheckAll()
         {

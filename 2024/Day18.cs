@@ -6,8 +6,6 @@ public class Day18 : Day<Day18.MemorySpace>
 {
     protected override string? SampleRawInput { get => "5,4\n4,2\n4,5\n3,0\n2,1\n6,3\n2,4\n1,5\n0,6\n3,3\n2,6\n5,1\n1,2\n5,5\n2,5\n6,5\n1,4\n0,4\n6,4\n1,1\n6,1\n1,0\n0,5\n1,6\n2,0"; }
 
-    private static readonly (int X, int Y)[] Directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-
     public class MemorySpace
     {
         public required List<(int X, int Y)> Corrupted;
@@ -66,7 +64,7 @@ public class Day18 : Day<Day18.MemorySpace>
         var x = currentNode.Position.X;
         var y = currentNode.Position.Y;
 
-        foreach (var (X, Y) in Directions)
+        foreach (var (X, Y) in GridCardinals)
         {
             var newX = x + X;
             var newY = y + Y;

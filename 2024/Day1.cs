@@ -23,9 +23,7 @@ public class Day1 : Day<Day1.Lists>
 
     protected override Answer Part2()
     {
-        var sim = 0;
-        Input.Left.ForEach(p => sim += p * Input.Right.Count(q => q == p));
-        return sim;
+        return Input.Left.Aggregate(0, (acc, p) => acc + p * Input.Right.Count(q => q == p));
     }
 
     protected override Lists Parse(string input)

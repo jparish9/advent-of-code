@@ -10,63 +10,72 @@ public class Day4 : Day<Day4.Grid>
 
         public int RowCount;
         public int ColCount;
+
+        public int FindXmas()
+        {
+            var found = 0;
+            for (var sr=0; sr<RowCount; sr++)
+            {
+                for (var sc=0; sc<ColCount; sc++)
+                {
+                    if (Rows[sr][sc] != 'X') continue;
+
+                    foreach (var vector in Vectors)
+                    {
+                        var r = sr;
+                        var c = sc;
+                        var ndx = 1;
+                        while (ndx <= 3)
+                        {
+                            r += vector[0];
+                            c += vector[1];
+                            if (r < 0 || r >= RowCount || c < 0 || c >= ColCount
+                                || Rows[r][c] != Xmas[ndx]) break;
+
+                            ndx++;
+                        }
+
+                        if (ndx > 3) found++;           // did not break out of loop; found XMAS
+                    }
+                }
+            }
+            return found;
+        }
+
+        public int FindCrossXmas()
+        {
+            var found = 0;
+            for (var sr=1; sr<RowCount-1; sr++)
+            {
+                for (var sc=1; sc<ColCount-1; sc++)
+                {
+                    if (Rows[sr][sc] != 'A') continue;
+
+                    if (((Rows[sr-1][sc-1] == 'M' && Rows[sr+1][sc+1] == 'S')
+                        || (Rows[sr-1][sc-1] == 'S' && Rows[sr+1][sc+1] == 'M'))
+                        && ((Rows[sr-1][sc+1] == 'M' && Rows[sr+1][sc-1] == 'S')
+                            || (Rows[sr-1][sc+1] == 'S' && Rows[sr+1][sc-1] == 'M')))
+                    {
+                        found++;
+                    }
+                }
+            }
+            return found;
+        }
     }
 
-    private static readonly List<int[]> Vectors = new() { new int[] { 0, 1 }, new int[] { 1, 0 }, new int[] { 0, -1 }, new int[] { -1, 0}, 
-        new int[] { 1, 1 }, new int[] { 1, -1 }, new int[] { -1, 1}, new int[] { -1, -1 } };
+    private static readonly List<int[]> Vectors = [ [0, 1], [1, 0], [0, -1], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1] ];
 
     private static readonly string Xmas = "XMAS";
 
     protected override Answer Part1()
     {
-        var found = 0;
-        for (var sr=0; sr<Input.RowCount; sr++)
-        {
-            for (var sc=0; sc<Input.ColCount; sc++)
-            {
-                if (Input.Rows[sr][sc] != 'X') continue;
-
-                foreach (var vector in Vectors)
-                {
-                    var r = sr;
-                    var c = sc;
-                    var ndx = 1;
-                    while (ndx <= 3)
-                    {
-                        r += vector[0];
-                        c += vector[1];
-                        if (r < 0 || r >= Input.RowCount || c < 0 || c >= Input.ColCount
-                            || Input.Rows[r][c] != Xmas[ndx]) break;
-
-                        ndx++;
-                    }
-
-                    if (ndx > 3) found++;           // did not break out of loop; found XMAS
-                }
-            }
-        }
-        return found;
+        return Input.FindXmas();
     }
 
     protected override Answer Part2()
     {
-        var found = 0;
-        for (var sr=1; sr<Input.RowCount-1; sr++)
-        {
-            for (var sc=1; sc<Input.ColCount-1; sc++)
-            {
-                if (Input.Rows[sr][sc] != 'A') continue;
-
-                if (((Input.Rows[sr-1][sc-1] == 'M' && Input.Rows[sr+1][sc+1] == 'S')
-                    || (Input.Rows[sr-1][sc-1] == 'S' && Input.Rows[sr+1][sc+1] == 'M'))
-                    && ((Input.Rows[sr-1][sc+1] == 'M' && Input.Rows[sr+1][sc-1] == 'S')
-                        || (Input.Rows[sr-1][sc+1] == 'S' && Input.Rows[sr+1][sc-1] == 'M')))
-                {
-                    found++;
-                }
-            }
-        }
-        return found;
+        return Input.FindCrossXmas();
     }
 
     protected override Grid Parse(string input)

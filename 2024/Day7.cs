@@ -15,43 +15,37 @@ public class Day7 : Day<Day7.Bridge>
         public required List<long> Operands;
     }
 
-    private static readonly List<Func<long, long, long>> Operators = new()
-    {
-        (a, b) => a + b,
-        (a, b) => a * b,
-        (a, b) => long.Parse(a.ToString() + b.ToString())
-    };
-
-    private static readonly List<Func<long, long, long>> InvOperators = new()
-    {
-        (a, b) => {
-            if (a > b) return a-b;
-            throw new Exception();
-        },
-        (a, b) => {
-            if (a % b > 0) throw new Exception();
-            return a / b;
-        },
-        (a, b) => {
-            var astr = a.ToString();
-            var bstr = b.ToString();
-            if (!astr.EndsWith(bstr)) throw new Exception();
-            return long.Parse(astr[..^bstr.Length]);
-        }
-    };
+    // invert addition, division, and string concatenation; throw if not possible
+    private static readonly List<Func<long, long, long>> InvOperators =
+        [
+            (a, b) => {
+                if (a > b) return a-b;
+                throw new Exception();
+            },
+            (a, b) => {
+                if (a % b > 0) throw new Exception();
+                return a / b;
+            },
+            (a, b) => {
+                var astr = a.ToString();
+                var bstr = b.ToString();
+                if (!astr.EndsWith(bstr)) throw new Exception();
+                return long.Parse(astr[..^bstr.Length]);
+            }
+        ];
 
     protected override Answer Part1()
     {
-        return Check2(InvOperators.Take(2).ToList());
+        return Check(InvOperators.Take(2).ToList());
     }
 
     protected override Answer Part2()
     {
-        return Check2(InvOperators);
+        return Check(InvOperators);
     }
 
     // iterative solution that permutes all possible operations; part 2 in ~16sec
-    private long Check(List<Func<long, long, long>> operators)
+    /*private long Check(List<Func<long, long, long>> operators)
     {
         var valid = 0L;
         foreach (var calibration in Input.Calibrations)
@@ -74,10 +68,10 @@ public class Day7 : Day<Day7.Bridge>
             }
         }
         return valid;
-    }
+    }*/
 
     // recursive solution that uses inverse operations only if valid; part 2 in ~0.5sec
-    private long Check2(List<Func<long, long, long>> operators)
+    private long Check(List<Func<long, long, long>> operators)
     {
         var valid = 0L;
         foreach (var calibration in Input.Calibrations)
@@ -96,7 +90,7 @@ public class Day7 : Day<Day7.Bridge>
         return valid;
     }
 
-    private bool CheckRecursive(long testValue, List<long> operands, Func<long, long, long> op, List<Func<long, long, long>> operators)
+    private static bool CheckRecursive(long testValue, List<long> operands, Func<long, long, long> op, List<Func<long, long, long>> operators)
     {
         if (operands.Count == 1) return testValue == operands[0];
         try
@@ -115,7 +109,7 @@ public class Day7 : Day<Day7.Bridge>
     {
         var bridge = new Bridge
         {
-            Calibrations = new()
+            Calibrations = []
         };
         foreach (var line in input.Split("\n").Where(x => !string.IsNullOrEmpty(x)))
         {

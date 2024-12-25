@@ -15,14 +15,6 @@ public class Day15 : Day<Day15.Map>
         { '>', (1, 0) }
     };
 
-    private static readonly Dictionary<char, char[]> DoubleWideReplacements = new()
-    {
-        { '#', new char[] { '#', '#' } },
-        { 'O', new char[] { '[', ']' } },
-        { '.', new char[] { '.', '.' } },
-        { '@', new char[] { '@', '.' } }
-    };
-
     public class Obstacle
     {
         public enum Type { Box, Wall };
@@ -51,11 +43,11 @@ public class Day15 : Day<Day15.Map>
 
         public required List<(int x, int y)> Directions;
 
-        public List<Obstacle> Obstacles = new();
+        public List<Obstacle> Obstacles = [];
 
         public int Step = 0;
 
-        private readonly List<(Obstacle box, int dx, int dy)> BoxMoves = new();             // keep track of moves so we can commit them separately
+        private readonly List<(Obstacle box, int dx, int dy)> BoxMoves = [];             // keep track of moves so we can commit them separately
 
         public List<Obstacle> Intersect(Obstacle o)
         {
