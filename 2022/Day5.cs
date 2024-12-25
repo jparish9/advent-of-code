@@ -73,9 +73,9 @@ public class Day5 : Day<Day5.StackMover>
         return result;
     }
 
-    protected override StackMover Parse(string input)
+    protected override StackMover Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var stacks = new List<Stack<char>>();
         var instructions = new List<Instruction>();

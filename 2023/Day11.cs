@@ -70,10 +70,10 @@ public class Day11 : Day<Day11.Map>
         return Input.SumPairwiseShortestPaths(999999);
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
         var galaxies = new List<Galaxy>();
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         for (var y=0; y<lines.Length; y++)
         {

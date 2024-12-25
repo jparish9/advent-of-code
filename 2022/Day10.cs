@@ -97,11 +97,11 @@ public class Day10 : Day<List<Day10.Instruction>>
         return "\n" + string.Join("\n", raster.Select(p => new string(p)));
     }
 
-    protected override List<Instruction> Parse(string input)
+    protected override List<Instruction> Parse(RawInput input)
     {
         var instructions = new List<Instruction>();
 
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(' ');
             instructions.Add(new Instruction() {

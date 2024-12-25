@@ -53,20 +53,18 @@ public class Day13 : Day<Day13.Arcade>
         return Input.CalculateTokens();
     }
 
-    protected override Arcade Parse(string input)
+    protected override Arcade Parse(RawInput input)
     {
         var clawMachines = new List<ClawMachine>();
 
-        var machines = input.Split("\n\n");
+        var machines = input.LineGroups();
 
         foreach (var m in machines)
         {
-            var lines = m.Split("\n");
-
             clawMachines.Add(new ClawMachine() {
-                AButton = ParseLine(lines[0], '+'),
-                BButton = ParseLine(lines[1], '+'),
-                Prize = ParseLine(lines[2], '=')
+                AButton = ParseLine(m[0], '+'),
+                BButton = ParseLine(m[1], '+'),
+                Prize = ParseLine(m[2], '=')
             });
         }
 

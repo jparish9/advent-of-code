@@ -28,8 +28,8 @@ public class Day7 : Day<List<int>>
         return minCost;
     }
 
-    protected override List<int> Parse(string input)
+    protected override List<int> Parse(RawInput input)
     {
-        return input.Split(',').Select(int.Parse).ToList();
+        return input.Value.Split(',').Select(int.Parse).ToList();
     }
 }

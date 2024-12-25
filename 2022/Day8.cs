@@ -52,9 +52,9 @@ public class Day8 : Day<List<Day8.Tree>>
         return Input.Max(p => p.ScenicScore());
     }
 
-    protected override List<Tree> Parse(string input)
+    protected override List<Tree> Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var result = new List<Tree>();
         var trees = new int[lines.Length][];

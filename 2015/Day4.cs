@@ -32,7 +32,7 @@ public class Day4 : Day<string>
         return i;
     }
 
-    protected override string Parse(string input)
+    protected override string Parse(RawInput input)
     {
         return input;
     }

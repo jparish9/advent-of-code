@@ -61,8 +61,8 @@ public class Day1 : Day<Day1.Directions>
         return Input.Move(true);
     }
 
-    protected override Directions Parse(string input)
+    protected override Directions Parse(RawInput input)
     {
-        return new Directions() { Direction = input.Split(", ").ToList() };
+        return new Directions() { Direction = [.. input.Value.Split(", ")] };
     }
 }

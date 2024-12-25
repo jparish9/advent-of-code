@@ -99,11 +99,11 @@ public class Day14 : Day<Day14.Swarm>
         return seconds;
     }
 
-    protected override Swarm Parse(string input)
+    protected override Swarm Parse(RawInput input)
     {
         var robots = new List<Robot>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" ");
             var pos = parts[0].Split("=")[1].Split(",");

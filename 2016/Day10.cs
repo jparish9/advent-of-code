@@ -89,13 +89,13 @@ public class Day10 : Day<Day10.Factory>
         return Input.Outputs[0][0] * Input.Outputs[1][0] * Input.Outputs[2][0];
     }
 
-    protected override Factory Parse(string input)
+    protected override Factory Parse(RawInput input)
     {
         var instructions = new List<Instruction>();
         var bots = new Dictionary<int, List<int>>();
         var outputs = new Dictionary<int, List<int>>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" ");
             if (parts[0] == "value")

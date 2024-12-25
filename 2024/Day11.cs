@@ -80,8 +80,8 @@ public class Day11 : Day<Day11.Corridor>
         return Input.Blink(75);
     }
 
-    protected override Corridor Parse(string input)
+    protected override Corridor Parse(RawInput input)
     {
-        return new Corridor() { Stones = input.Split(' ').Select(long.Parse).ToList() };
+        return new Corridor() { Stones = input.Value.Split(" ").Select(long.Parse).ToList() };
     }
 }

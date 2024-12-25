@@ -43,7 +43,7 @@ public class Day12 : Day<JToken>
         return sum;
     }
 
-    protected override JToken Parse(string input)
+    protected override JToken Parse(RawInput input)
     {
         return JToken.Parse(input);
     }

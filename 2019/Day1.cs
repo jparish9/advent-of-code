@@ -45,8 +45,8 @@ public class Day1 : Day<Day1.Modules>
         return Input.Masses.Sum(p => p.Fuel(true));
     }
 
-    protected override Modules Parse(string input)
+    protected override Modules Parse(RawInput input)
     {
-        return new Modules() { Masses = input.Split("\n").Where(p => p != "").Select(p => new Mass() { Value = int.Parse(p) } ).ToList() };
+        return new Modules() { Masses = input.Lines().Select(p => new Mass() { Value = int.Parse(p) } ).ToList() };
     }
 }

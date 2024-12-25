@@ -48,9 +48,9 @@ public class Day2 : Day<List<Day2.Play>>
         return score;
     }
 
-    protected override List<Play> Parse(string input)
+    protected override List<Play> Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var result = new List<Play>();
 

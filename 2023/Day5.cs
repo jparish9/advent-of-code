@@ -168,13 +168,13 @@ public class Day5 : Day<Day5.Garden>
         return ranges.Where(p => p.BeforeStep == Input.Maps.Count+1).Min(p => p.Start);
     }
 
-    protected override Garden Parse(string input)
+    protected override Garden Parse(RawInput input)
     {
         var seeds = new List<Seed>();
         var mapList = new List<List<Map>>();
         var maps = new List<Map>();
 
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             if (line.StartsWith("seeds:"))
             {

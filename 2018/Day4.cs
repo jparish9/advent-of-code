@@ -68,9 +68,9 @@ public class Day4 : Day<Day4.GuardLog>
         return max.Key.GuardId * max.Key.Minute;
     }
 
-    protected override GuardLog Parse(string input)
+    protected override GuardLog Parse(RawInput input)
     {
-        var rows = input.Split("\n").Where(p => p != "").Select(p => p.Split("] ")).ToList();
+        var rows = input.Lines().Select(p => p.Split("] ")).ToList();
 
         // sort the entries first
         var tmp = new List<(DateTime Timestamp, string Log)>();

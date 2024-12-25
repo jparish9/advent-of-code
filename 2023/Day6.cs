@@ -61,12 +61,12 @@ public class Day6 : Day<Day6.RaceGroup>
         return Input.TotalMargin();
     }
     
-    protected override RaceGroup Parse(string input)
+    protected override RaceGroup Parse(RawInput input)
     {
         var times = new List<long>();
         var distances = new List<long>();
 
-        foreach (var line in input.Split('\n'))
+        foreach (var line in input.Lines())
         {
              var parsed = Spaces().Replace(line, " ").Split(" ");
              if (parsed[0] == "Time:")

@@ -89,9 +89,9 @@ public class Day16 : Day<Day16.Cave>
         return maxEnergized;
     }
 
-    protected override Cave Parse(string input)
+    protected override Cave Parse(RawInput input)
     {
-        var grid = input.Split('\n').Where(p => p != "").Select(p => p.ToCharArray()).ToArray();
+        var grid = input.Lines().Select(p => p.ToCharArray()).ToArray();
         var energized = new bool[grid.Length][];
         for (var i = 0; i < grid.Length; i++)
         {

@@ -100,9 +100,9 @@ public class Day20 : Day<Day20.Racetrack>
     }
 
 
-    protected override Racetrack Parse(string input)
+    protected override Racetrack Parse(RawInput input)
     {
-        var grid = input.Split("\n").Where(p => p != "").Select(p => p.ToCharArray()).ToArray();
+        var grid = input.Lines().Select(p => p.ToCharArray()).ToArray();
         return new Racetrack(grid);
     }
 }

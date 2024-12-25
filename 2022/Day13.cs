@@ -115,15 +115,14 @@ public class Day13 : Day<List<Day13.Packet>>
         return sb.ToString();
     }
 
-    protected override List<Packet> Parse(string input)
+    protected override List<Packet> Parse(RawInput input)
     {
         var packets = new List<Packet>();
 
-        foreach (var pair in input.Split("\n\n").Where(p => p != ""))
+        foreach (var pair in input.LineGroups())
         {
-            var packetStrings = pair.Split('\n');
-            packets.Add(ParsePacket(packetStrings[0]));
-            packets.Add(ParsePacket(packetStrings[1]));
+            packets.Add(ParsePacket(pair[0]));
+            packets.Add(ParsePacket(pair[1]));
         }
 
         return packets;

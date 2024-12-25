@@ -32,8 +32,8 @@ public class Day1 : Day<Day1.Checksum>
         return Input.Compute(true);
     }
 
-    protected override Checksum Parse(string input)
+    protected override Checksum Parse(RawInput input)
     {
-        return new Checksum() { Digits = input.Select(p => int.Parse(p.ToString())).ToList() };
+        return new Checksum() { Digits = input.Value.Select(p => int.Parse(p.ToString())).ToList() };
     }
 }

@@ -48,10 +48,10 @@ public class Day14 : Day<Day14.ReindeerRace>
         return scores.Max(p => p.Value);
     }
 
-    protected override ReindeerRace Parse(string input)
+    protected override ReindeerRace Parse(RawInput input)
     {
         var deer = new List<Reindeer>();
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(' ');
             var name = parts[0];

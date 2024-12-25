@@ -22,7 +22,7 @@ public class Day1 : Day<string>
         return pos;     // 1-based
     }
 
-    protected override string Parse(string input)
+    protected override string Parse(RawInput input)
     {
         return input;
     }

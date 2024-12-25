@@ -75,12 +75,12 @@ public partial class Day15 : Day<Day15.Tunnels>
         return (long)posX * 4000000 + posY;
     }
 
-    protected override Tunnels Parse(string input)
+    protected override Tunnels Parse(RawInput input)
     {
         var sensors = new List<Sensor>();
         var beaconsInRange = new HashSet<(int X, int Y)>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var match = SensorRegex().Matches(line);
             

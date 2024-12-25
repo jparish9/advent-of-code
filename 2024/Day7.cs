@@ -105,13 +105,13 @@ public class Day7 : Day<Day7.Bridge>
         return false;
     }
 
-    protected override Bridge Parse(string input)
+    protected override Bridge Parse(RawInput input)
     {
         var bridge = new Bridge
         {
             Calibrations = []
         };
-        foreach (var line in input.Split("\n").Where(x => !string.IsNullOrEmpty(x)))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(": ");
             var calibration = new Calibration

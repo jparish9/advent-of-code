@@ -108,9 +108,9 @@ public class Day8 : Day<Day8.RouteDef>
     }
 
 
-    protected override RouteDef Parse(string input)
+    protected override RouteDef Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var nodes = new Dictionary<string, Node>();
 

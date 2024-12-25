@@ -267,14 +267,14 @@ public class Day20 : Day<Day20.Machine>
         return Machine.Part2.Values.Aggregate(Maths.LeastCommonMultiple);
     }
 
-    protected override Machine Parse(string input)
+    protected override Machine Parse(RawInput input)
     {
         Broadcaster? broadcaster = null;
 
         var allModules = new Dictionary<string, Module>();
         var destinations = new Dictionary<Module, List<string>>();          // for wiring up once we have all modules defined
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" -> ");
             var source = parts[0];

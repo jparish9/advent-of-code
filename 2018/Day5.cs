@@ -56,8 +56,8 @@ public class Day5 : Day<Day5.Polymer>
         return min;
     }
 
-    protected override Polymer Parse(string input)
+    protected override Polymer Parse(RawInput input)
     {
-        return new Polymer() { Units = input.Replace("\n", "") };
+        return new Polymer() { Units = input.Value.Replace("\n", "") };
     }
 }

@@ -72,8 +72,8 @@ public class Day2 : Day<Day2.KeyPad>
         return 0;
     }
 
-    protected override KeyPad Parse(string input)
+    protected override KeyPad Parse(RawInput input)
     {
-        return new KeyPad() { Instructions = input.Split('\n').Where(p => p != "").ToList() };
+        return new KeyPad() { Instructions = input.Lines().ToList() };
     }
 }

@@ -87,8 +87,8 @@ public class Day10 : Day<Day10.Map>
         return Input.TrailheadScores.SelectMany(p => p.part2Scores).Sum();
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
-        return new Map() { Grid = input.Split("\n").Where(p => p != "").Select(l => l.Select(c => c - '0').ToArray()).ToArray() };
+        return new Map() { Grid = input.Lines().Select(l => l.Select(c => c - '0').ToArray()).ToArray() };
     }
 }

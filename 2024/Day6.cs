@@ -131,11 +131,11 @@ public class Day6 : Day<Day6.Map>
         return loopObstacles;
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
-        var lines = input.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        var area = new char[lines.Length][];
-        for (int i = 0; i < lines.Length; i++)
+        var lines = input.Lines();
+        var area = new char[lines.Count][];
+        for (int i = 0; i < lines.Count; i++)
         {
             area[i] = lines[i].ToCharArray();
         }
@@ -149,10 +149,10 @@ public class Day6 : Day<Day6.Map>
 
         return new Map() {
             Area = area,
-            Height = lines.Length,
+            Height = lines.Count,
             Width = lines[0].Length,
             GuardState = initialGuardState,
-            GuardStateLog = new () { initialGuardState }
+            GuardStateLog = [initialGuardState]
         };
     }
 }

@@ -84,8 +84,8 @@ public class Day8 : Day<Day8.City>
         return CountAntinodes(true);
     }
 
-    protected override City Parse(string input)
+    protected override City Parse(RawInput input)
     {
-        return new City(input.Split("\n").Where(p => p != "").Select(p => p.Trim().ToCharArray()).ToArray());
+        return new City(input.Lines().Select(p => p.Trim().ToCharArray()).ToArray());
     }
 }

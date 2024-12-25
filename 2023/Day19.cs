@@ -231,13 +231,13 @@ public class Day19 : Day<Day19.PartClassifier>
         if (node.IfFalse != null) FindRejectedLeafNodes(node.IfFalse, rejectedLeafNodes);
     }
 
-    protected override PartClassifier Parse(string input)
+    protected override PartClassifier Parse(RawInput input)
     {
         var workflows = new List<Workflow>();
         var parts = new List<Part>();
 
-        var sections = input.Split("\n\n");
-        foreach (var workflow in sections[0].Split('\n'))
+        var sections = input.LineGroups();
+        foreach (var workflow in sections[0])
         {
             var wfSection = workflow.Split("{");
             var workflowName = wfSection[0];
@@ -266,7 +266,7 @@ public class Day19 : Day<Day19.PartClassifier>
             workflows.Add(wf);
         }
 
-        foreach (var part in sections[1].Split('\n').Where(p => p != ""))
+        foreach (var part in sections[1])
         {
             var partRatings = new List<PartRating>();
             foreach (var rating in part.Trim('{','}').Split(','))

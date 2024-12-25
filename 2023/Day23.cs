@@ -183,9 +183,9 @@ public class Day23 : Day<Day23.TrailMap>
         }
     }
 
-    protected override TrailMap Parse(string input)
+    protected override TrailMap Parse(RawInput input)
     {
-        var lines = input.Split("\n").Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
         var map = new char[lines.Length][];
 
         for (int i = 0; i < lines.Length; i++)

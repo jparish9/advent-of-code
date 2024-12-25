@@ -55,7 +55,7 @@ public class Day10 : Day<string>
         return sb.ToString();
     }
 
-    protected override string Parse(string input)
+    protected override string Parse(RawInput input)
     {
         return input;
     }

@@ -191,11 +191,11 @@ public class Day22 : Day<Day22.BrickSnapshot>
         }
     }
 
-    protected override BrickSnapshot Parse(string input)
+    protected override BrickSnapshot Parse(RawInput input)
     {
         var bricks = new List<Brick>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split("~");
             var from = parts[0].Split(",").Select(int.Parse).ToArray();

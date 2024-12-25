@@ -125,12 +125,12 @@ public class Day7 : Day<Day7.Circuit>
         return Input.Wires.ContainsKey("a") ? Input.Wires["a"] : -1;
     }
 
-    protected override Circuit Parse(string input)
+    protected override Circuit Parse(RawInput input)
     {
         var circuit = new Circuit();
         var list = new List<Instruction>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" -> ");
             var output = parts[1];

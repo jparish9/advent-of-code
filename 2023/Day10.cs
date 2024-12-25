@@ -152,9 +152,9 @@ public class Day10 : Day<Day10.PipeMaze>
         return Polygon.GridLatticePoints(Input.DeterminePath(), true);
     }
 
-    protected override PipeMaze Parse(string input)
+    protected override PipeMaze Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
         char[][] map = new char[lines.Length][];
         for(var i=0; i<lines.Length; i++)
         {

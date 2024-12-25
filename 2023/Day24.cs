@@ -181,11 +181,11 @@ public class Day24 : Day<Day24.Sky>
         return SkewSymmetric(v) * w;
     }
 
-    protected override Sky Parse(string input)
+    protected override Sky Parse(RawInput input)
     {
         var sky = new Sky() { Hailstones = new List<Hailstone>() };
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split("@");
             var position = parts[0].Trim().Split(",").Select(p => long.Parse(p.Trim())).ToArray();

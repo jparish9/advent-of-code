@@ -95,8 +95,8 @@ public class Day16 : Day<Day16.Map>
         return Input.AllPaths.SelectMany(p => p).Select(p => (p.X, p.Y)).Distinct().Count();
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
-        return new Map(input.Split("\n").Where(p => p != "").Select(l => l.ToCharArray()).ToArray());
+        return new Map(input.Lines().Select(l => l.ToCharArray()).ToArray());
     }
 }

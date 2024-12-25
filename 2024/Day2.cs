@@ -66,8 +66,8 @@ public class Day2 : Day<Day2.ReportSet>
         return safe;
     }
 
-    protected override ReportSet Parse(string input)
+    protected override ReportSet Parse(RawInput input)
     {
-        return new ReportSet() { Reports = input.Split('\n').Where(p => p != "").Select(p => new Report() { Values = p.Split(" ").Select(int.Parse).ToList() }).ToList() };
+        return new ReportSet() { Reports = input.Lines().Select(p => new Report() { Values = p.Split(" ").Select(int.Parse).ToList() }).ToList() };
     }
 }

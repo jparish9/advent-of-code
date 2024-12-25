@@ -60,8 +60,8 @@ public class Day2 : Day<Day2.Boxes>
         return result!;
     }
 
-    protected override Boxes Parse(string input)
+    protected override Boxes Parse(RawInput input)
     {
-        return new Boxes() { BoxIds = input.Split("\n").Where(p => p != "").ToList() };
+        return new Boxes() { BoxIds = input.Lines().ToList() };
     }
 }

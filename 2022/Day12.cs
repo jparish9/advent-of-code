@@ -103,9 +103,9 @@ public class Day12 : Day<Day12.Map>
         return adjacentNodes;
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
-        var grid = input.Split('\n').Where(p => p != "").Select(p => p.ToCharArray()).ToArray();
+        var grid = input.Lines().Select(p => p.ToCharArray()).ToArray();
         return new Map() { Grid = grid };
     }
 }

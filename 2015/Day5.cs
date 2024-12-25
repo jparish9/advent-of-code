@@ -42,10 +42,10 @@ public class Day5 : Day<List<Day5.MaybeNice>>
         return Input.Count(w => w.IsNicer());
     }
 
-    protected override List<MaybeNice> Parse(string input)
+    protected override List<MaybeNice> Parse(RawInput input)
     {
         var list = new List<MaybeNice>();
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             list.Add(new MaybeNice() { Word = line });
         }

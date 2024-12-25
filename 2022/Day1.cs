@@ -14,25 +14,8 @@ public class Day1 : Day<List<List<int>>>
         return Input.Select(p => p.Sum()).OrderByDescending(p => p).Take(3).Sum();
     }
 
-    protected override List<List<int>> Parse(string input)
+    protected override List<List<int>> Parse(RawInput input)
     {
-        var groups = input.Split("\n\n").Where(p => p != "").ToArray();
-
-        var result = new List<List<int>>();
-
-        foreach (var group in groups)
-        {
-            var lines = group.Split('\n').Where(p => p != "").ToArray();
-            var nums = new List<int>();
-
-            foreach (var line in lines)
-            {
-                nums.Add(int.Parse(line));
-            }
-
-            result.Add(nums);
-        }
-
-        return result;
+        return input.LineGroups().Select(p => p.Select(int.Parse).ToList()).ToList();
     }
 }

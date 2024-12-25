@@ -63,10 +63,10 @@ public class Day15 : Day<Day15.Cookie>
         return maxScore;
     }
 
-    protected override Cookie Parse(string input)
+    protected override Cookie Parse(RawInput input)
     {
         var ingredients = new List<Ingredient>();
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(' ');
             var name = parts[0].Trim(':');

@@ -37,8 +37,8 @@ public class Day5 : Day<Day5.JumpInstructions>
         return Input.CountJumps(true);
     }
 
-    protected override JumpInstructions Parse(string input)
+    protected override JumpInstructions Parse(RawInput input)
     {
-        return new JumpInstructions() { Jumps = input.Split("\n").Where(p => p != "").Select(int.Parse).ToList() };
+        return new JumpInstructions() { Jumps = input.Lines().Select(int.Parse).ToList() };
     }
 }

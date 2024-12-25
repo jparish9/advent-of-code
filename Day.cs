@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using MathNet.Numerics;
 
 namespace AOC;
 
@@ -19,14 +20,14 @@ public abstract partial class Day<T>
             return _isPart2;
         }
     }
-    protected int InputHashCode => (RawInput + (_isPart2 && _part2ParsedDifferently)).GetHashCode();     // input hash, accounting for if part 2 needs to be parsed differently.  used by ParseInput, and can also be referenced by derived classes if further caching is possible.
+    protected int InputHashCode => (_rawInput + (_isPart2 && _part2ParsedDifferently)).GetHashCode();     // input hash, accounting for if part 2 needs to be parsed differently.  used by ParseInput, and can also be referenced by derived classes if further caching is possible.
 
     protected bool IsSampleInput => _useSampleInput;           // derived classes can reference this to determine if sample input is being used
 
     // typed parsing function to be implemented by each Day, taking the actual input or SampleInput[Part2] and returning the desired type.
     // not callable directly; called by ParseInput
     // Implementations can reference IsPart2 as needed if part 2 is to be parsed differently (also override Part2ParsedDifferently to true)
-    protected abstract T Parse(string input);
+    protected abstract T Parse(RawInput input);
 
     // algorithms to be implemented by each Day, returning each Part's single answer.
     // these use Input (either parsed sample or real input), and can also reference InputHashCode to do further caching if possible.
@@ -39,7 +40,7 @@ public abstract partial class Day<T>
     private readonly Dictionary<int, T> _cache = new();
     private bool _isPart2 = false;
     private bool _useSampleInput = false;
-    private string RawInput = "";
+    private RawInput _rawInput = "";
     private readonly Stopwatch _sw = new();
     private readonly int _year;
     private bool _part2ParsedDifferently = false;
@@ -104,14 +105,14 @@ public abstract partial class Day<T>
                 throw new Exception("SampleInput not defined!");
 
             if (SampleRawInputPart2 != null && _isPart2)
-                RawInput = SampleRawInputPart2;
+                _rawInput = SampleRawInputPart2;
             else
-                RawInput = SampleRawInput;
+                _rawInput = SampleRawInput;
         }
         else
         {
             // load input from [year]/inputs/DayX.txt
-            RawInput = File.ReadAllText($"{_year}/inputs/{GetType().Name}.txt");
+            _rawInput = File.ReadAllText($"{_year}/inputs/{GetType().Name}.txt");
         }
 
         Input = ParseInput();
@@ -144,7 +145,7 @@ public abstract partial class Day<T>
         var ih = InputHashCode;
         if (_cache.ContainsKey(ih)) return _cache[ih];
 
-        var result = Parse(RawInput);
+        var result = Parse(_rawInput);
 
         _cache.Add(ih, result);
         return result;
@@ -168,5 +169,18 @@ public abstract partial class Day<T>
         public static implicit operator Answer(string text) => new(0, text);
 
         public override string ToString() => Text ?? Value.ToString();
+    }
+
+    // a slightly extended string class that has common parse methods.  more or less seamless with string because of the implicit operators.
+    public class RawInput
+    {
+        public required string Value { get; set; }
+
+        public static implicit operator RawInput(string value) => new() { Value = value };
+        public static implicit operator string(RawInput value) => value.Value!;
+
+        public List<string> Lines() => Value.Split("\n").Where(p => p != "").ToList();
+        // for input with sections separated by blank lines, parse the sections into a list of lists of strings
+        public List<List<string>> LineGroups() => Value.Split("\n\n").Select(p => ((RawInput)p).Lines()).ToList();
     }
 }

@@ -19,7 +19,7 @@ public class DayTemplate : Day<DayTemplate.MyType>
         throw new NotImplementedException();
     }
 
-    protected override MyType Parse(string input)
+    protected override MyType Parse(RawInput input)
     {
         throw new NotImplementedException();
     }

@@ -16,11 +16,11 @@ public class Day9 : Day<Graph<NamedNode>>
         return Input.Search(compare: Graph<NamedNode>.Maximize);
     }
 
-    protected override Graph<NamedNode> Parse(string input)
+    protected override Graph<NamedNode> Parse(RawInput input)
     {
         var graph = new Graph<NamedNode>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" ");
             var from = parts[0];

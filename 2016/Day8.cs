@@ -103,11 +103,11 @@ public class Day8 : Day<Day8.Screen>
         return Input.Print();
     }
 
-    protected override Screen Parse(string input)
+    protected override Screen Parse(RawInput input)
     {
         var instructions = new List<Instruction>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" ");
             if (parts[0] == "rect")

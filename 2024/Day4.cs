@@ -78,9 +78,9 @@ public class Day4 : Day<Day4.Grid>
         return Input.FindCrossXmas();
     }
 
-    protected override Grid Parse(string input)
+    protected override Grid Parse(RawInput input)
     {
-        var rows = input.Split('\n').Where(p => p != "").Select(p => p.ToCharArray()).ToArray();
+        var rows = input.Lines().Select(p => p.ToCharArray()).ToArray();
         return new Grid() { Rows = rows, RowCount = rows.Length, ColCount = rows[0].Length };
     }
 }

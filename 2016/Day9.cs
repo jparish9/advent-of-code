@@ -53,8 +53,8 @@ public class Day9 : Day<Day9.File>
         return Input.DecompressedSize(true);
     }
 
-    protected override File Parse(string input)
+    protected override File Parse(RawInput input)
     {
-        return new File() { CompressedData = input.Replace("\n", "") };
+        return new File() { CompressedData = input.Value.Replace("\n", "") };
     }
 }

@@ -33,10 +33,10 @@ public class Day4 : Day<List<Day4.Card>>
         return Input.ToArray().Select((p, i) => 1 + extras[i]).Sum();
     }
 
-    protected override List<Card> Parse(string input)
+    protected override List<Card> Parse(RawInput input)
     {
         var cards = new List<Card>();
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(':');
             var id = int.Parse(Spaces().Replace(parts[0], " ").Split(' ')[1]);

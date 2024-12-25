@@ -67,11 +67,11 @@ public class Day5 : Day<List<Day5.Line>>
         }
     }
 
-    protected override List<Line> Parse(string input)
+    protected override List<Line> Parse(RawInput input)
     {
         var lines = new List<Line>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split("->");
             var p1 = parts[0].Split(",");

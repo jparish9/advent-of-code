@@ -82,7 +82,7 @@ public class Day3 : Day<Day3.MemoryGrid>
         return Input.Allocate(true);
     }
 
-    protected override MemoryGrid Parse(string input)
+    protected override MemoryGrid Parse(RawInput input)
     {
         return new MemoryGrid() { Size = int.Parse(input) };
     }

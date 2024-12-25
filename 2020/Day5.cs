@@ -30,9 +30,9 @@ public class Day5 : Day<List<Day5.Seat>>
         return -1;
     }
 
-    protected override List<Seat> Parse(string input)
+    protected override List<Seat> Parse(RawInput input)
     {
-        var seats = input.Split('\n').Where(p => p != "").Select(p => {
+        var seats = input.Lines().Select(p => {
             return new Seat {
                 Row = Convert.ToInt32(p[..7].Replace('F', '0').Replace('B', '1'), 2),
                 Col = Convert.ToInt32(p[7..].Replace('L', '0').Replace('R', '1'), 2)

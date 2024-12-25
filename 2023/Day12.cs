@@ -74,9 +74,9 @@ public class Day12 : Day<Day12.SpringRowGroup>
         return Input.GetTotalPermutations();
     }
 
-    protected override SpringRowGroup Parse(string input)
+    protected override SpringRowGroup Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var result = new List<SpringRow>();
 

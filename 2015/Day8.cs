@@ -16,8 +16,8 @@ public class Day8 : Day<List<string>>
         return Input.Select(p => p.Replace("\\", "\\\\").Replace("\"", "\\\"").Length + 2 - p.Length).Sum();        // + 2 to add back in literal surrounding quotes
     }
 
-    protected override List<string> Parse(string input)
+    protected override List<string> Parse(RawInput input)
     {
-        return @input.Split("\n").Where(p => p != "").ToList();         // @ for literal strings (ignore escape sequences like \\, \", \x24)
+        return @input.Lines().ToList();         // @ for literal strings (ignore escape sequences like \\, \", \x24)
     }
 }

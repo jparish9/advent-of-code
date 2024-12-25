@@ -31,8 +31,8 @@ public class Day3 : Day<char[][]>
         return trees;
     }
 
-    protected override char[][] Parse(string input)
+    protected override char[][] Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "").Select(p => p.ToCharArray()).ToArray();
+        return input.Lines().Select(p => p.ToCharArray()).ToArray();
     }
 }

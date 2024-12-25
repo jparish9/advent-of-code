@@ -54,10 +54,10 @@ public partial class Day3 : Day<Day3.Claims>
         return Input.Items.First(p => !overlapping.Contains(p.Id)).Id;
     }
 
-    protected override Claims Parse(string input)
+    protected override Claims Parse(RawInput input)
     {
         return new Claims() {
-            Items = input.Split("\n").Where(p => p != "").Select(p => ClaimMatch().Matches(p)).Select(p => new Claim() {
+            Items = input.Lines().Select(p => ClaimMatch().Matches(p)).Select(p => new Claim() {
                 Id = int.Parse(p[0].Groups[1].Value),
                 Position = (int.Parse(p[0].Groups[2].Value), int.Parse(p[0].Groups[3].Value)),
                 Width = int.Parse(p[0].Groups[4].Value),

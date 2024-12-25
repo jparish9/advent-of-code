@@ -41,8 +41,8 @@ public class Day6 : Day<Day6.Message>
         return new string(Input.MinMaxFreqs.Select(p => p.min).ToArray());
     }
 
-    protected override Message Parse(string input)
+    protected override Message Parse(RawInput input)
     {
-        return new Message() { Lines = input.Split("\n").Where(p => p != "").ToList() };
+        return new Message() { Lines = input.Lines().ToList() };
     }
 }

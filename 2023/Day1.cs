@@ -41,8 +41,8 @@ public class Day1 : Day<List<string>>
         return sum;
     }
 
-    protected override List<string> Parse(string input)
+    protected override List<string> Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "").ToList();
+        return input.Lines().ToList();
     }
 }

@@ -211,20 +211,20 @@ public class Day19 : Day<Day19.Machine>
         }
     }
 
-    protected override Machine Parse(string input)
+    protected override Machine Parse(RawInput input)
     {
-        var lines = input.Split("\n\n");
+        var lines = input.LineGroups();
 
         // for both the replacements and the molecule, standardize to two characters per atom, then map them to ints.
         var replacements = new List<Replacement>();
 
-        foreach (var line in lines[0].Split('\n').Where(p => p != ""))
+        foreach (var line in lines[0])
         {
             var parts = line.Split(" => ");
             replacements.Add(new Replacement() { From = Standardize(parts[0]), To = Standardize(parts[1]) });
         }
 
-        return new Machine() { Replacements = replacements, Molecule = Standardize(lines[1]) };
+        return new Machine() { Replacements = replacements, Molecule = Standardize(lines[1][0]) };
     }
 
     private static string Standardize(string molecule)

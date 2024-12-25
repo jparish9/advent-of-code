@@ -81,23 +81,22 @@ public class Day11 : Day<Day11.MonkeyGroup>
         return Input.Copy().Run(10000, 1);
     }
 
-    protected override MonkeyGroup Parse(string input)
+    protected override MonkeyGroup Parse(RawInput input)
     {
-        var monkeys = input.Split("\n\n").Select(p => p.Trim()).ToList();
+        var monkeys = input.LineGroups();
 
         var monkeyList = new List<Monkey>();
 
         foreach (var monkey in monkeys)
         {
-            var lines = monkey.Split("\n");
-            var startingItems = lines[1].Split(":")[1].Trim().Split(",").Select(p => long.Parse(p.Trim())).ToList();
-            var opLine = lines[2].Split("=")[1].Trim().Split(" ");
+            var startingItems = monkey[1].Split(":")[1].Trim().Split(",").Select(p => long.Parse(p.Trim())).ToList();
+            var opLine = monkey[2].Split("=")[1].Trim().Split(" ");
             var operation = opLine[1];
             var operand = opLine[2];
             if (operation == "*" && operand == "old") { operation = "^"; operand = "2"; };
-            var divisible = lines[3].Split(" ")[^1];
-            var ifTrue = lines[4].Split(" ")[^1];
-            var ifFalse = lines[5].Split(" ")[^1];
+            var divisible = monkey[3].Split(" ")[^1];
+            var ifTrue = monkey[4].Split(" ")[^1];
+            var ifFalse = monkey[5].Split(" ")[^1];
 
             monkeyList.Add(new Monkey()
             {

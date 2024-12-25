@@ -115,8 +115,8 @@ public class Day22 : Day<Day22.MonkeyMarket>
         return overall.Values.Max();
     }
 
-    protected override MonkeyMarket Parse(string input)
+    protected override MonkeyMarket Parse(RawInput input)
     {
-        return new MonkeyMarket { SecretNumbers = input.Split("\n").Where(p => p != "").Select(l => new SecretNumber(long.Parse(l))).ToList() };
+        return new MonkeyMarket { SecretNumbers = input.Lines().Select(l => new SecretNumber(long.Parse(l))).ToList() };
     }
 }

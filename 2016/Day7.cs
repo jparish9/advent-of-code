@@ -66,8 +66,8 @@ public class Day7 : Day<Day7.IPV7>
         return ssl;
     }
 
-    protected override IPV7 Parse(string input)
+    protected override IPV7 Parse(RawInput input)
     {
-        return new IPV7() { IPs = input.Split("\n").Where(p => p != "").ToList() };
+        return new IPV7() { IPs = input.Lines().ToList() };
     }
 }

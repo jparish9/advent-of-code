@@ -49,8 +49,8 @@ public class Day3 : Day<List<string>>
         return result.Sum(p => p >= 'a' ? p - 'a' + 1 : p - 'A' + 27);
     }
 
-    protected override List<string> Parse(string input)
+    protected override List<string> Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "").ToList();
+        return input.Lines().ToList();
     }
 }

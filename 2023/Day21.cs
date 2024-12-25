@@ -197,9 +197,9 @@ public class Day21 : Day<Day21.Garden>
         return a*n*n + b*n + c;
     }
 
-    protected override Garden Parse(string input)
+    protected override Garden Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
         var map = new char[lines.Length][];
 
         for (var y=0; y<lines.Length; y++)

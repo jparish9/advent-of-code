@@ -112,12 +112,12 @@ public class Day9 : Day<Day9.DiskMap>
        return Input.Checksum();
     }
 
-    protected override DiskMap Parse(string input)
+    protected override DiskMap Parse(RawInput input)
     {
         var blocks = new List<Block>();
         var file = true;
         var fileId = 0;
-        foreach (var ch in input)
+        foreach (var ch in input.Value)
         {
             blocks.AddRange(Enumerable.Repeat(new Block() { FileId = file ? fileId : null, FileSize = ch - '0' }, ch - '0'));
             if (file) { fileId++; }

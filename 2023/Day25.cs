@@ -96,12 +96,12 @@ public class Day25 : Day<Day25.Graph>
         return 0;           // there is no part 2!
     }
 
-    protected override Graph Parse(string input)
+    protected override Graph Parse(RawInput input)
     {
         var nodes = new Dictionary<string, Node>();
         var edges = new List<Edge>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(": ");
             var name = parts[0];

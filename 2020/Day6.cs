@@ -19,12 +19,8 @@ public class Day6 : Day<List<Day6.Answers>>
         return Input.Sum(p => p.Person.SelectMany(p => p).Distinct().Count(q => p.Person.All(r => r.Contains(q))));
     }
 
-    protected override List<Answers> Parse(string input)
+    protected override List<Answers> Parse(RawInput input)
     {
-        return input.Split("\n\n").Where(p => p != "").Select(p => {
-            return new Answers {
-                Person = p.Split('\n').Where(p => p != "").ToList()
-            };
-        }).ToList();
+        return input.LineGroups().Select(p => { return new Answers { Person = p }; }).ToList();
     }
 }

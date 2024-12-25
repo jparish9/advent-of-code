@@ -101,11 +101,11 @@ public class Day6 : Day<Day6.LightGrid>
         return Input.State();
     }
 
-    protected override LightGrid Parse(string input)
+    protected override LightGrid Parse(RawInput input)
     {
         var list = new List<Instruction>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(" ");
             var instruction = new Instruction();

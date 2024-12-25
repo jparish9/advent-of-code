@@ -60,9 +60,9 @@ public class Day2 : Day<List<Day2.Instruction>>
         return x * depth;
     }
 
-    protected override List<Instruction> Parse(string input)
+    protected override List<Instruction> Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "")
+        return input.Lines()
             .Select(p => new Instruction() { Direction = p.Split(' ')[0], Distance = int.Parse(p.Split(' ')[1]) }).ToList();
     }
 }

@@ -107,9 +107,9 @@ public class Day18 : Day<Day18.Lights>
         return lights.Grid.Sum(p => p.Count(q => q == '#'));
     }
 
-    protected override Lights Parse(string input)
+    protected override Lights Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
         var grid = new char[lines.Length][];
 
         for (var y=0; y<lines.Length; y++)

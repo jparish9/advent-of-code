@@ -47,7 +47,7 @@ public class Day5 : Day<Day5.SecurityDoor>
         return Input.ComputePassword(true);
     }
 
-    protected override SecurityDoor Parse(string input)
+    protected override SecurityDoor Parse(RawInput input)
     {
         return new SecurityDoor() { DoorId = input };
     }

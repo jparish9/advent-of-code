@@ -85,9 +85,9 @@ public class Day7 : Day<Day7.HandGroup>
         return Input.GetWinnings();
     }
 
-    protected override HandGroup Parse(string input)
+    protected override HandGroup Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var hands = new List<Hand>();
 

@@ -48,7 +48,7 @@ public partial class Day3 : Day<Day3.Instructions>
         return result;
     }
 
-    protected override Instructions Parse(string input)
+    protected override Instructions Parse(RawInput input)
     {
         return new Instructions() {
             Items = InstructionMatch().Matches(input)

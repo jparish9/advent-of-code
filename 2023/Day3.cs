@@ -40,9 +40,9 @@ public class Day3 : Day<Day3.Engine>
             .Sum();
     }
 
-    protected override Engine Parse(string input)
+    protected override Engine Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var grid = new char[lines.Length][];
 

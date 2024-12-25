@@ -149,9 +149,9 @@ public class Day12 : Day<Day12.Garden>
         return Input.BulkPrice();
     }
 
-    protected override Garden Parse(string input)
+    protected override Garden Parse(RawInput input)
     {
-        char[][] map = input.Split('\n').Where(p => p != "").Select(p => p.ToCharArray()).ToArray();
+        char[][] map = input.Lines().Select(p => p.ToCharArray()).ToArray();
         Plot[][] plots = new Plot[map.Length][];
         for (int i = 0; i < map.Length; i++)
         {

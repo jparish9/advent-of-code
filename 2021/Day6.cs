@@ -30,12 +30,12 @@ public class Day6 : Day<List<long>>
         return data.Sum(p => p);
     }
 
-    protected override List<long> Parse(string input)
+    protected override List<long> Parse(RawInput input)
     {
         var binned = new List<long>();
         binned.AddRange(Enumerable.Repeat(0L, 9));
 
-        var nums = input.Split(',').Select(int.Parse).ToList();
+        var nums = input.Value.Split(',').Select(int.Parse).ToList();
         foreach (var num in nums)
         {
             binned[num]++;

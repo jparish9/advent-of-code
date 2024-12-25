@@ -83,11 +83,11 @@ public partial class Day11 : Day<Day11.Facility>
         throw new NotImplementedException();
     }
 
-    protected override Facility Parse(string input)
+    protected override Facility Parse(RawInput input)
     {
         var floors = new List<Floor>();
 
-        foreach (var line in input.Split("\n").Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var microchips = new HashSet<string>();
             var generators = new HashSet<string>();

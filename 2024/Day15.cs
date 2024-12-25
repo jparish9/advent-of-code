@@ -208,13 +208,13 @@ public class Day15 : Day<Day15.Map>
         return Input.GPS();
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
-        var parts = input.Split("\n\n");
-        var warehouseRows = parts[0].Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var parts = input.LineGroups();
+        var warehouseRows = parts[0];
 
-        var warehouse = new char[warehouseRows.Length][];
-        for (int y = 0; y < warehouseRows.Length; y++)
+        var warehouse = new char[warehouseRows.Count][];
+        for (int y = 0; y < warehouseRows.Count; y++)
         {
             warehouse[y] = warehouseRows[y].ToCharArray();
         }
@@ -222,7 +222,7 @@ public class Day15 : Day<Day15.Map>
         var map = new Map
         {
             OrigWarehouse = warehouse,
-            Directions = parts[1].Replace("\n","").Select(c => DirectionMap[c]).ToList()
+            Directions = string.Concat(parts[1]).Select(c => DirectionMap[c]).ToList()
         };
         return map;
     }

@@ -57,9 +57,9 @@ public class Day9 : Day<List<List<int>>>
         return _predictions[ih];
     }
 
-    protected override List<List<int>> Parse(string input)
+    protected override List<List<int>> Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToList();
+        var lines = input.Lines().ToList();
         var parsed = new List<List<int>>();
         foreach(var line in lines)
         {

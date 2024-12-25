@@ -164,9 +164,9 @@ public class Day14 : Day<Day14.RockField>
         return foundLoad;
     }
 
-    protected override RockField Parse(string input)
+    protected override RockField Parse(RawInput input)
     {
-        var lines = input.Split("\n").Where(p => p != "").ToList();
+        var lines = input.Lines().ToList();
         var grid = new char[lines.Count][];
 
         for (int i = 0; i < lines.Count; i++)

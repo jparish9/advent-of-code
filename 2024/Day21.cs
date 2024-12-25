@@ -258,8 +258,8 @@ public partial class Day21 : Day<Day21.DoorCodes>
         return Input.GetComplexity(25);
     }
 
-    protected override DoorCodes Parse(string input)
+    protected override DoorCodes Parse(RawInput input)
     {
-        return new DoorCodes() { Codes = input.Split("\n").Where(p => p != "").ToList() };
+        return new DoorCodes() { Codes = input.Lines().ToList() };
     }
 }

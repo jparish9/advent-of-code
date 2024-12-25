@@ -20,8 +20,8 @@ public class Day4 : Day<Day4.Passphrases>
         return Input.Phrases.Count(p => p.Split(" ").GroupBy(q => new string([.. q.OrderBy(r => r)])).All(r => r.Count() == 1));            // O_o
     }
 
-    protected override Passphrases Parse(string input)
+    protected override Passphrases Parse(RawInput input)
     {
-        return new Passphrases() { Phrases = input.Split("\n").Where(p => p != "").ToList() };
+        return new Passphrases() { Phrases = input.Lines().ToList() };
     }
 }

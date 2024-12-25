@@ -15,14 +15,4 @@ public static class Extensions
                 from item in sequence
                 select accseq.Concat([item]));
     }
-
-    public static List<string> LineGroups (this string input)
-    {
-        return [.. input.Split("\n\n").Where(p => p != "")];
-    }
-
-    public static List<string> Lines (this string input)
-    {
-        return [.. input.Split("\n").Where(p => p != "")];
-    }
 }

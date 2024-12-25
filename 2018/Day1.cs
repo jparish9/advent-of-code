@@ -37,8 +37,8 @@ public class Day1 : Day<Day1.Frequency>
         return result;
     }
 
-    protected override Frequency Parse(string input)
+    protected override Frequency Parse(RawInput input)
     {
-        return new Frequency() { Changes = input.Split("\n").Where(p => p != "").Select(p => int.Parse(p)).ToList() };
+        return new Frequency() { Changes = input.Lines().Select(p => int.Parse(p)).ToList() };
     }
 }

@@ -137,9 +137,9 @@ public class Day23 : Day<Day23.NetworkMap>
         }
     }
 
-    protected override NetworkMap Parse(string input)
+    protected override NetworkMap Parse(RawInput input)
     {
-        var edges = input.Split("\n").Where(p => p != "").Select(p => p.Split("-"));
+        var edges = input.Lines().Select(p => p.Split("-"));
         var nodes = edges.SelectMany(p => p).Distinct().Select(p => new NamedNode() { Name = p }).ToList();
 
         foreach (var edge in edges)

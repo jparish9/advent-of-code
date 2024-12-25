@@ -53,11 +53,11 @@ public class Day18 : Day<Day18.Digger>
         return Input.LagoonArea();
     }
 
-    protected override Digger Parse(string input)
+    protected override Digger Parse(RawInput input)
     {
         var instructions = new List<Instruction>();
 
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(' ');
             if (IsPart2)

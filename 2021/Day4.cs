@@ -120,12 +120,12 @@ public class Day4 : Day<Day4.Bingo>
         return cards.First().SumUnmarked() * Input.Numbers[i];
     }
 
-    protected override Bingo Parse(string input)
+    protected override Bingo Parse(RawInput input)
     {
-        var parts = input.Split("\n\n");
+        var parts = input.LineGroups();
 
-        var numbers = parts[0].Split(',').Select(int.Parse).ToList();
-        var cards = parts[1..].Select(p => p.Split('\n').Where(p => p != "").Select(q => Spaces().Replace(q, " ").Split(' ').Where(r => r != "").Select(int.Parse).ToArray()).ToArray()).ToList();
+        var numbers = parts[0][0].Split(',').Select(int.Parse).ToList();
+        var cards = parts[1..].Select(p => p.Select(q => Spaces().Replace(q, " ").Split(' ').Where(r => r != "").Select(int.Parse).ToArray()).ToArray()).ToList();
         var marked = cards.Select(p => p.Select(q => q.Select(r => false).ToArray()).ToArray()).ToList();
 
         return new Bingo() { Numbers = numbers, Cards = cards.Select((p, i) => new Card() { Grid = p, Marked = marked[i] }).ToList() };

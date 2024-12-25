@@ -67,9 +67,9 @@ public class Day15 : Day<List<Day15.Step>>
         return totalFocusPower;
     }
 
-    protected override List<Step> Parse(string input)
+    protected override List<Step> Parse(RawInput input)
     {
-        return input.Replace("\n", "").Split(',').Where(p => p != "").Select(p =>
+        return input.Value.Replace("\n", "").Split(',').Where(p => p != "").Select(p =>
         {
             var c = 0;
             while (p[c] != '=' && p[c] != '-') { c++; }

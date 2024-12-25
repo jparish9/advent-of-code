@@ -42,11 +42,11 @@ public class Day4 : Day<Day4.Kiosk>
         return 0;
     }
 
-    protected override Kiosk Parse(string input)
+    protected override Kiosk Parse(RawInput input)
     {
         var rooms = new List<Room>();
 
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var match = Regex.Match(line, @"([a-z\-]+)-(\d+)\[([a-z]+)\]", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
             rooms.Add(new Room() { Name = match.Groups[1].Value, SectorId = int.Parse(match.Groups[2].Value), Checksum = match.Groups[3].Value });

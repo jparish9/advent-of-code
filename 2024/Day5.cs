@@ -100,15 +100,15 @@ public class Day5 : Day<Day5.Manual>
         return sum;
     }
 
-    protected override Manual Parse(string input)
+    protected override Manual Parse(RawInput input)
     {
-        var parts = input.Split("\n\n");
+        var parts = input.LineGroups();
         return new Manual()
         {
-            Rules = new Rules(parts[0].Split("\n").Where(p => p != "")
+            Rules = new Rules(parts[0]
                 .Select(p => p.Split("|").Select(int.Parse).ToList())
                 .Select(p => new RuleDef() { First = p[0], Second = p[1] }).ToList()),
-            Updates = parts[1].Split("\n").Where(p => p != "")
+            Updates = parts[1]
                 .Select(p => p.Split(",").Select(int.Parse).ToList())
                 .Select(p => new Update() { Pages = p }).ToList()
         };

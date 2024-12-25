@@ -47,8 +47,8 @@ public class Day17 : Day<Day17.Refrigerator>
         return combinations;
     }
 
-    protected override Refrigerator Parse(string input)
+    protected override Refrigerator Parse(RawInput input)
     {
-        return new Refrigerator() { Containers = input.Split("\n").Where(p => p != "").Select(int.Parse).ToList() };
+        return new Refrigerator() { Containers = input.Lines().Select(int.Parse).ToList() };
     }
 }

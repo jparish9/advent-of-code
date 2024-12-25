@@ -171,20 +171,20 @@ public partial class Day24 : Day<Day24.Device>
         return string.Join(",", Input.FindInvalid().OrderBy(p => p));
     }
 
-    protected override Device Parse(string input)
+    protected override Device Parse(RawInput input)
     {
         var inputs = new Dictionary<string, bool?>();
         var instructions = new List<Instruction>();
 
-        var lines = input.Split("\n\n");
+        var lines = input.LineGroups();
 
-        foreach (var line in lines[0].Split("\n"))
+        foreach (var line in lines[0])
         {
             var parts = line.Split(": ");
             inputs.Add(parts[0], parts[1] == "1");
         }
 
-        foreach (var line in lines[1].Split("\n").Where(p => p != ""))
+        foreach (var line in lines[1])
         {
             var match = InstructionMatch().Matches(line)[0];
             

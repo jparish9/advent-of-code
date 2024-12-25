@@ -24,13 +24,13 @@ public class Day3 : Day<Day3.Triangles>
         return Input.CountValid();
     }
 
-    protected override Triangles Parse(string input)
+    protected override Triangles Parse(RawInput input)
     {
         var triangles = new List<int[]>();
 
         var cols = new List<List<int>>();
 
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var ln = Spaces().Replace(line.Trim(), " ").Split(' ');
             if (IsPart2)

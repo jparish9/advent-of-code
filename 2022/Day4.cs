@@ -46,9 +46,9 @@ public class Day4 : Day<List<Day4.Pairs>>
         return overlap;
     }
 
-    protected override List<Pairs> Parse(string input)
+    protected override List<Pairs> Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         var result = new List<Pairs>();
 

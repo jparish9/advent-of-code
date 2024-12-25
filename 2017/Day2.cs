@@ -20,8 +20,8 @@ public class Day2 : Day<Day2.Spreadsheet>
         return Input.Rows.Select(p => p.SelectMany(q => p.Where(r => r != q && r % q == 0).Select(r => r / q)).First()).Sum();
     }
 
-    protected override Spreadsheet Parse(string input)
+    protected override Spreadsheet Parse(RawInput input)
     {
-        return new Spreadsheet() { Rows = input.Split("\n").Where(p => p != "").Select(p => p.Split("\t").Select(q => int.Parse(q)).ToList()).ToList() };
+        return new Spreadsheet() { Rows = input.Lines().Select(p => p.Split("\t").Select(q => int.Parse(q)).ToList()).ToList() };
     }
 }

@@ -70,9 +70,9 @@ public class Day7 : Day<Day7.Dir>
         }
     }
 
-    protected override Dir Parse(string input)
+    protected override Dir Parse(RawInput input)
     {
-        var lines = input.Split('\n').Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
 
         // create the top-level directory, we know the first command is "cd /"
         var result = new Dir()

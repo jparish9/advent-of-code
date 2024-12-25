@@ -26,9 +26,9 @@ public class Day1 : Day<Day1.Lists>
         return Input.Left.Aggregate(0, (acc, p) => acc + p * Input.Right.Count(q => q == p));
     }
 
-    protected override Lists Parse(string input)
+    protected override Lists Parse(RawInput input)
     {
-        var raw = input.Split('\n').Where(p => p != "").Select(p => p.Split("   ").Select(int.Parse).ToList()).ToList();
+        var raw = input.Lines().Select(p => p.Split("   ").Select(int.Parse).ToList()).ToList();
 
         return new Lists() { Left = raw.Select(p => p.First()).OrderBy(p => p).ToList(), Right = raw.Select(p => p.Last()).OrderBy(p => p).ToList(), TotalCount = raw.Count };
     }

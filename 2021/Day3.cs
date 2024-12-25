@@ -56,8 +56,8 @@ public class Day3 : Day<List<List<bool>>>
         return result;
     }
 
-    protected override List<List<bool>> Parse(string input)
+    protected override List<List<bool>> Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "").Select(p => p.Select(c => c == '1').ToList()).ToList();
+        return input.Lines().Select(p => p.Select(c => c == '1').ToList()).ToList();
     }
 }

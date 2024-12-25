@@ -35,9 +35,9 @@ public class Day2 : Day<List<Day2.Password>>
         return Input.Count(p => p.Pwd[p.Min-1] == p.Char ^ p.Pwd[p.Max-1] == p.Char);
     }
 
-    protected override List<Password> Parse(string input)
+    protected override List<Password> Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "").Select(p => {
+        return input.Lines().Select(p => {
             var parts = p.Split(' ');
             var minMax = parts[0].Split('-');
             return new Password {

@@ -58,13 +58,13 @@ public class Day19 : Day<Day19.Onsen>
         return Input.DesignCounts.Sum(p => p.Value);            // cached from part 1
     }
 
-    protected override Onsen Parse(string input)
+    protected override Onsen Parse(RawInput input)
     {
-        var parts = input.Split("\n\n");
+        var parts = input.LineGroups();
         return new Onsen()
         {
-            Patterns = [.. parts[0].Split(", ")],
-            Designs = parts[1].Split("\n").Where(p => p != "").ToList()
+            Patterns = [.. parts[0][0].Split(", ")],
+            Designs = parts[1]
         };
     }
 }

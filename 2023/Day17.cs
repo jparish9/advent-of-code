@@ -74,9 +74,9 @@ public class Day17 : Day<Day17.Map>
         return adjacentNodes;
     }
 
-    protected override Map Parse(string input)
+    protected override Map Parse(RawInput input)
     {
-        var grid = input.Split('\n').Select(p => p.Trim()).Where(p => p != "").Select(p => p.Select(q => int.Parse(q.ToString())).ToArray()).ToArray();
+        var grid = input.Lines().Select(p => p.Trim()).Select(p => p.Select(q => int.Parse(q.ToString())).ToArray()).ToArray();
         return new Map() { Grid = grid };
     }
 }

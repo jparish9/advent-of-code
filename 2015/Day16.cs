@@ -78,11 +78,11 @@ public class Day16 : Day<Day16.SueFinder>
         return Input.Sues.First(p => p.Matches2(Criteria)).Number;
     }
 
-    protected override SueFinder Parse(string input)
+    protected override SueFinder Parse(RawInput input)
     {
         var sues = new List<Sue>();
 
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var parts = line.Split(' ');
             var number = int.Parse(parts[1].Trim(':'));

@@ -111,12 +111,12 @@ public class Day17 : Day<Day17.Program>
         return validA.Min();
     }
 
-    protected override Program Parse(string input)
+    protected override Program Parse(RawInput input)
     {
-        var parts = input.Split("\n\n");
+        var parts = input.LineGroups();
 
-        var registers = parts[0].Split("\n").Where(p => p != "").Select(p => long.Parse(p.Split(" ")[2])).ToList();
-        var instructions = parts[1].Split(": ")[1].Split(",").Select(int.Parse).ToList();
+        var registers = parts[0].Select(p => long.Parse(p.Split(" ")[2])).ToList();
+        var instructions = parts[1][0].Split(": ")[1].Split(",").Select(int.Parse).ToList();
 
         return new Program() { Registers = registers, Instructions = instructions };
     }

@@ -68,7 +68,7 @@ public class Day3 : Day<Day3.Delivery>
         return Input.Visited.Union(Input.RoboVisited).Count();
     }
 
-    protected override Delivery Parse(string input)
+    protected override Delivery Parse(RawInput input)
     {
         return new Delivery() { Directions = input };
     }

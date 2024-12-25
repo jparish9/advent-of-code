@@ -61,19 +61,22 @@ public class Day4 : Day<List<Day4.Passport>>
         return ct;
     }
 
-    protected override List<Passport> Parse(string input)
+    protected override List<Passport> Parse(RawInput input)
     {
         var passports = new List<Passport>();
 
-        var each = input.Split("\n\n");
+        var each = input.LineGroups();
         foreach (var p in each)
         {
             var fields = new Dictionary<string, string>();
-            foreach (var f in p.Split(' ', '\n'))
+            foreach (var line in p)
             {
-                var kv = f.Split(':');
-                if (kv.Length != 2) continue;
-                fields.Add(kv[0], kv[1]);
+                foreach (var f in line.Split(' '))
+                {
+                    var kv = f.Split(':');
+                    if (kv.Length != 2) continue;
+                    fields.Add(kv[0], kv[1]);
+                }
             }
             passports.Add(new Passport { Fields = fields });
         }

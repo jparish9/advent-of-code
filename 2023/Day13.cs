@@ -123,20 +123,18 @@ public class Day13 : Day<List<Day13.Grid>>
         return total;
     }
 
-    protected override List<Grid> Parse(string input)
+    protected override List<Grid> Parse(RawInput input)
     {
         var result = new List<Grid>();
-        var grids = input.Split("\n\n").Where(p => p != "").ToArray();
+        var grids = input.LineGroups();
 
         foreach (var grid in grids)
         {
-            var lines = grid.Split('\n').Where(p => p != "").ToArray();
+            var map = new char[grid.Count][];
 
-            var map = new char[lines.Length][];
-
-            for (var i=0; i<lines.Length; i++)
+            for (var i=0; i<grid.Count; i++)
             {
-                map[i] = lines[i].ToCharArray();
+                map[i] = grid[i].ToCharArray();
             }
 
             result.Add(new Grid { Map = map });

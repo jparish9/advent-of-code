@@ -33,10 +33,10 @@ public class Day2 : Day<List<Day2.Game>>
         return (int)pwr;
     }
 
-    protected override List<Game> Parse(string input)
+    protected override List<Game> Parse(RawInput input)
     {
         var games = new List<Game>();
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var gameId = int.Parse(line.Split(':')[0].Split(" ")[1]);
             var gamePlays = line.Split(':')[1].Trim().Split(';').Select(p => p.Trim().Replace(",","").Split(' ')).ToArray();

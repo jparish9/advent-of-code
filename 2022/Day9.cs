@@ -93,10 +93,10 @@ public class Day9 : Day<List<Day9.Move>>
         return rope.TailPositions.Count;
     }
 
-    protected override List<Move> Parse(string input)
+    protected override List<Move> Parse(RawInput input)
     {
         var moves = new List<Move>();
-        foreach (var line in input.Split('\n').Where(p => p != ""))
+        foreach (var line in input.Lines())
         {
             var move = new Move() { Direction = line[0], Distance = int.Parse(line[2..]) };
             moves.Add(move);

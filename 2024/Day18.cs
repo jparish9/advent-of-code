@@ -85,9 +85,9 @@ public class Day18 : Day<Day18.MemorySpace>
         return adjacentNodes;
     }
 
-    protected override MemorySpace Parse(string input)
+    protected override MemorySpace Parse(RawInput input)
     {
-        var corrupted = input.Split("\n").Where(p => p != "").Select(p => p.Split(",")).Select(p => (X: int.Parse(p[0]), Y: int.Parse(p[1]))).ToList();
+        var corrupted = input.Lines().Select(p => p.Split(",")).Select(p => (X: int.Parse(p[0]), Y: int.Parse(p[1]))).ToList();
 
         // 7x7 for sample (0-6), 71x71 for real input4 (0-70).
         return new MemorySpace()

@@ -26,8 +26,8 @@ public class Day1 : Day<List<int>>
         return increased;
     }
 
-    protected override List<int> Parse(string input)
+    protected override List<int> Parse(RawInput input)
     {
-        return input.Split('\n').Where(p => p != "").Select(int.Parse).ToList();
+        return input.Lines().Select(int.Parse).ToList();
     }
 }

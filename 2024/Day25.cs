@@ -46,7 +46,7 @@ public class Day25 : Day<Day25.Door>
         return "Merry Christmas!";              // there is no part 2!
     }
 
-    protected override Door Parse(string input)
+    protected override Door Parse(RawInput input)
     {
         var locksAndKeys = input.LineGroups();
 
@@ -55,17 +55,16 @@ public class Day25 : Day<Day25.Door>
 
         foreach (var item in locksAndKeys)
         {
-            var lines = item.Lines();
             // convert to columns for pin/key heights
-            var cols = lines.SelectMany(p => p.Select((c, i) => new { c, i })).GroupBy(p => p.i).Select(p => p.Select(q => q.c).ToList()).ToList();
+            var cols = item.SelectMany(p => p.Select((c, i) => new { c, i })).GroupBy(p => p.i).Select(p => p.Select(q => q.c).ToList()).ToList();
             var heights = cols.Select(p => p.Count(q => q == '#') - 1).ToList();
 
             // locks have top row of #####, keys have bottom row of #####
-            if (lines.First() == "#####")
+            if (item.First() == "#####")
             {
                 locks.Add(new Lock() { PinHeights = heights });
             }
-            else if (lines.Last() == "#####")
+            else if (item.Last() == "#####")
             {
                 keys.Add(new Key() { KeyHeights = heights });
             }

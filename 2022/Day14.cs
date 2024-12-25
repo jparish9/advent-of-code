@@ -85,9 +85,9 @@ public class Day14 : Day<Day14.Cave>
         return ct;
     }
 
-    protected override Cave Parse(string input)
+    protected override Cave Parse(RawInput input)
     {
-        var lines = input.Split("\n").Where(p => p != "").ToArray();
+        var lines = input.Lines().ToArray();
         var allSegments = new List<(int x1, int y1, int x2, int y2)>();
 
         foreach (var line in lines)

@@ -79,7 +79,7 @@ public class Day11 : Day<string>
         return pairs >= 2;
     }
 
-    protected override string Parse(string input)
+    protected override string Parse(RawInput input)
     {
         return input;
     }
