@@ -70,21 +70,24 @@ public abstract partial class Day<T>
         return Part2();
     }
 
-    public void RunAll(bool realInputOnly = false)
+    public void RunAll(bool sampleInput, bool realInput)
     {
-        if (!realInputOnly)
+        if (sampleInput)
         {
             TryRun(() => RunPart1(true));
         }
-
-        TryRun(() => RunPart1(false));
-
-        if (!realInputOnly)
+        if (realInput)
+        {
+            TryRun(() => RunPart1(false));
+        }
+        if (sampleInput)
         {
             TryRun(() => RunPart2(true));
         }
-
-        TryRun(() => RunPart2(false));
+        if (realInput)
+        {
+            TryRun(() => RunPart2(false));
+        }
     }
 
     /* other highly reused statics */

@@ -10,10 +10,17 @@ internal class Program
         // if year not provided, run current year
         // if day not provided, run all days for the year and report total time
         // if specific day provided, run just that day (for the provided/current year)
+        bool sampleOnly = false;
         int? day = null;
         int year = DateTime.Now.Year;
         if (args.Length > 0)
         {
+            if (args.Contains("--sampleonly"))
+            {
+                sampleOnly = true;
+                args = [.. args.Where(a => a != "--sampleonly")];
+            }
+
             var second = -1;
             if (!int.TryParse(args[0], out int first)
                 || (args.Length > 1 && !int.TryParse(args[1], out second)))
@@ -54,7 +61,7 @@ internal class Program
         foreach (var cls in all.OrderBy(p => int.Parse(p.Name.Replace("Day", ""))))         // sort by day number (not string sort)
         {
             // invoke RunAll on each implementation
-            cls?.GetMethod("RunAll")?.Invoke(Activator.CreateInstance(cls), new object[] { day == null });
+            cls?.GetMethod("RunAll")?.Invoke(Activator.CreateInstance(cls), [(day != null || sampleOnly), (day == null || !sampleOnly)]);
         }
         if (day == null)
         {
@@ -84,8 +91,9 @@ internal class Program
 
     private static void PrintUsage()
     {
-        Console.WriteLine("Usage: dotnet run [year] [day]");
+        Console.WriteLine("Usage: dotnet run [year] [day] [--sampleonly]");
         Console.WriteLine("  year: specific year, or current year if not provided");
         Console.WriteLine("  day:  single day to run (sample and input); if not provided, run all days (input only) for the year and report total time");
+        Console.WriteLine("  --sampleonly: if year and day given, run only the sample input");
     }
 }
