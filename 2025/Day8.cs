@@ -8,7 +8,7 @@ public class Day8 : Day<Day8.Playground>
     {
         public required List<JunctionBox> JunctionBoxes { get; set; }
 
-        public List<(JunctionBox BoxA, JunctionBox BoxB, double Distance)> Connections { get; set; } = [];
+        public List<(JunctionBox BoxA, JunctionBox BoxB, long Distance)> Connections { get; set; } = [];
 
         // compute all pairwise connection distances and sort them
         public void ComputeConnections()
@@ -21,7 +21,7 @@ public class Day8 : Day<Day8.Playground>
                 for (var j=i+1; j<JunctionBoxes.Count; j++)
                 {
                     var boxB = JunctionBoxes[j];
-                    var dist = EuclideanDistance(boxA.Position, boxB.Position);
+                    var dist = PythagoreanDistance(boxA.Position, boxB.Position);
                     Connections.Add((boxA, boxB, dist));
                 }
             }
@@ -85,12 +85,12 @@ public class Day8 : Day<Day8.Playground>
         }
     }
 
-    private static double EuclideanDistance((long x, long y, long z) a, (long x, long y, long z) b)
+    private static long PythagoreanDistance((long x, long y, long z) a, (long x, long y, long z) b)
     {
         var dx = a.x - b.x;
         var dy = a.y - b.y;
         var dz = a.z - b.z;
-        return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        return dx * dx + dy * dy + dz * dz;
     }
 
     protected override Playground Parse(RawInput input)
