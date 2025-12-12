@@ -6,11 +6,15 @@ namespace AOC.AOC2025;
 
 public partial class Day10 : Day<Day10.Factory>
 {
-    protected override string? SampleRawInput { get => "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}\n[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}\n[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}"; }
+    //protected override string? SampleRawInput { get => "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}\n[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}\n[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}"; }
+
+    protected override string? SampleRawInput { get => "[#.#.#.#] (0,1,6) (2,4) (0,3,5,6) (0,3,4,6) (1,2,3) (3,4) {37,29,22,54,21,17,37}"; }
 
     public class Factory
     {
         public required List<Machine> Machines { get; set; }
+
+        public Dictionary<(int machineId, string joltageKey), int> Cache { get; set; } = new();          // memoization for part 2
     }
 
     public class Machine
@@ -22,41 +26,150 @@ public partial class Day10 : Day<Day10.Factory>
 
     protected override Answer Part1()
     {
-        var totalMinPresses = 0;
+        var totalPresses = 0;
         foreach (var machine in Input.Machines)
         {
-            var minPresses = int.MaxValue;
-
-            // pressing any button more than once is pointless, so we just have to check every combination of pressing every button zero or once.
-            var onState = machine.LightDiagram.Select(c => c == '#').ToArray();
-
-            for (var i=1; i < (1 << machine.WiringSchematics.Count); i++)           // bitmask (e.g. for 5 buttons, 00001 to 11111)
+            // count the solution with the minimum number of total presses
+            var sols = LightUp([.. machine.LightDiagram.Select(c => c == '#')], machine.WiringSchematics);
+            foreach (var sol in sols)
             {
-                var presses = 0;
-                var state = new bool[onState.Length];           // initially all false (off)
+                System.Console.WriteLine("  Solution found: {" + string.Join(',', sol) + "} with total presses " + sol.Sum());
+            }
+            totalPresses += sols.Select(p => p.Sum()).Min();
+        }
 
-                for (var b=0; b < machine.WiringSchematics.Count; b++)
+        return totalPresses;
+    }
+
+    // return ALL solutions that give the target state
+    private static List<List<int>> LightUp(bool[] desiredState, List<List<int>> wiring)
+    {
+        var allSolutions = new List<List<int>>();
+        // pressing any button more than once is pointless, so we just have to check every combination of pressing every button zero or once.
+        for (var i=1; i < (1 << wiring.Count); i++)           // bitmask (e.g. for 5 buttons, 00001 to 11111)
+        {
+            // initialize presses to empty [0, 0..]
+            var presses = new List<int>();
+            for (var b=0; b < wiring.Count; b++)
+            {
+                presses.Add(0);
+            }
+
+            var state = new bool[desiredState.Length];           // initially all false (off)
+
+            for (var b=0; b < wiring.Count; b++)
+            {
+                if ((i & (1 << b)) == 0) continue;          // this button not pressed
+                presses[b]++;
+
+                // toggle all lights this button controls
+                foreach (var lightIndex in wiring[b])
                 {
-                    if ((i & (1 << b)) == 0) continue;          // this button not pressed
-                    presses++;
-
-                    // toggle all lights this button controls
-                    foreach (var lightIndex in machine.WiringSchematics[b])
-                    {
-                        state[lightIndex] = !state[lightIndex];
-                    }
-                }
-
-                if (state.SequenceEqual(onState) && presses < minPresses)
-                {
-                    minPresses = presses;
+                    state[lightIndex] = !state[lightIndex];
                 }
             }
 
-            totalMinPresses += minPresses;
+            if (state.SequenceEqual(desiredState))
+            {
+                allSolutions.Add(presses);
+            }
         }
 
-        return totalMinPresses;
+        return allSolutions;
+    }
+
+    // this implementation of the clever solution from https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
+    // is nearly working, but one of the input machines [#.#.#.#] (0,1,6) (2,4) (0,3,5,6) (0,3,4,6) (1,2,3) (3,4) {37,29,22,54,21,17,37}
+    // runs into a state where it can't be reduced.  this is clearly incorrect because z3 finds a solution with 67 presses.
+    protected Answer Part2Old2()
+    {
+        // we can use part 1 here!
+        // consider the target joltages by their parity (even/odd).
+        // we need to consider the minimium presses to achieve the required parity, even/odd, or off/on.  sound familiar?
+        // once parity is achieved, we are left with remaining joltages that are all even.
+        // halve them until at least one is odd and repeat.
+        // once the joltages are all zero, we are done.
+        var totalPresses = 0;
+        for (var i=0; i < Input.Machines.Count; i++)
+        {
+            var result = CountToJoltage(Input.Machines[i].JoltageRequirements, Input.Machines[i].WiringSchematics, i);
+            if (result == 100000000)
+            {
+                System.Console.WriteLine("No solution found for machine with wiring " + string.Join(" | ", Input.Machines[i].WiringSchematics.Select(w => "(" + string.Join(',', w) + ")")) + " and joltage requirements {" + string.Join(',', Input.Machines[i].JoltageRequirements) + "}");
+            }
+            totalPresses += result;
+        }
+
+        return totalPresses;
+    }
+
+    private int CountToJoltage(List<int> joltage, List<List<int>> wiring, int machineId, int depth = 0)
+    {
+        if (joltage.All(j => j == 0)) return 0;         // we are done
+
+        var joltageKey = string.Join(',', joltage);
+
+        if (Input.Cache.TryGetValue((machineId, joltageKey), out var cachedTotal)) return cachedTotal;         // check cache
+
+        // if we are starting out with an inital state where the joltages are all even, halve them all until we find an odd one, and save the base multilpier.
+        var baseMult = 1;
+        var currentJoltage = new List<int>(joltage);
+        while (currentJoltage.All(j => j % 2 == 0) && currentJoltage.Any(j => j > 0))
+        {
+            baseMult *= 2;
+            for (var i=0; i < currentJoltage.Count; i++)
+            {
+                currentJoltage[i] /= 2;
+            }
+        }
+        if (currentJoltage.All(j => j == 0)) return 0;         // we are done
+
+
+        var total = 100000000;          // use a large flag value to return if no configurations are possible
+
+        var allPatterns = LightUp(currentJoltage.Select(j => (j % 2) == 1).ToArray(), wiring);
+
+        System.Console.WriteLine(new string(' ', depth * 2) + "Joltage: " + string.Join(',', currentJoltage) + ", found " + allPatterns.Count + " patterns");
+
+        foreach (var pattern in allPatterns)
+        {
+            System.Console.WriteLine(new string(' ', depth * 2) + "  Considering pattern {" + string.Join(',', pattern) + "} with starting joltage " + string.Join(',', currentJoltage));
+
+            // apply this pattern
+            var newJoltage = new List<int>(currentJoltage);
+            for (var i=0; i < pattern.Count; i++)
+            {
+                if (pattern[i] == 1)
+                {
+                    // toggle all lights this button controls
+                    foreach (var lightIndex in wiring[i])
+                    {
+                        newJoltage[lightIndex]--;
+                    }
+                }
+            }
+
+            if (newJoltage.Any(j => j < 0)) continue;          // invalid pattern
+
+            System.Console.WriteLine(new string(' ', depth * 2) + "  Applying valid pattern {" + string.Join(',', pattern) + "} gives new joltage " + string.Join(',', newJoltage));
+
+            // halve all even joltages until we find an odd one or everything becomes zero
+            var mult = 1;
+
+            while (newJoltage.All(j => j % 2 == 0) && newJoltage.Any(j => j > 0))
+            {
+                mult *= 2;
+                for (var i=0; i < newJoltage.Count; i++)
+                {
+                    newJoltage[i] /= 2;
+                }
+            }
+
+            total = Math.Min(total, pattern.Sum() + baseMult * mult * CountToJoltage(newJoltage, wiring, machineId, depth+1));
+        }
+
+        Input.Cache[(machineId, joltageKey)] = total;         // store in cache
+        return total;
     }
 
     // oh my god.
